@@ -1,0 +1,4 @@
+*.pyc
+startserver.sh
+www.pid
+settings.py

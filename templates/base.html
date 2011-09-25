@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <title>kaelspencer | {% block title %}{% endblock %}</title>
+
+    <link href="{{ MEDIA_URL }}css/{% block cssid %}style{% endblock %}.css" rel="stylesheet" type="text/css" media="screen" />
+    {% block extrahead %}{% endblock %}
+</head>
+
+<body>
+    <div class="content-wrap">
+        <header class="mainhead">
+            <nav class="container_16">
+                <ul>
+                    <li{% if current_path == '/about/'  %} id="current"{% endif %}><a href="/about/">About</a></li>
+                    <li{% if current_path == '/photos/' %} id="current"{% endif %}><a href="/photos/">Photos</a></li>
+                    <li{% if current_path == '/p'       %} id="current"{% endif %}><a href="/p">Paste</a></li>
+                    <li{% if current_path == '/'        %} id="current"{% endif %}><a href="/">Home</a></li>
+                </ul>
+            
+                <div id="logo">kaelspencer</div>
+            </nav>
+        </header>
+        {% block columnwrap %}{% endblock %}
+    </div>
+    
+    <footer class="mainfoot">{% block footer %}{% endblock %}</footer>
+</body>
+</html>
+

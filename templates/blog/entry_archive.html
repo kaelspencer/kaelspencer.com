@@ -1,0 +1,14 @@
+{% extends "blog_base.html" %}
+
+{% block content %}
+
+{% for object in latest %}
+            <article>
+                <header>{{ object.headline|safe }}</header>
+                {{ object.body_html|safe }}
+            <footer>Posted by <strong>{{ object.author }}</strong> on {{ object.pub_date|date:"j F Y" }}</footer>
+            </article>
+{% endfor %}
+
+{% endblock %}
+
