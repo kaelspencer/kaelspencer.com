@@ -50,7 +50,7 @@
     font-style: normal;
 }
 
-body {
+body, button, input, select, textarea {
   font: 87.5%/1.5 LuxiSansRegular, 'Helvetica Neue';
   color: #666666;
 }

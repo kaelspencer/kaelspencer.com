@@ -9,23 +9,50 @@
 /* Custom styling for Paste Model
  * Insanely tightly coupled to the Model
  * The form has a class name called 'newpaste' */
-.newpaste input#id_title {
+.newpaste input, select, textarea {
+    margin: 5px 0;
+    padding: 5px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(240, 240, 240, 1);
+    font-size: 1.07em;
+}
+
+.newpaste input#id_title, select#id_lexer, select#id_exposed {
     width: 100%;
 }
 
-.newpaste select#id_lexer, select#id_expiration, select#id_exposed {
-    width: 100%;
+.newpaste select#id_expiration {
+    width: 125%;
 }
 
 .newpaste input#newpaste_submit {
-    width: 125%;
+    width: 117%;
 }
 
 .newpaste textarea#id_rawbody {
     width: 715px;
-    height: 450px;
+    height: 300px;
+    font-family: Courier, 'Courier New', monospace;
+    font-size: 0.857em;
 }
 
 .errorlist {
     color: red;
+}
+
+.newpaste input.button { 
+    height: 30px;
+    margin: 0;
+    padding: 2px 3px; 
+    color: #fff;
+    background: #9CCF5F;
+    
+    border-width: 1px;
+    border-style: solid;
+    border-color: #B6DE8F #8DB836 #8DB836 #B6DE8F;
+}
+
+.viewpaste {
+    font-size: 0.929em;
 }

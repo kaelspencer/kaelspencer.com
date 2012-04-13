@@ -5,7 +5,7 @@ from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
 
 LEXERS = (
-    (u'text', u'Text only'),
+    (u'text', u'Plain text'),
     (u'c', u'C'),
     (u'cpp', u'C++'),
     (u'csharp', u'C#'),
@@ -197,7 +197,7 @@ class Paste(models.Model):
     lexer = models.CharField(choices=LEXERS, max_length=30, default='text')
     expiration = models.IntegerField(choices=EXPIRATION_CHOICES, null=False, default=0)
     active = models.BooleanField(default=True)
-    exposed = models.BooleanField(default=True, choices=EXPOSURE_CHOICES)
+    exposed = models.BooleanField(default=True)
 
     def __unicode__(self):
         return self.title 
@@ -208,8 +208,9 @@ class Paste(models.Model):
     def highlight(self):
         # TODO: The different lexers should store their CSS in another table.
         lexer = get_lexer_by_name(self.lexer)
-        self.lexedbody = highlight(self.rawbody, lexer, HtmlFormatter())
-        self.lexedcss = HtmlFormatter().get_style_defs('.highlight')
+        formatter = HtmlFormatter(nobackground=True)
+        self.lexedbody = highlight(self.rawbody, lexer, formatter)
+        self.lexedcss = formatter.get_style_defs('.highlight')
     
     def save(self, *args, **kwargs):
         self.url = ''.join(random.choice(string.ascii_letters + string.digits) for x in range(10))

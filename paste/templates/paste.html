@@ -1,8 +1,19 @@
 {% extends "base_twocol.html" %}
 
-{% block title %}Paste{% endblock %}
+{% block title %}paste{% endblock %}
 
 {% block cssid %}paste{% endblock %}
+
+{% block extrahead %}
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.autosize-min.js"></script>
+
+<script type="text/javascript">
+    $(function() {
+       $('#id_rawbody').autosize();
+    });
+</script>
+{% endblock %}
 
 {% block content %}
 Shouldn't see me!

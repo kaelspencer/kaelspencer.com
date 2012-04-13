@@ -96,25 +96,3 @@ article footer {
     border-radius: 5px;
 }
 
-/* Paste */
-input, select, textarea {
-	margin: 5px 0;
-	padding: 5px;
-	border-width: 1px;
-	border-style: solid;
-  	border-color: rgba(240, 240, 240, 1);
-	font: 12px Courier, 'Courier New', monospace;
-}
-
-input.button { 
-	font: bold 12px Arial, Sans-serif; 
-	height: 30px;
-	margin: 0;
-	padding: 2px 3px; 
-	color: #fff;
-	background: #9CCF5F;
-	
-	border-width: 1px;
-  	border-style: solid;
-  	border-color: #B6DE8F #8DB836 #8DB836 #B6DE8F;
-}

@@ -7,6 +7,6 @@
 {% block content %}
             <article>
                 <header>{{ paste.title }}</header>
-                <p>{% autoescape off %}{{ paste.lexedbody }}{% endautoescape %}</p>
+                <div class="viewpaste">{% autoescape off %}{{ paste.lexedbody }}{% endautoescape %}</div>
             </article>
 {% endblock %}
