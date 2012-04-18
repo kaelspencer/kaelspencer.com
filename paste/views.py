@@ -14,15 +14,6 @@ class NewPasteForm(ModelForm):
             'lexer': chosenwidgets.ChosenSelect(),
             'expiration': chosenwidgets.ChosenSelect(),
         }
-        
-
-def view(request, template, form):
-    context = {'MEDIA_URL': settings.MEDIA_URL,
-               'form': form,
-               'recentList': recentList()}
-    context.update(csrf(request))
-    
-    return render_to_response(template, context)
 
 def new(request):
     if request.method == 'POST':
@@ -36,7 +27,7 @@ def new(request):
     
     context = {'MEDIA_URL': settings.MEDIA_URL,
                'form': form,
-               'recentList': recentList()}
+               'recentList': recentList(request.get_full_path())}
     context.update(csrf(request))
     
     return render_to_response('paste.new.html', context)
@@ -46,17 +37,22 @@ def existing(request, pid):
     
     context = {'MEDIA_URL': settings.MEDIA_URL,
                'paste': p,
-               'recentList': recentList()}
+               'recentList': recentList(request.get_full_path())}
     context.update(csrf(request))
     
     return render_to_response('paste.view.html', context, context_instance=RequestContext(request))
 
-def recentList():
-    recent = Paste.objects.filter(exposed=True).order_by('-pastedate')[:10]
-    html = '<ul class="grid_2 alpha omega">'
+def recentList(path):
+    recent = Paste.objects.filter(exposed=True).order_by('-pastedate')[:20]
+    html = '<header>Recent Pastes</header><ul class="alpha omega">'
     
     for p in recent:
-        html = html + '<li><a href=' + p.get_absolute_url() + '>' + p.title + '</a></li>'
+        html = html + '<li'
+        
+        if p.get_absolute_url() == path:
+            html = html + ' id="current"'
+        
+        html = html + '><a href=' + p.get_absolute_url() + '>' + p.title + '</a></li>'
     
     html = html + '</ul><div class="clear"></div>'
     

@@ -56,3 +56,36 @@
 .viewpaste {
     font-size: 0.929em;
 }
+
+.recentpastelist header {
+    margin: 0 -15px 0 -15px;
+    padding: 0 5px 0 5px;
+}
+
+.recentpastelist ul {
+    list-style: none;
+    padding: 0px;
+    margin: 0 -15px -15px -15px;
+    font-size: 1em;
+}
+
+.recentpastelist a:link, 
+.recentpastelist a:visited,
+.recentpastelist a:hover,
+.recentpastelist a:active {
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+    white-space: pre-wrap;
+}
+
+.recentpastelist li {
+    padding: 0px 5px 2px 5px;
+    border-top: 2px solid rgba(230, 230, 230, 1);
+}
+
+.recentpastelist li#current,
+.recentpastelist li:hover {
+    background: rgba(245, 245, 245, 1);
+    cursor: pointer;
+}

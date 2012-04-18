@@ -17,6 +17,10 @@
        $('#id_rawbody').autosize();
        $('.chzn-select').chosen();
     });
+    
+    $('.recentpastelist li').click(function() {
+       alert('click'); 
+    });
 </script>
 {% endblock %}
 
@@ -25,5 +29,5 @@ Shouldn't see me!
 {% endblock %}
 
 {% block rightnav %}
-        <article class="first-article"></article>
+        <article class="recentpastelist">{% autoescape off %}{{ recentList }}{% endautoescape %}</article>
 {% endblock %}
