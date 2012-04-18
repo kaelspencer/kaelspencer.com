@@ -6,17 +6,37 @@
                 <form class="newpaste" action="/p/" method="post">{% csrf_token %}
                     
                     {{ form.rawbody }}
+                    {{ form.non_field_errors }}
+                    
+                    {% if form.lexer.errors or form.exposed.errors or form.expiration.errors %}
+                    <div class="grid_12 alpha omega">
+                        <div class="grid_2 alpha">&nbsp;</div>
+                        <div class="grid_4 fortext">{{ form.lexer.errors }}</div>
+                        <div class="grid_1 fortext">&nbsp;</div>
+                        <div class="grid_1 fortext">{{ form.exposed.errors }}</div>
+                        <div class="grid_2 fortext">&nbsp;</div>
+                        <div class="grid_2 fortext omega">{{ form.expiration.errors }}</div>
+                    </div>
+                    {% endif %}
                     
                     <div class="grid_12 alpha omega">
                         <div class="grid_2 alpha fortext">Language:</div>
-                        <div class="grid_4">{{ form.lexer }}</div>
+                        <div class="grid_4 fortext">{{ form.lexer }}</div>
                         <div class="grid_1 fortext">Public:</div>
                         <div class="grid_1 fortext">{{ form.exposed }}</div>
                         <div class="grid_2 fortext">Expiration:</div>
-                        <div class="grid_2 omega">{{ form.expiration }}</div>
+                        <div class="grid_2 fortext omega">{{ form.expiration }}</div>
                     </div>
                     
                     <div class="clear"></div>
+                    
+                    {% if form.title.errors %}
+                    <div class="grid_12 alpha omega">
+                        <div class="grid_2 alpha fortext">&nbsp;</div>
+                        <div class="grid_5">{{ form.title.errors }}</div>
+                        <div class="grid_3 prefix_2 omega">&nbsp;</div>
+                    </div>
+                    {% endif %}
                     
                     <div class="grid_12 alpha omega">
                         <div class="grid_2 alpha fortext">Title:</div>

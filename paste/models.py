@@ -19,7 +19,6 @@ LEXERS = (
     (u'python', u'Python'),
     (u'rb', u'Ruby'),
     (u'sql', u'SQL'),
-    (u'invalid', u'----------'),
     (u'abap', u'ABAP'),
     (u'antlr', u'ANTLR'),
     (u'antlr-as', u'ANTLR With ActionScript Target'),

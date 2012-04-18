@@ -1,10 +1,12 @@
 {% extends "paste.html" %}
 
+{% block extrahead %}
+    <style>{{ paste.lexedcss }}</style>
+{% endblock %}
+
 {% block content %}
             <article>
                 <header>{{ paste.title }}</header>
-                <p>{{ paste.rawbody }}</p>
-                <p>{{ paste.lexedbody }}</p>
-                <p>{{ paste.lexedcss }}</p>
+                <div class="viewpaste">{% autoescape off %}{{ paste.lexedbody }}{% endautoescape %}</div>
             </article>
 {% endblock %}
