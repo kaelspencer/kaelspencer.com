@@ -5,6 +5,7 @@ from django.forms import ModelForm
 from django.core.context_processors import csrf
 from django.http import HttpResponseRedirect
 from chosen import widgets as chosenwidgets
+from datetime import datetime
 
 class NewPasteForm(ModelForm):
     class Meta:
@@ -42,18 +43,48 @@ def existing(request, pid):
     
     return render_to_response('paste.view.html', context, context_instance=RequestContext(request))
 
+# Upgrade to 1.4 and this won't need to be done.
+def get_pretty_time(dt):
+    seconds = dt.seconds
+    ret = ''
+    val = 1
+    
+    if seconds < 60:
+        ret = 'A minute'
+    elif seconds < 60 * 60:
+        val = seconds / 60
+        ret = str(val) + ' minute'
+    elif seconds < 60 * 60 * 24:
+        val = seconds / (60 * 60)
+        ret = str(val) + ' hour'
+    elif seconds < 60 * 60 * 24 * 7:
+        val = seconds / (60 * 60 * 24)
+        ret = str(val) + ' day'
+    elif seconds < 60 * 60 * 24 * 365:
+        val = seconds / (60 * 60 * 24 * 7)
+        ret = str(val) + ' week'
+    else:
+        val = seconds / (60 * 60 * 24 * 365)
+        ret = str(val) + ' day'
+    
+    if val != 1:
+        ret = ret + 's'
+    
+    ret = ret + ' ago'
+    return ret
+
 def recentList(path):
-    recent = Paste.objects.filter(exposed=True).order_by('-pastedate')[:20]
-    html = '<header>Recent Pastes</header><ul class="alpha omega">'
+    recent = Paste.objects.filter(exposed=True).order_by('-pastedate')[:10]
+    pastes = []
     
     for p in recent:
-        html = html + '<li'
+        pasteDict = {}
         
-        if p.get_absolute_url() == path:
-            html = html + ' id="current"'
+        pasteDict['dt'] = get_pretty_time(datetime.now() - p.pastedate)
+        pasteDict['url'] = p.get_absolute_url()
+        pasteDict['title'] = p.title
+        pasteDict['lexer'] = p.lexer
         
-        html = html + '><a href=' + p.get_absolute_url() + '>' + p.title + '</a></li>'
-    
-    html = html + '</ul><div class="clear"></div>'
-    
-    return html
+        pastes.append(pasteDict)
+        
+    return pastes

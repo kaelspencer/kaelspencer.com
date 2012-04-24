@@ -29,5 +29,19 @@ Shouldn't see me!
 {% endblock %}
 
 {% block rightnav %}
-        <article class="recentpastelist">{% autoescape off %}{{ recentList }}{% endautoescape %}</article>
+        <article class="recentpastelist">
+            <header>Recent Pastes</header>
+            <ul class="alpha omega">
+                {% for paste in recentList %}
+                    <li{% if current_path == paste.url %} id="current"{% endif %}>
+                        <a href="{{ paste.url }}">{{ paste.title }}</a>
+                        <div>
+                            <span class="subtext">{{ paste.lexer }} | {{ paste.dt }}</span>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+            
+            <div class="clear"></div>
+        </article>
 {% endblock %}

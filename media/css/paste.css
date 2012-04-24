@@ -89,3 +89,19 @@
     background: rgba(245, 245, 245, 1);
     cursor: pointer;
 }
+
+.recentpastelist li a {
+    margin: 0px;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.recentpastelist .subtext {
+    font-size: 0.8em;
+    padding: 0 4px 0 4px;
+}
+
+.recentpastelist .subtext#left {
+    border-right: 1px solid black;
+}
