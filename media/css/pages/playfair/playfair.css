@@ -1,0 +1,85 @@
+/* This is from JQuery UI */
+.ui-corner-all { -moz-border-radius: 6px; -webkit-border-radius: 6px; }
+.ui-widget { font-family: Segoe UI, Arial, sans-serif; font-size: 1.1em; }
+ul#icons {margin: 0; padding: 0;}
+ul#icons li {margin: 2px; position: relative; padding: 2px; cursor: pointer; float: left;  list-style: none;}
+.ui-state-default { background: #555555 url(/media/images/pages/playfair/ui-bg_glass_20_555555_1x400.png) 50% 50% repeat-x; }
+.ui-state-key { background: #0078a3 url(/media/images/pages/playfair/ui-bg_glass_40_0078a3_1x400.png) 50% 50% repeat-x; }
+.ui-state-cipher { background: #f58400 url(/media/images/pages/playfair/ui-bg_inset-soft_30_f58400_1x100.png) 50% 50% repeat-x; }
+/* End JQuery UI */
+ 
+.ui-playfair-container { width: 260px; margin: 30px auto; }
+.ui-playfair-icon { width: 40px; height: 40px; background-image: url(/media/images/pages/playfair/playfair-letters.png);}
+span.ui-playfair-icon {float: left; margin: 2px;}
+ 
+.ui-playfair-icon-0, .ui-playfair-icon-a { background-position: 0 0; }
+.ui-playfair-icon-1, .ui-playfair-icon-b { background-position: -40px 0; }
+.ui-playfair-icon-2, .ui-playfair-icon-c { background-position: -80px 0; }
+.ui-playfair-icon-3, .ui-playfair-icon-d { background-position: -120px 0; }
+.ui-playfair-icon-4, .ui-playfair-icon-e { background-position: -160px 0; }
+.ui-playfair-icon-5, .ui-playfair-icon-f { background-position: -200px 0; }
+.ui-playfair-icon-6, .ui-playfair-icon-g { background-position: -240px 0; }
+.ui-playfair-icon-7, .ui-playfair-icon-h { background-position: -280px 0; }
+.ui-playfair-icon-8, .ui-playfair-icon-i { background-position: -320px 0; }
+.ui-playfair-icon-8, .ui-playfair-icon-j { background-position: -320px 0; }
+.ui-playfair-icon-9, .ui-playfair-icon-k { background-position: -360px 0; }
+.ui-playfair-icon-10, .ui-playfair-icon-l { background-position: -400px 0; }
+.ui-playfair-icon-11, .ui-playfair-icon-m { background-position: -440px 0; }
+.ui-playfair-icon-12, .ui-playfair-icon-n { background-position: -480px 0; }
+.ui-playfair-icon-13, .ui-playfair-icon-o { background-position: -520px 0; }
+.ui-playfair-icon-14, .ui-playfair-icon-p { background-position: -560px 0; }
+.ui-playfair-icon-15, .ui-playfair-icon-q { background-position: -600px 0; }
+.ui-playfair-icon-16, .ui-playfair-icon-r { background-position: -640px 0; }
+.ui-playfair-icon-17, .ui-playfair-icon-s { background-position: -680px 0; }
+.ui-playfair-icon-18, .ui-playfair-icon-t { background-position: -720px 0; }
+.ui-playfair-icon-19, .ui-playfair-icon-u { background-position: -760px 0; }
+.ui-playfair-icon-20, .ui-playfair-icon-v { background-position: -800px 0; }
+.ui-playfair-icon-21, .ui-playfair-icon-w { background-position: -840px 0; }
+.ui-playfair-icon-22, .ui-playfair-icon-x { background-position: -880px 0; }
+.ui-playfair-icon-23, .ui-playfair-icon-y { background-position: -920px 0; }
+.ui-playfair-icon-24, .ui-playfair-icon-z { background-position: -960px 0; }
+ 
+fieldset {
+    border: 1px solid #e6e6e6;
+    background-color: #f0f0f0;
+    margin-bottom: .5em;
+    padding: 1em;
+}
+ 
+/*layout and style stuff*/
+/*
+body {
+    font: 11px/165% 'Lucida Grande', Verdana, Helvetica, sans-serif;
+    color: #666666;    
+    margin: 0; padding: 0 0 50px 0;
+    text-align: center;
+}
+*/
+ 
+/* form elements */
+form {
+    margin: 10px;
+    padding: 15px 25px 25px 20px;
+    border: 1px solid #F0F0F0;
+    background: #f8f8f8;
+}
+form p {
+    border-bottom: 1px solid #E6E6E6;
+    padding: 12px 0 5px 0;  margin: 0; 
+    color: #7BA857;
+}
+label {
+    font-weight: bold;
+    color: #7BA857;
+}
+input, select, textarea {
+    margin: 5px 0;
+    padding: 5px;
+    color: #6A6969;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #d4d4d4 #ebebeb #ebebeb #d4d4d4;  
+    font: 11px 'Lucida Grande', Verdana, Helvetica, sans-serif;
+}
+
+.no-border { border: none; }

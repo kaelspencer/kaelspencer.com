@@ -1,0 +1,81 @@
+{% extends "base_twocol.html" %}
+
+{% block title %}playfair{% endblock %}
+
+{% block cssid %}style{% endblock %}
+
+{% block extrahead %}
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+<script type="text/javascript" src="{{ MEDIA_URL }}js/pages/playfair/playfair.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/pages/playfair/uiplayfair.js"></script>
+
+<link rel="stylesheet" type="text/css" media="screen" href="{{ MEDIA_URL }}css/pages/playfair/playfair.css" />
+
+<script type="text/javascript">
+    $(document).ready(function() { setup(); init(); });
+</script>
+
+{% endblock %}
+
+{% block content %}
+<article class="first-article">
+    <header>Playfair</header>
+    
+    <form id="contactform" style="margin: 0 auto; width: 350px;">
+        <fieldset style="margin: 0 auto; width: 300px;">
+            <p class="no-border" style="text-align: center;">
+                Enter your key: <input id="key" name="key" value="Hello" type="text" />
+            </p>
+            <p class="no-border" style="text-align: center;">
+                <input id="setKey" type="submit" value="Set Key" />&nbsp;&nbsp;
+                <input id="reset" type="submit" value="Reset" />
+            </p>
+        </fieldset>
+   
+        <div id="playfair_box" class="ui-playfair-container">
+            <ul id="icons" class="ui-widget">
+                <li id="letter-0" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-0"></span></li>
+                <li id="letter-1" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-1"></span></li>
+                <li id="letter-2" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-2"></span></li>
+                <li id="letter-3" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-3"></span></li>
+                <li id="letter-4" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-4"></span></li>
+                <li id="letter-5" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-5"></span></li>
+                <li id="letter-6" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-6"></span></li>
+                <li id="letter-7" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-7"></span></li>
+                <li id="letter-8" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-8"></span></li>
+                <li id="letter-9" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-9"></span></li>
+                <li id="letter-10" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-10"></span></li>
+                <li id="letter-11" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-11"></span></li>
+                <li id="letter-12" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-12"></span></li>
+                <li id="letter-13" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-13"></span></li>
+                <li id="letter-14" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-14"></span></li>
+                <li id="letter-15" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-15"></span></li>
+                <li id="letter-16" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-16"></span></li>
+                <li id="letter-17" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-17"></span></li>
+                <li id="letter-18" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-18"></span></li>
+                <li id="letter-19" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-19"></span></li>
+                <li id="letter-20" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-20"></span></li>
+                <li id="letter-21" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-21"></span></li>
+                <li id="letter-22" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-22"></span></li>
+                <li id="letter-23" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-23"></span></li>
+                <li id="letter-24" class="ui-state-default ui-corner-all"><span class="ui-playfair-icon ui-playfair-icon-24"></span></li>
+            </ul>
+        </div>
+       
+        <fieldset style="margin: 320px auto 0 auto; width: 300px;">
+            <p style="text-align: center;">
+                <span id="plaintext-label">Plain text: </span><input id="plaintext" name="plaintext" value="hdocrmxu" type="text" />
+            </p>
+            <p class="no-border" style="text-align: center;">
+                <span id="ciphertext-label">Cipher text: </span><input id="ciphertext" name="ciphertext" value="" type="text" />
+            </p>
+            <p class="no-border" style="text-align: center;">
+                <input id="encrypt" type="submit" value="Encrypt" />&nbsp;&nbsp;
+                <input id="swap" type="submit" value="Swap" />
+            </p>
+        </fieldset>
+   
+    </form>
+</article>
+{% endblock %}
