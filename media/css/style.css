@@ -89,6 +89,13 @@ article header {
     font: 1.4em/40px LuxiSansBold, 'Helvetica Neue';
 }
 
+article header a:link, 
+article header a:visited,
+article header a:hover,
+article header a:active {
+    text-decoration: none;
+}
+
 article footer {
     padding: 10px;
     background: rgba(245, 245, 245, 1);

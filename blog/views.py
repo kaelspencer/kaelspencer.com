@@ -13,6 +13,7 @@ def prepare_arguments(view):
 
 @prepare_arguments
 def entry_detail(request, *args, **kwargs):
+    kwargs['template_name'] = 'detail.html'
     return date_based.object_detail(request, *args, **kwargs)
 
 @prepare_arguments
@@ -29,5 +30,6 @@ def archive_year(request, *args, **kwargs):
 
 @prepare_arguments
 def archive_index(request, *args, **kwargs):
+    kwargs['template_name'] = 'archive_all.html'
     return date_based.archive_index(request, *args, **kwargs)
 

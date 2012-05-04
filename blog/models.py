@@ -33,16 +33,11 @@ class Entry(models.Model):
         return self.headline
         
     def get_absolute_url(self):
-        return "/blog/%s/%s/" % (self.pub_date.strftime("%Y/%b/%d").lower(), self.slug)
+        return "/blog/%s/%s/" % (self.pub_date.strftime("%Y/%m/%d").lower(), self.slug)
         
     def is_published(self):
         return self.is_active and self.pub_date <= datetime.datetime.now()
     is_published.boolean = True
-    
-    @property
-    def comments_enabled(self):
-        delta = datetime.datetime.now() - self.pub_date
-        return delta.days < 60
     
     def save(self, *args, **kwargs):
         if self.content_format == u'html':
@@ -56,4 +51,3 @@ class Entry(models.Model):
                                            writer_name="html",
                                            settings_overrides=BLOG_DOCUTILS_SETTINGS)['fragment']
         super(Entry, self).save(*args, **kwargs)
-
