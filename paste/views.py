@@ -45,7 +45,7 @@ def existing(request, pid):
 
 # Upgrade to 1.4 and this won't need to be done.
 def get_pretty_time(dt):
-    seconds = dt.seconds
+    seconds = dt.seconds + dt.days * (60 * 60 * 24)
     ret = ''
     val = 1
     
@@ -74,7 +74,7 @@ def get_pretty_time(dt):
     return ret
 
 def recentList(path):
-    recent = Paste.objects.filter(exposed=True).order_by('-pastedate')[:10]
+    recent = Paste.objects.filter(exposed=True).order_by('-pastedate')[:13]
     pastes = []
     
     for p in recent:
