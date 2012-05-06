@@ -74,12 +74,7 @@ article {
     padding: 0 15px 15px 15px;
     margin-top: -72px;
     margin-bottom: 84px;
-    /*height: 70px;*/
     background: rgba(255, 255, 255, 1);
-    /*border-left: 3px solid rgba(230, 230, 230, 0.9);
-    border-top: 3px solid rgba(230, 230, 230, 0.9);
-    border-right: 3px solid rgba(230, 230, 230, 0.9);
-    border-radius: 10px 10px 0 0;*/
     border: 2px solid rgba(230, 230, 230, 0.9);
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(200, 200, 200, 0.8);
@@ -103,3 +98,36 @@ article footer {
     border-radius: 5px;
 }
 
+/* Other */
+
+pre,
+code {
+  font-family: 'DejaVu Sans Mono', Monaco, Consolas, monospace;
+}
+
+/* Inline code */
+code {
+    display: inline;
+    background: rgb(245, 245, 245);
+    border: 1px solid rgba(230, 230, 230, 0.9);
+    border-radius: 5px;
+    padding: 2px;
+    margin: 0px;
+}
+
+pre {
+    overflow: auto;
+    background: rgb(245, 245, 245);
+    border: 1px solid rgba(230, 230, 230, 0.9);
+    border-radius: 5px;
+    padding: 5px;
+    margin: 0px;
+}
+
+/* Nested in pre code */
+pre code {
+    background: inherit;
+    border: none;
+    padding: 0px;
+    margin: 0px;
+}

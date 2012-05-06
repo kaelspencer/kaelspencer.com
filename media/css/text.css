@@ -55,11 +55,6 @@ body, button, input, select, textarea {
   color: #666666;
 }
 
-pre,
-code {
-  font-family: 'DejaVu Sans Mono', Monaco, Consolas, monospace;
-}
-
 hr {
   border: 0 #ccc solid;
   border-top-width: 1px;
