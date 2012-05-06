@@ -202,7 +202,7 @@ class Paste(models.Model):
         return self.title 
     
     def get_absolute_url(self):
-        return '/p/' + self.url
+        return '/p/' + self.url + '/'
     
     def highlight(self):
         # TODO: The different lexers should store their CSS in another table.
