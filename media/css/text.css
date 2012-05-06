@@ -5,69 +5,18 @@
         21px / 14px = 1.5em
 */
 
-/* Luxi Sans font */
-@font-face {
-    font-family: 'LuxiSansRegular';
-    src: url('/media/fonts/LuxiSans/luxisr-webfont.eot');
-    src: url('/media/fonts/LuxiSans/luxisr-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/media/fonts/LuxiSans/luxisr-webfont.woff') format('woff'),
-         url('/media/fonts/LuxiSans/luxisr-webfont.ttf') format('truetype'),
-         url('/media/fonts/LuxiSans/luxisr-webfont.svg#LuxiSansRegular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'LuxiSansOblique';
-    src: url('/media/fonts/LuxiSans/luxisri-webfont.eot');
-    src: url('/media/fonts/LuxiSans/luxisri-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/media/fonts/LuxiSans/luxisri-webfont.woff') format('woff'),
-         url('/media/fonts/LuxiSans/luxisri-webfont.ttf') format('truetype'),
-         url('/media/fonts/LuxiSans/luxisri-webfont.svg#LuxiSansOblique') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'LuxiSansBold';
-    src: url('/media/fonts/LuxiSans/luxisb-webfont.eot');
-    src: url('/media/fonts/LuxiSans/luxisb-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/media/fonts/LuxiSans/luxisb-webfont.woff') format('woff'),
-         url('/media/fonts/LuxiSans/luxisb-webfont.ttf') format('truetype'),
-         url('/media/fonts/LuxiSans/luxisb-webfont.svg#LuxiSansBold') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'LuxiSansBoldOblique';
-    src: url('/media/fonts/LuxiSans/luxisbi-webfont.eot');
-    src: url('/media/fonts/LuxiSans/luxisbi-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/media/fonts/LuxiSans/luxisbi-webfont.woff') format('woff'),
-         url('/media/fonts/LuxiSans/luxisbi-webfont.ttf') format('truetype'),
-         url('/media/fonts/LuxiSans/luxisbi-webfont.svg#LuxiSansBoldOblique') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
+@import url(luxiSans.css);
+@import url(luxiMono.css);
 
 body, button, input, select, textarea {
   font: 87.5%/1.5 LuxiSansRegular, 'Helvetica Neue';
   color: #666666;
 }
 
-hr {
-  border: 0 #ccc solid;
-  border-top-width: 1px;
-  clear: both;
-  height: 0;
-}
-
-a {
+pre, code {
+  font: 87.5%/1.5 LuxiMonoRegular, 'DejaVu Sans Mono', Monaco, Consolas, monospace;
   color: #666666;
 }
-
-/* `Headings
-----------------------------------------------------------------------------------------------------*/
 
 /* Headings */
 
@@ -100,37 +49,3 @@ h6 {
 p {
     margin: 0 0 15px 0;
 }
-
-/*
-ol {
-  list-style: decimal;
-}
-
-ul {
-  list-style: disc;
-}
-
-li {
-  margin-left: 30px;
-}
-
-p,
-dl,
-hr,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-ol,
-ul,
-pre,
-table,
-address,
-fieldset,
-figure {
-  margin-bottom: 20px;
-}
-*/
-

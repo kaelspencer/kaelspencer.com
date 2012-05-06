@@ -100,11 +100,6 @@ article footer {
 
 /* Other */
 
-pre,
-code {
-  font-family: 'DejaVu Sans Mono', Monaco, Consolas, monospace;
-}
-
 /* Inline code */
 code {
     display: inline;
@@ -130,4 +125,8 @@ pre code {
     border: none;
     padding: 0px;
     margin: 0px;
+}
+
+a {
+  color: #666666;
 }

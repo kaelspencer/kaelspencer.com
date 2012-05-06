@@ -1,0 +1,44 @@
+/* Luxi Mono font */
+@font-face {
+    font-family: 'LuxiMonoRegular';
+    src: url('/media/fonts/LuxiMono/luximr-webfont.eot');
+    src: url('/media/fonts/LuxiMono/luximr-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/media/fonts/LuxiMono/luximr-webfont.woff') format('woff'),
+         url('/media/fonts/LuxiMono/luximr-webfont.ttf') format('truetype'),
+         url('/media/fonts/LuxiMono/luximr-webfont.svg#LuxiMonoRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'LuxiMonoOblique';
+    src: url('/media/fonts/LuxiMono/luximri-webfont.eot');
+    src: url('/media/fonts/LuxiMono/luximri-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/media/fonts/LuxiMono/luximri-webfont.woff') format('woff'),
+         url('/media/fonts/LuxiMono/luximri-webfont.ttf') format('truetype'),
+         url('/media/fonts/LuxiMono/luximri-webfont.svg#LuxiMonoOblique') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'LuxiMonoBold';
+    src: url('/media/fonts/LuxiMono/luximb-webfont.eot');
+    src: url('/media/fonts/LuxiMono/luximb-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/media/fonts/LuxiMono/luximb-webfont.woff') format('woff'),
+         url('/media/fonts/LuxiMono/luximb-webfont.ttf') format('truetype'),
+         url('/media/fonts/LuxiMono/luximb-webfont.svg#LuxiMonoBold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'LuxiMonoBoldOblique';
+    src: url('/media/fonts/LuxiMono/luximbi-webfont.eot');
+    src: url('/media/fonts/LuxiMono/luximbi-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/media/fonts/LuxiMono/luximbi-webfont.woff') format('woff'),
+         url('/media/fonts/LuxiMono/luximbi-webfont.ttf') format('truetype'),
+         url('/media/fonts/LuxiMono/luximbi-webfont.svg#LuxiMonoBoldOblique') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
