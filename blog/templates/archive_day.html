@@ -1,0 +1,14 @@
+{% extends "blog_base.html" %}
+
+{% block content %}
+
+{% for object in object_list %}
+            <article>
+                <header><a href="{{ object.get_absolute_url }}">{{ object.headline|safe }}</a></header>
+                {{ object.summary_html|safe }}
+            <footer>Posted by <strong>{{ object.author }}</strong> on {{ object.pub_date|date:"j F Y" }}</footer>
+            </article>
+{% endfor %}
+
+{% endblock %}
+

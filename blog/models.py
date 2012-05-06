@@ -29,6 +29,11 @@ class Entry(models.Model):
     
     objects = EntryManager()
     
+    class Meta:
+        verbose_name_plural = 'entries'
+        ordering = ('-pub_date',)
+        get_latest_by = 'pub_date'
+    
     def __unicode__(self):
         return self.headline
         

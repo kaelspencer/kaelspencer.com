@@ -14,18 +14,25 @@ def prepare_arguments(view):
 @prepare_arguments
 def entry_detail(request, *args, **kwargs):
     kwargs['template_name'] = 'detail.html'
+    kwargs['month_format'] = '%m'
     return date_based.object_detail(request, *args, **kwargs)
 
 @prepare_arguments
 def archive_day(request, *args, **kwargs):
+    kwargs['template_name'] = 'archive_day.html'
+    kwargs['month_format'] = '%m'
     return date_based.archive_day(request, *args, **kwargs)
 
 @prepare_arguments
 def archive_month(request, *args, **kwargs):
+    kwargs['template_name'] = 'archive_month.html'
+    kwargs['month_format'] = '%m'
     return date_based.archive_month(request, *args, **kwargs)
 
 @prepare_arguments
 def archive_year(request, *args, **kwargs):
+    kwargs['template_name'] = 'archive_year.html'
+    kwargs['make_object_list'] = True
     return date_based.archive_year(request, *args, **kwargs)
 
 @prepare_arguments
