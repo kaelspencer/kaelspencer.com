@@ -1,9 +1,11 @@
 {% extends "base_twocol.html" %}
 
+{% load blog_extras %}
+
 {% block title %}blog{% endblock %}
 
 {% block content %}No entries! Uh oh!{% endblock %}
 
 {% block rightnav %}
-        <article class="first-article"></article>
+        {% show_recent_blog_list %}
 {% endblock %}
