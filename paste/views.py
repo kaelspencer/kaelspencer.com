@@ -31,7 +31,7 @@ def new(request):
                'form': form}
     context.update(csrf(request))
     
-    return render_to_response('paste.new.html', context)
+    return render_to_response('paste.new.html', context, context_instance=RequestContext(request))
 
 class ExistingDetailView(DetailView):
     context_object_name = 'paste'
