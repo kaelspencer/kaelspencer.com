@@ -1,15 +1,16 @@
-<article class="recentlist">
-    <header>Recent Entries</header>
-    <ul class="alpha omega">
-        {% for entry in recent_entries %}
-            <li{% if context.current_path == entry.url %} id="current"{% endif %}>
-                <a href="{{ entry.url }}">{{ entry.headline }}</a>
-                <div>
-                    <span class="subtext">{{ entry.pub_date }}</span>
-                </div>
-            </li>
-        {% endfor %}
-    </ul>
-    
-    <div class="clear"></div>
-</article>
+
+                <article class="recentlist">
+                    <header>Recent Entries</header>
+                    <ul class="alpha omega">
+                        {% for entry in recent_entries %}
+                            <li{% if context.current_path == entry.url %} id="current"{% endif %}>
+                                <a href="{{ entry.url }}">{{ entry.headline }}</a>
+                                <div>
+                                    <span class="subtext">{{ entry.pub_date }}</span>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <div class="clear"></div>
+                </article>
