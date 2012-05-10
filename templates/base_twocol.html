@@ -2,11 +2,22 @@
 
 {% block columnwrap %}
         <div class="container_16">
-            <div class="grid_13">
+            <div class="grid_13 alpha">
                 {% block content %}{% endblock %}
             </div>
             
-            <div class="grid_3">{% block rightnav %}<article class="first-article"></article>{% endblock %}
+            <div class="grid_3 omega">
+                {% block rightnav_top %}<article></article>{% endblock %}
+                {% block rightnav_sites %}
+                    <article class="recentlist">
+                        <header>Me</header>
+                        <ul class="alpha omega">
+                            <li><a href="https://github.com/kaelspencer">GitHub</a></li>
+                            <li><a href="http://www.flickr.com/photos/kaelspencer/">flickr</a></li>
+                            <li><a href="{% url www_url_about %}">About</a></li>
+                        </ul>
+                    </article>
+                {% endblock %}
             </div>
         </div>
 {% endblock %}
