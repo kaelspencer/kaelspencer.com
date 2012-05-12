@@ -5,6 +5,16 @@
     <title>kaelspencer | {% block title %}{% endblock %}</title>
 
     <link href="{{ MEDIA_URL }}css/{% block cssid %}style{% endblock %}.css" rel="stylesheet" type="text/css" media="screen" />
+    
+    {# Some files use old jQuery. #}
+    {% block jqueryinclude %}
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    {% endblock %}
+    
+    {% block commonhead %}
+    <script type="text/javascript" src="/media/js/common.js"></script>
+    {% endblock %}
+    
     {% block extrahead %}{% endblock %}
 </head>
 
@@ -20,6 +30,12 @@
         {% block columnwrap %}{% endblock %}
     </div>
     
-    <footer class="mainfoot">{% block footer %}{% endblock %}</footer>
+    <footer class="mainfoot">{% block footer %}
+        <div class="container_16">
+            <span class="grid_3"><a id="footer-to-top" href="#top">Back to Top</a></span>
+            <span class="grid_3 prefix_10">&copy; Kael Spencer, 2012</span>
+        </div>
+    {% endblock %}
+    </footer>
 </body>
 </html>

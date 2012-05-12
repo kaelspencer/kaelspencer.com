@@ -7,7 +7,6 @@
 {% block cssid %}paste{% endblock %}
 
 {% block extrahead %}
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.autosize-min.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.chosen-min.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.tabby.js"></script>
@@ -30,3 +29,4 @@
 {% block rightnav_top %}
     {% show_recent_list %}
 {% endblock %}
+{% block rightnav_sites %}{% endblock %}

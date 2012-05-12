@@ -28,6 +28,17 @@ footer.mainfoot {
     border-top: 2px solid rgba(230, 230, 230, 1);
 }
 
+footer.mainfoot span {
+    margin-top: 40px;
+}
+
+footer.mainfoot a:link, 
+footer.mainfoot a:visited,
+footer.mainfoot a:hover,
+footer.mainfoot a:active {
+    text-decoration: none;
+}
+
 .content-wrap {
     min-height: 100%;
     height: auto !important;

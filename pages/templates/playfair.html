@@ -4,9 +4,11 @@
 
 {% block cssid %}style{% endblock %}
 
-{% block extrahead %}
+{% block jqueryinclude %}
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+{% endblock %}
 
+{% block extrahead %}
 <script type="text/javascript" src="{{ MEDIA_URL }}js/pages/playfair/playfair.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/pages/playfair/uiplayfair.js"></script>
 
