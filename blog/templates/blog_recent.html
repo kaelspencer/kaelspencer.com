@@ -6,7 +6,7 @@
                             <li{% if context.current_path == entry.url %} id="current"{% endif %}>
                                 <a href="{{ entry.url }}">{{ entry.headline }}</a>
                                 <div>
-                                    <span class="subtext">{{ entry.pub_date }}</span>
+                                    <span class="subtext">{{ entry.pub_date|date:"d F Y" }}</span>
                                 </div>
                             </li>
                         {% endfor %}

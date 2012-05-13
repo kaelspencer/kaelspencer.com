@@ -1,0 +1,11 @@
+article header {
+    font-size: 2.0em
+}
+
+article section {
+    border-bottom: 2px solid rgba(230, 230, 230, 0.9);
+}
+
+article section.last {
+    border-bottom: none;
+}
