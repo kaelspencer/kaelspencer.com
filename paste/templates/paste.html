@@ -6,22 +6,6 @@
 
 {% block cssid %}paste{% endblock %}
 
-{% block extrahead %}
-<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.autosize-min.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.chosen-min.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.tabby.js"></script>
-
-<link rel="stylesheet" type="text/css" media="screen" href="{{ MEDIA_URL }}css/chosen.css" />
-
-<script type="text/javascript">
-    $(function() {
-       $('#id_rawbody').autosize();
-       $('#id_rawbody').tabby();
-       $('.chzn-select').chosen();
-    });
-</script>
-{% endblock %}
-
 {% block content %}
 <p>Shouldn't see me!</p>
 {% endblock %}

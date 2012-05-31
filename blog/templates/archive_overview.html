@@ -12,7 +12,6 @@
                 <section class="article-summary{% if forloop.last %} last{% endif %}">
                     <header><a href="{{ object.get_absolute_url }}">{{ object.headline|safe }}</a></header>
                     {{ object.summary_html|safe|truncatewords_html:60 }}
-                    <!--<footer>Posted by <strong>{{ object.author }}</strong> on {{ object.pub_date|date:"j F Y" }}</footer>-->
                 </section>
             {% endfor %}
             </article>

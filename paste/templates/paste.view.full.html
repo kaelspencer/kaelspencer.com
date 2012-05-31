@@ -1,0 +1,18 @@
+{% extends "base_onecol.html" %}
+
+{% load paste_extras %}
+
+{% block title %}paste{% endblock %}
+
+{% block cssid %}paste{% endblock %}
+
+{% block extrahead %}
+<style>{{ paste.lexedcss }}</style>
+{% endblock %}
+
+{% block content %}
+            <article>
+                <header>{{ paste.title }}</header>
+                <div class="viewpaste">{% autoescape off %}{{ paste.lexedbody }}{% endautoescape %}</div>
+            </article>
+{% endblock %}
