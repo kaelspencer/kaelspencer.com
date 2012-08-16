@@ -1,1 +1,7 @@
 My personal website which is hosted at kaelspencer.com
+
+The following are needed on top of Django:
+    - unipath
+    - django-smuggler
+    - pygments
+    - django-chosen
