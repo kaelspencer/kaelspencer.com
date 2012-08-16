@@ -1,7 +1,8 @@
 *.pyc
 startserver.sh
 www.pid
-settings.py
-settings-debug.py
+settings.py*
+settings-debug.py*
 .project
 .pydevproject
+*.save
