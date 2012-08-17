@@ -1,0 +1,7 @@
+Django==1.4.1
+Pygments==1.5
+Unipath==0.2.1
+django-chosen==0.1
+django-smuggler==0.3
+wsgiref==0.1.2
+yolk==0.4.3
