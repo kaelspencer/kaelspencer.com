@@ -6,3 +6,4 @@ settings-debug.py*
 .project
 .pydevproject
 *.save
+.DS_Store
