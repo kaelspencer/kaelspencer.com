@@ -1,5 +1,4 @@
 *.pyc
-startserver.sh
 www.pid
 settings.py*
 settings-debug.py*
@@ -7,3 +6,4 @@ settings-debug.py*
 .pydevproject
 *.save
 .DS_Store
+env/*
