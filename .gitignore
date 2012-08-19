@@ -1,9 +1,9 @@
 *.pyc
 www.pid
-settings.py*
-settings-debug.py*
 .project
 .pydevproject
 *.save
 .DS_Store
 env/*
+secrets.json
+*.sqlite
