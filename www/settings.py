@@ -5,9 +5,6 @@ import json
 import platform
 from unipath import FSPath as Path
 
-DEBUG = True
-TEMPLATE_DEBUG = True
-
 ADMINS = (
     ('Kael', 'kaelspencer@gmail.com'),
 )
@@ -16,16 +13,28 @@ MANAGERS = ADMINS
 
 BASE = Path(__file__).absolute().ancestor(1)
 
-# Far too clever trick to know if we're running on the deployment server.
-PRODUCTION = ('DJANGOPROJECT_DEBUG' not in os.environ) and ("djangoproject" in platform.node())
+# Presume that only the production server will run on hoth
+# This isn't the best longterm solution.
+PRODUCTION = ("hoth" in platform.node())
+
+if PRODUCTION:
+    print "Production: true"
+else:
+    print "Production: false"
 
 SECRETS = json.load(open('secrets.json'))
 SECRET_KEY = str(SECRETS['secret_key'])
 
 if PRODUCTION:
     DATABASES = SECRETS['databases_production']
+
+    DEBUG = False
+    TEMPLATE_DEBUG = False
 else:
     DATABASES = SECRETS['databases_debug']
+
+    DEBUG = True
+    TEMPLATE_DEBUG = True
 
 TIME_ZONE = 'America/Los_Angeles'
 
