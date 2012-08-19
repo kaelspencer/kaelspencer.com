@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Replace these three settings.
-PROJDIR="/home/kael/django/www"
+PROJDIR=$PWD
 PIDFILE="$PROJDIR/www.pid"
 
 cd $PROJDIR
