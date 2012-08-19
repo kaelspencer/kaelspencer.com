@@ -86,7 +86,6 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # List of callables that know how to import templates from various sources.
@@ -104,6 +103,15 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 #    'django.middleware.cache.FetchFromCacheMiddleware',
 )
+
+if DEBUG:
+    MIDDLEWARE_CLASSES += (
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    )
+
+    INTERNAL_IPS = (
+        '127.0.0.1'
+    )
 
 ROOT_URLCONF = 'www.urls'
 
@@ -123,6 +131,11 @@ INSTALLED_APPS = (
     'pages',
     'smuggler'
 )
+
+if DEBUG:
+    INSTALLED_APPS += (
+        'debug_toolbar',
+    )
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
