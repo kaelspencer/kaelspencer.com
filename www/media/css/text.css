@@ -1,47 +1,40 @@
 /*
-    Base font size: 14px = 1em
-    Desired size / 14px = #em
+    Base font size: 16px = 1em
+    Desired size / 16px = #em
     Ex:
-        21px / 14px = 1.5em
+        21px / 16px = 1.313em
 */
 
 @import url(luxiSans.css);
 @import url(luxiMono.css);
 
 body, button, input, select, textarea {
-  font: 87.5%/1.5 LuxiSansRegular, 'Helvetica Neue';
+  font: 1em/1.7em LuxiSansRegular, 'Helvetica Neue';
   color: #666666;
 }
 
 pre, code {
-  font: 87.5%/1.5 LuxiMonoRegular, 'DejaVu Sans Mono', Monaco, Consolas, monospace;
+  font: 0.875em/1.5em LuxiMonoRegular, 'DejaVu Sans Mono', Monaco, Consolas, monospace;
   color: #666666;
 }
 
 /* Headings */
 
 h1 {
-  font-size: 1.786em;
-}
-
-h2 {
-  font-size: 1.643em;
-}
-
-h3 {
   font-size: 1.5em;
 }
 
-h4 {
-  font-size: 1.357em;
+h2 {
+  font-size: 1.375em;
 }
 
-h5 {
-  font-size: 1.214em;
+h3 {
+  font-size: 1.250em;
 }
 
-h6 {
-  font-size: 1.071em;
+/* Not really used */
+h4, h5, h6 {
+  font-size: 1em;
 }
 
 /* Spacing */

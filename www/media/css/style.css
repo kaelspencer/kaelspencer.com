@@ -32,7 +32,7 @@ footer.mainfoot span {
     margin-top: 40px;
 }
 
-footer.mainfoot a:link, 
+footer.mainfoot a:link,
 footer.mainfoot a:visited,
 footer.mainfoot a:hover,
 footer.mainfoot a:active {
@@ -92,10 +92,10 @@ article {
 }
 
 article header {
-    font: 1.4em/40px LuxiSansBold, 'Helvetica Neue';
+    font: 1.75em/2.5em LuxiSansBold, 'Helvetica Neue';
 }
 
-article header a:link, 
+article header a:link,
 article header a:visited,
 article header a:hover,
 article header a:active {
@@ -146,16 +146,18 @@ a {
 .recentlist header {
     margin: 0 -15px 0 -15px;
     padding: 0 5px 0 5px;
+    font: 1.125em/2.188em LuxiSansBold, 'Helvetica Neue';
 }
 
 .recentlist ul {
     list-style: none;
     padding: 0px;
     margin: 0 -15px -15px -15px;
-    font-size: 1em;
+    font-size: 0.875em;
+    line-height: 1.5em;
 }
 
-.recentlist a:link, 
+.recentlist a:link,
 .recentlist a:visited,
 .recentlist a:hover,
 .recentlist a:active {
