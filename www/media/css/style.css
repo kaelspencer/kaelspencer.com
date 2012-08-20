@@ -172,6 +172,11 @@ a {
     border-top: 2px solid rgba(230, 230, 230, 1);
 }
 
+.recentlist li.sublist {
+    padding-left: 15px;
+    font-size: 0.875em;
+}
+
 .recentlist li#current,
 .recentlist li:hover {
     background: rgba(245, 245, 245, 1);
