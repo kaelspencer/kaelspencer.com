@@ -1,4 +1,5 @@
 {% extends "base_onecol.html" %}
+{% load markup %}
 
 {% block title %}blog{% endblock %}
 
@@ -11,7 +12,7 @@
             {% for object in object_list %}
                 <section class="article-summary{% if forloop.last %} last{% endif %}">
                     <header><a href="{{ object.get_absolute_url }}">{{ object.headline|safe }}</a></header>
-                    {{ object.summary_html|safe|truncatewords_html:60 }}
+                    {{ object.summary_html|markdown|truncatewords_html:60 }}
                 </section>
             {% endfor %}
             </article>
