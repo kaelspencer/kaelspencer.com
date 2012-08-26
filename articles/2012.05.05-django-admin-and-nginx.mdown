@@ -1,0 +1,18 @@
+<!---
+    Date: 2012-05-05
+-->
+Django's development server does some very convenient things. One of them is service static media for the Admin site. When moving to a production server, in my case I was using nginx to host the static content, the media files were returning a 404.
+
+I made two changes. In my settings.py file, I changed `ADMIN_MEDIA_PREFIX` to `ADMIN_MEDIA_PREFIX = '/admin_media/'`
+
+In addition, I aliased `/admin_media/` in my nginx config file.
+
+    location /admin_media {
+        alias /usr/local/lib/python2.7/dist-packages/django/contrib/admin/media;
+    }
+
+This may break your development server. Instead, I'm using this to start it.
+
+    python manage.py runserver --settings=www.settings-debug <server>:<port>
+
+My debug settings file, `settings-debug.py`, is the same as the original settings in regards to `ADMIN_MEDIA_PREFIX`. That www might be different for you as that's the name of my site.

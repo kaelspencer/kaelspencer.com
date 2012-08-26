@@ -1,0 +1,8 @@
+<!---
+    Date: 2012-05-03
+-->
+For a cryptography class a couple years ago, a friend (Bryan Wintermute) and I created something to show how the [Playfair cipher](http://en.wikipedia.org/wiki/Playfair_cipher "playfair cipher on Wikipedia") works.
+
+Half of the project consisted of demonstrating Playfair while the other half was me seeing what I could do with jQuery and moving objects around the page (hint: click reset, it's my favorite). It's all in JavaScript and CSS.
+
+Here is our [implementation](/pages/playfair/ "playfair implementation").

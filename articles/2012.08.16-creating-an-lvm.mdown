@@ -1,0 +1,61 @@
+<!---
+    Date: 2012-08-16
+-->
+I recently picked up an [areca ARC-1280ML-4G](http://www.newegg.com/Product/Product.aspx?Item=N82E16816151064 "areca ARC-1280ML-4G"). It's a fantastic card, highly recommended. I decided to go with some [Seagate Barracuda 3TB](http://www.newegg.com/Product/Product.aspx?Item=N82E16822148844 "Seagate Barracuda 3TB") hard drives. I split them into two five-disk RAID-5 arrays (thinking about future expansion with a 24 port card). In the past, large arrays with 1TB drives proved to be a bad idea. In retrospect this is obvious as the odds of a multidisk failure increases to a point that is too high beyond ~6 disks. For this round, I am going with five disk arrays that are joined via LVM. This article describes the process to do the LVM part.
+
+From here on out, the commands shown will use the drives as they were in my system. Naturally, replace them with the correct drives for your setup. For some background on LVM you may wish to read through the [Wikipedia](http://en.wikipedia.org/wiki/Logical_volume_management "Wikipedia") article. It's a good read. There are three important pieces of LVM that we'll need for this:
+
+*   Physical Volume (PV): Typically an entire hard disk or partition, or in this case, a RAID array.
+*   Volume Group (VG): A group of PVs. Fancy things can be done here, but they typically, and will here, act like a RAID-1 array.
+*   Logical Volume (LV): A group of VGs. These can be used by the system like block devices.
+
+### Creating the Physical Volumes ###
+
+There are two physical objects we'll use here. Each one will be it's own PV. The first array is `/dev/sdc` and the second is `/dev/sdd`. Before these can be used as PVs they need a partition. Use whatever tool you feel comfortable with, parted or gparted, for example. Create a partition on each device that spans it entirely and flag it as `LVM`.
+
+Now we have `/dev/sdc1` and `/dev/sdd1`. To turn them into physical volumes we'll use the `pvcreate` command.
+
+    pvcreate /dev/sdc1
+    pvcreate /dev/sdd1
+
+To display all of your physical volumes, run `pvdisplay`.
+
+![pvcreate](/media/images/blog/creating-lvm/pvcreate.png "pvcreate")
+
+### Creating the Volume Group ###
+
+Now that we have some physical volumes we need to put them into a volume group. To do this, we'll add both of the PVs to a VG with `vgcreate` and call it `vgpool0`. Note, the name of the PVs are the same as their device name (e.g. `/dev/sdc1`).
+
+    vgcreate vgpool0 /dev/sdc1 /dev/sdd1
+
+To list all of the volume groups, run `vgdisplay`.
+
+![vgcreate](/media/images/blog/creating-lvm/vgcreate.png "vgcreate")
+
+### Creating the Logical Volume ###
+
+The last LVM step is adding the volume group to a logical volume. This is what the system can see. Now, we could have multiple VGs in this LV. For this case, we'll only have one. To add our volume group, run `lvcreate` with the name of your VG as a parameter.
+
+There are a couple of other important parameters. You will want to name your volume group something. Mine is called `lvmedia0` and that means it will be accessible at `/dev/vgpool0/lvmedia0`. The other important parameter is the number of logical extents to use from the VG which is set with `-l` or `--extents`. You can use a percentage here, or, as I do below, the number of physical extents from the VG. You can get that number from the listing of VGs.
+
+    Total PE              5722042
+
+Now, run the `lvcreate` command. Then you can list your LVs with `lvdisplay`
+
+    lvcreate -l 5722042 -n lvmedia0 vgpool0
+
+![lvcreate](/media/images/blog/creating-lvm/lvcreate.png "lvcreate")
+
+### Formatting ###
+
+I decided to go with XFS for my filesystem. If you want to go the ext4 route or anything else, you're on you're own. For XFS, you'll need to install `xfsprogs` and `xfsdump`. These should be in most repositories. Use `mkfs` with the XFS switch to format. I decided to mount the new created filesystem in `/media/media/`.
+
+    mkfs -t xfs /dev/vgpool0/lvmedia0
+    mkdir /media/media/
+    mount /dev/vgpool0/lvmedia0 /media/media
+
+If you want this to mount at boot, add a line to `/etc/fstab`. You can also use the UUID of the LV. Either works here as the LV name is unlikely to change.
+
+    /dev/vgpool0/lvmedia0 /media/media xfs defaults 0 0
+
+That's it! You know have spanned a logical volume across your devices.
