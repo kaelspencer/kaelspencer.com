@@ -5,7 +5,7 @@
 
             <article>
                 <header>{{ object.headline|safe }}</header>
-                {{ object.body_html|markdown }}
+                {{ object.body|markdown }}
             <footer>Posted by <strong>{{ object.author }}</strong> on {{ object.pub_date|date:"j F Y" }}</footer>
             </article>
 

@@ -7,7 +7,6 @@ from .models import Entry
 class EntryAdmin(admin.ModelAdmin):
     list_display = ('headline', 'pub_date', 'is_active', 'is_published', 'author')
     list_filter = ('is_active',)
-    exclude = ('summary_html', 'body_html')
     prepopulated_fields = {"slug": ("headline",)}
 
     def formfield_for_dbfield(self, db_field, **kwargs):
@@ -17,4 +16,3 @@ class EntryAdmin(admin.ModelAdmin):
         return formfield
 
 admin.site.register(Entry, EntryAdmin)
-
