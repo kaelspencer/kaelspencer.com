@@ -6,7 +6,7 @@
 {% for object in object_list %}
             <article>
                 <header><a href="{{ object.get_absolute_url }}">{{ object.headline|safe }}</a></header>
-                {{ object.body|markdown|truncatewords_html:60 }}
+                {{ object.get_summary|markdown }}
             <footer>Posted by <strong>{{ object.author }}</strong> on {{ object.pub_date|date:"j F Y" }}</footer>
             </article>
 {% endfor %}

@@ -1,6 +1,7 @@
 import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.utils.text import truncate_html_words
 
 class EntryManager(models.Manager):
 
@@ -43,3 +44,14 @@ class Entry(models.Model):
     def save(self, *args, **kwargs):
         self.body = self.body
         super(Entry, self).save(*args, **kwargs)
+
+    # A summary will be a maximum of 60 words. If the summary is truncated, the bottom of the entry
+    # will contain a link to read more.
+    def get_summary(self):
+        summary = truncate_html_words(self.body, 60)
+
+        if summary != truncate_html_words(self.body, 61):
+            # If the body truncated at 60 words is not equal to the body truncated at 61, this is a true truncation.
+            summary += '\n\n[Read more](' + self.get_absolute_url() + ' "' + self.headline + '")'
+
+        return summary
