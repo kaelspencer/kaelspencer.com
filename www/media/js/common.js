@@ -4,7 +4,7 @@ $(function(){
         return false;
     });
 
-    $.getJSON('https://api.github.com/users/kaelspencer/repos?callback=?', function(data) {
+    $.getJSON('https://api.github.com/users/kaelspencer/repos?type=all&callback=?', function(data) {
         var list = $('#gitlist');
 
         $.each(data.data, function(index, repo) {
