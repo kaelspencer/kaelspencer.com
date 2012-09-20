@@ -5,16 +5,16 @@
     <title>kaelspencer | {% block title %}{% endblock %}</title>
 
     <link href="{{ MEDIA_URL }}css/{% block cssid %}style{% endblock %}.css" rel="stylesheet" type="text/css" media="screen" />
-    
+
     {# Some files use old jQuery. #}
     {% block jqueryinclude %}
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     {% endblock %}
-    
+
     {% block commonhead %}
     <script type="text/javascript" src="/media/js/common.js"></script>
     {% endblock %}
-    
+
     {% block extrahead %}{% endblock %}
 </head>
 
@@ -29,7 +29,7 @@
         </header>
         {% block columnwrap %}{% endblock %}
     </div>
-    
+
     <footer class="mainfoot">{% block footer %}
         <div class="container_16">
             <span class="grid_3"><a id="footer-to-top" href="#top">Back to Top</a></span>
@@ -38,4 +38,19 @@
     {% endblock %}
     </footer>
 </body>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-34953507-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
 </html>
