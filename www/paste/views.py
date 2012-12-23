@@ -52,7 +52,7 @@ def api_paste(request):
             p.title = json_data['title']
             p.rawbody = json_data['text']
             p.lexer = json_data['lexer']
-            p.exposed = False
+            p.exposed = True
             p.save()
 
             return HttpResponse(p.get_absolute_url())
