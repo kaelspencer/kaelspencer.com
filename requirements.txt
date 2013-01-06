@@ -3,7 +3,7 @@ Markdown==2.2.0
 Pygments==1.5
 Unipath==0.2.1
 argparse==1.2.1
-distribute==0.6.24
+#distribute==0.6.24
 django-chosen==0.1
 django-debug-toolbar==0.9.4
 django-smuggler==0.3
