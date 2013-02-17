@@ -4,14 +4,16 @@ $(function(){
         return false;
     });
 
-    $.getJSON('https://api.github.com/users/kaelspencer/repos?type=all&callback=?', function(data) {
-        var list = $('#gitlist');
+    if ($('#gitlist').length != 0) {
+        $.getJSON('https://api.github.com/users/kaelspencer/repos?type=all&callback=?', function(data) {
+            var list = $('#gitlist');
 
-        $.each(data.data, function(index, repo) {
-            list = $('<li/>', {
-                'class': 'sublist',
-                html: '<a href="' + repo.html_url + '">' + repo.name + '</a>'
-            }).insertAfter(list);
+            $.each(data.data, function(index, repo) {
+                list = $('<li/>', {
+                    'class': 'sublist',
+                    html: '<a href="' + repo.html_url + '">' + repo.name + '</a>'
+                }).insertAfter(list);
+            });
         });
-    });
+    }
 });
