@@ -1,0 +1,24 @@
+{% extends "base_onecol.html" %}
+
+{% block title %}ACO{% endblock %}
+
+{% block cssid %}style{% endblock %}
+
+{% block jqueryinclude %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" media="screen" href="{{ MEDIA_URL }}css/pages/playfair/playfair.css" />
+
+<script type="text/javascript" src="{{ MEDIA_URL }}js/jcanvas.min.js"></script>
+
+<script type="text/javascript" src="{{ MEDIA_URL }}js/pages/aco/aco.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/pages/aco/board.js"></script>
+{% endblock %}
+
+{% block content %}
+<article>
+    <canvas id="canvas" width="900px" height="500px">Uh oh! Your browser doesn't support HTML5's canvas.</canvas>
+</article>
+{% endblock %}

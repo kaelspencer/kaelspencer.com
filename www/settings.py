@@ -105,9 +105,9 @@ MIDDLEWARE_CLASSES = (
 )
 
 if DEBUG:
-    MIDDLEWARE_CLASSES += (
-        'debug_toolbar.middleware.DebugToolbarMiddleware',
-    )
+    #MIDDLEWARE_CLASSES += (
+    #    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    #)
 
     INTERNAL_IPS = (
         '127.0.0.1'
@@ -133,10 +133,10 @@ INSTALLED_APPS = (
     'smuggler'
 )
 
-if DEBUG:
-    INSTALLED_APPS += (
-        'debug_toolbar',
-    )
+#if DEBUG:
+    #INSTALLED_APPS += (
+    #    'debug_toolbar',
+    #)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
