@@ -1,21 +1,10 @@
 (function(){
-    var c_canvasWidth = 900;
-    var c_canvasHeight = 500;
-    var canvas = null;
+    var c_grid_size = 5;
+    var c_grid_cells_x = 150;
+    var c_grid_cells_y = 85;
 
     $(window).load(function(){
-        canvas = $('canvas');
-
-        canvas.width(c_canvasWidth);
-        canvas.height(c_canvasHeight);
-
-        canvas.drawBezier({
-            strokeStyle: "#000",
-            strokeWidth: 5,
-            x1: 50, y1: 50, // Start point
-            cx1: 200, cy1: 50, // Control point
-            cx2: 50, cy2: 150, // Control point
-            x2: 200, y2: 150 // Start/end point
-        });
+        var board = new Board('canvas', c_grid_size, c_grid_cells_x, c_grid_cells_y);
+        board.drawGrid();
     });
 })();
