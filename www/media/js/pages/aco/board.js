@@ -23,13 +23,32 @@ var Board = (function() {
             translate: 0.5
         });
 
+        // Create a multidimensional array that will represent the grid.
+        var grid = new Array(this.m_grid_x);
+        $.each(grid, function(i) {
+            grid[i] = new Array(grid_y);
+            $.each(grid[i], function(j) {
+                grid[i][j] = 0.0;
+            });
+        });
+
+        this.m_grid = grid;
+
         console.log('canvas height: ' + this.m_canvas.height());
         console.log('canvas width : ' + this.m_canvas.width());
     };
 
-    Board.prototype.getWidth = function() {
-        return this.m_width;
-    }
+    Board.prototype.updateCell = function(x, y, delta) {
+        if (x < 0 || x >= this.m_grid_x) {
+            throw "Invalid x value in Board.updateCell";
+        }
+
+        if (y < 0 || y >= this.m_grid_y) {
+            throw "Invalid y value in Board.updateCell";
+        }
+
+        this.m_grid[x][y] += delta;
+    };
 
     Board.prototype.drawGrid = function() {
         var strokeStyle = 'rgba(0, 0, 0, 0.1)';
@@ -43,7 +62,7 @@ var Board = (function() {
                 strokeWidth: 1,
                 x1: x, y1: 0,
                 x2: x, y2: this.m_height_px
-            })
+            });
         }
 
         for (var i = 0; i <= this.m_grid_y; i++)
@@ -55,8 +74,28 @@ var Board = (function() {
                 strokeWidth: 1,
                 x1: 0, y1: y,
                 x2: this.m_width_px, y2: y
-            })
+            });
         }
+    }
+
+    Board.prototype.paintGrid = function() {
+        var grid = this.m_grid;
+        var canvas = this.m_canvas;
+        var grid_size = this.m_grid_size;
+
+        $.each(grid, function(x) {
+            $.each(grid[x], function(y) {
+                //console.log('(' + x + ', ' + y + '): ' + grid[x][y]);
+                canvas.drawRect({
+                    fillStyle: 'rgba(40, 88, 180, ' + grid[x][y] + ')',
+                    x: x * (grid_size + 1) + 1,
+                    y: y * (grid_size + 1) + 1,
+                    height: grid_size,
+                    width: grid_size,
+                    fromCenter: false
+                });
+            });
+        });
     }
 
     return Board;
