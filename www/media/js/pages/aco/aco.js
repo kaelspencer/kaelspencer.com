@@ -2,25 +2,79 @@
     var c_grid_size = 5;
     var c_grid_cells_x = 150;
     var c_grid_cells_y = 85;
+    /*var c_grid_size = 50;
+    var c_grid_cells_x = 10;
+    var c_grid_cells_y = 10;*/
+    var g_board = null;
 
     $(function() {
         runSimulation();
     });
 
+    // Run it!
     function runSimulation() {
         try {
-            var board = new Board('canvas', c_grid_size, c_grid_cells_x, c_grid_cells_y);
-            board.drawGrid();
+            g_board = new Board('canvas', c_grid_size, c_grid_cells_x, c_grid_cells_y);
+            g_board.drawGrid();
 
             for (var x = 0; x < c_grid_cells_x; x++) {
                 for (var y = 0; y < c_grid_cells_y; y++) {
-                    board.updateCell(x, y, Math.random());
+                    g_board.updateCell(x, y, Math.random());
                 }
             }
 
-            board.paintGrid();
+            createObstructions(g_board);
+            g_board.paintGrid();
         } catch(e) {
             console.log('Exception: ' + e);
         }
+    }
+
+    // This method creates the set of obstructions on the board. The count of obstructions is a
+    // weighted probability distribution.
+    function createObstructions(board) {
+        var weight_counts =
+            [6, 6,
+             7, 7, 7,
+             8, 8, 8, 8, 8, 8,
+             9, 9, 9, 9,
+             10, 10, 10,
+             11];
+        var count = getWeightedProbability(weight_counts);
+
+        console.log('Creating ' + count + ' obstructions.');
+
+        for (var i = 0; i < count; i++) {
+            createSingleObstruction(board);
+        }
+    }
+
+    // This method creates a single obstruction and is called by createObstructions. The size the
+    // obstruction is random and the result of a weighted probably distribution.
+    // As this method is called multiple times the distribution is static.
+    function createSingleObstruction(board) {
+        var factor = 5;
+        // Distribution of obstruction sizes.
+        createSingleObstruction.sizes = createSingleObstruction.sizes ||
+            [1, 1,
+             2, 2, 2, 2,
+             3, 3, 3, 3, 3, 3,
+             4, 4,
+             5];
+
+        var size = factor * getWeightedProbability(createSingleObstruction.sizes);
+        var x = Math.floor(Math.random() * c_grid_cells_x);
+        var y = Math.floor(Math.random() * c_grid_cells_y);
+
+        for (var j = 0; j < size && (j + x) < c_grid_cells_x; j++) {
+            for (var k = 0; k < size && (k + y) < c_grid_cells_y; k++) {
+                board.blockCell(x + j, y + k);
+            }
+        }
+    }
+
+    // Randomly select one element from the provided values.
+    function getWeightedProbability(weighted_values) {
+        return weighted_values[Math.floor(Math.random() * weighted_values.length)];
     }
 })();
