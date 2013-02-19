@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.shortcuts import render_to_response, get_object_or_404, RequestContext
 from .models import Paste
-from django.forms import ModelForm
+from django.forms import ModelForm, ChoiceField
 from django.core.context_processors import csrf
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotAllowed
 from chosen import widgets as chosenwidgets
@@ -9,15 +9,25 @@ from datetime import datetime
 from django.views.generic import DetailView
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import simplejson
+import datetime
+
+EXPIRATION_CHOICES = (
+    (0, u'Never'),
+    (60, u'1 Minute'),
+    (600, u'10 Minutes'),
+    (3600, u'1 Hour'),
+    (86400, u'1 Day'),
+    (604800, u'1 Week'),
+)
 
 class NewPasteForm(ModelForm):
     class Meta:
         model = Paste
-        exclude = ('url','lexedbody','lexedcss', 'active')
+        exclude = ('url','lexedbody','lexedcss', 'active', 'expiration_date')
         widgets = {
             'lexer': chosenwidgets.ChosenSelect(),
-            'expiration': chosenwidgets.ChosenSelect(),
         }
+    expiration = ChoiceField(choices=EXPIRATION_CHOICES, widget=chosenwidgets.ChosenSelect())
 
 def new(request):
     if request.method == 'POST':
@@ -25,6 +35,13 @@ def new(request):
 
         if form.is_valid():
             p = form.save()
+
+            expiration = int(form.cleaned_data['expiration'])
+
+            if expiration > 0:
+                p.expiration_date = datetime.timedelta(seconds=int(form.cleaned_data['expiration'])) + p.pastedate
+                p.save()
+
             return HttpResponseRedirect('/p/' + p.url + '/')
     else:
         form = NewPasteForm()

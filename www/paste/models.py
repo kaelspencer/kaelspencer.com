@@ -172,15 +172,6 @@ LEXERS = (
     (u'sqlite3', u'sqlite3con'),
 )
 
-EXPIRATION_CHOICES = (
-    (0, u'Never'),
-    (60, u'1 Minute'),
-    (600, u'10 Minutes'),
-    (3600, u'1 Hour'),
-    (86400, u'1 Day'),
-    (604800, u'1 Week'),
-)
-
 EXPOSURE_CHOICES = (
     (True, u'Public'),
     (False, u'Private')
@@ -189,32 +180,32 @@ EXPOSURE_CHOICES = (
 class Paste(models.Model):
     title = models.CharField(max_length=50, null=True)
     url = models.CharField(max_length=10)
-    pastedate = models.DateTimeField(auto_now=True)
+    pastedate = models.DateTimeField(auto_now_add=True)
     rawbody = models.TextField()
     lexedbody = models.TextField()
     lexedcss = models.TextField()
     lexer = models.CharField(choices=LEXERS, max_length=30, default='text')
-    expiration = models.IntegerField(choices=EXPIRATION_CHOICES, null=False, default=0)
+    expiration_date = models.DateTimeField(null=True)
     active = models.BooleanField(default=True)
     exposed = models.BooleanField(default=True)
 
     def __unicode__(self):
-        return self.title 
-    
+        return self.title
+
     def get_absolute_url(self):
         return '/p/' + self.url + '/'
-    
+
     def highlight(self):
         # TODO: The different lexers should store their CSS in another table.
         lexer = get_lexer_by_name(self.lexer)
         formatter = HtmlFormatter(nobackground=True)
         self.lexedbody = highlight(self.rawbody, lexer, formatter)
         self.lexedcss = formatter.get_style_defs('.highlight')
-    
+
     def save(self, *args, **kwargs):
         if self.url == '':
             self.url = ''.join(random.choice(string.ascii_letters + string.digits) for x in range(10))
-        
+
         self.highlight()
         super(Paste, self).save(*args, **kwargs)
 

@@ -1,5 +1,6 @@
 from django import template
 from paste.models import Paste
+from django.db.models import Q
 from datetime import datetime
 
 register = template.Library()
@@ -8,7 +9,7 @@ def get_pretty_time(dt):
     seconds = dt.seconds + dt.days * (60 * 60 * 24)
     ret = ''
     val = 1
-    
+
     if seconds < 60:
         ret = 'A minute'
     elif seconds < 60 * 60:
@@ -26,28 +27,28 @@ def get_pretty_time(dt):
     else:
         val = seconds / (60 * 60 * 24 * 365)
         ret = str(val) + ' day'
-    
+
     if val != 1:
         ret = ret + 's'
-    
+
     ret = ret + ' ago'
     return ret
 
 @register.inclusion_tag('recent.html', takes_context=True)
 def show_recent_list(context):
-    recent = Paste.objects.filter(exposed=True).order_by('-pastedate')[:13]
+    recent = Paste.objects.filter(exposed=True).exclude(active=False).filter(Q(expiration_date__isnull=True) | Q(expiration_date__gt=datetime.now())).order_by('-pastedate')[:13]
     pastes = []
-    
+
     for p in recent:
         pasteDict = {}
-        
+
         pasteDict['dt'] = get_pretty_time(datetime.now() - p.pastedate)
         pasteDict['url'] = p.get_absolute_url()
         pasteDict['title'] = p.title
         pasteDict['lexer'] = p.lexer
-        
+
         pastes.append(pasteDict)
-        
+
     return {
         'recent_list': pastes,
         'context': context
