@@ -13,7 +13,7 @@ from django.utils import simplejson
 class NewPasteForm(ModelForm):
     class Meta:
         model = Paste
-        exclude = ('url','lexedbody','lexedcss')
+        exclude = ('url','lexedbody','lexedcss', 'active')
         widgets = {
             'lexer': chosenwidgets.ChosenSelect(),
             'expiration': chosenwidgets.ChosenSelect(),
