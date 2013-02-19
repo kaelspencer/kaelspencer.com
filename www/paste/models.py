@@ -185,7 +185,7 @@ class Paste(models.Model):
     lexedbody = models.TextField()
     lexedcss = models.TextField()
     lexer = models.CharField(choices=LEXERS, max_length=30, default='text')
-    expiration_date = models.DateTimeField(null=True)
+    expiration_date = models.DateTimeField(null=True, blank=True)
     active = models.BooleanField(default=True)
     exposed = models.BooleanField(default=True)
 
