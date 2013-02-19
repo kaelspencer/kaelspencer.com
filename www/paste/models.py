@@ -212,7 +212,9 @@ class Paste(models.Model):
         self.lexedcss = formatter.get_style_defs('.highlight')
     
     def save(self, *args, **kwargs):
-        self.url = ''.join(random.choice(string.ascii_letters + string.digits) for x in range(10))
+        if self.url == '':
+            self.url = ''.join(random.choice(string.ascii_letters + string.digits) for x in range(10))
+        
         self.highlight()
         super(Paste, self).save(*args, **kwargs)
 
