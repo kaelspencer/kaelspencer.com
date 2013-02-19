@@ -10,7 +10,7 @@ from django.views.generic import DetailView
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import simplejson
 from django.db.models import Q
-from datetime import datetime
+import datetime
 
 EXPIRATION_CHOICES = (
     (0, u'Never'),
@@ -61,7 +61,7 @@ class ExistingDetailView(DetailView):
 
     def get_queryset(self):
         qs = super(ExistingDetailView, self).get_queryset()
-        return qs.exclude(active=False).filter(Q(expiration_date__isnull=True) | Q(expiration_date__gt=datetime.now()))
+        return qs.exclude(active=False).filter(Q(expiration_date__isnull=True) | Q(expiration_date__gt=datetime.datetime.now()))
 
 @csrf_exempt
 def api_paste(request):
