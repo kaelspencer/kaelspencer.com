@@ -33,23 +33,32 @@ var Board = (function() {
             translate: 0.5
         });
 
+        this.clear();
+
+        console.log('canvas height: ' + this.m_canvas.height());
+        console.log('canvas width : ' + this.m_canvas.width());
+    };
+
+    // Clear the board by dropping the grid and recreating it.
+    Board.prototype.clear = function() {
         // Create a multidimensional array that will represent the grid.
         var grid = new Array(this.m_grid_x);
+        var grid_y = this.m_grid_y;
+
         $.each(grid, function(i) {
             grid[i] = new Array(grid_y);
             $.each(grid[i], function(j) {
                 grid[i][j] = {
                     weight: 0.0,
-                    blocked: false
+                    blocked: false,
+                    start: false,
+                    end: false
                 };
             });
         });
 
         this.m_grid = grid;
-
-        console.log('canvas height: ' + this.m_canvas.height());
-        console.log('canvas width : ' + this.m_canvas.width());
-    };
+    }
 
     // Update the weight value of this cell, increasing it by delta. The weight is capped at 1.0.
     Board.prototype.updateCell = function(x, y, delta) {

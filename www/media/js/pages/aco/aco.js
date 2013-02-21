@@ -15,41 +15,52 @@
     function runSimulation() {
         try {
             g_board = new Board('canvas', c_grid_size, c_grid_cells_x, c_grid_cells_y);
+
+            generateBoard(g_board);
+
             g_board.drawGrid();
-
-            createEndpoints(g_board);
-            createObstructions(g_board);
-
-            /*for (var x = 0; x < c_grid_cells_x; x++) {
-                for (var y = 0; y < c_grid_cells_y; y++) {
-                    g_board.updateCell(x, y, Math.random());
-                }
-            }*/
-
             g_board.paintGrid();
         } catch(e) {
             console.log('Exception: ' + e);
         }
     }
 
-    function createEndpoints(board) {
-        // One for the start, one for the end.
-        createSingleEndpoint(function(x, y) { return board.setStart(x, y); });
-        createSingleEndpoint(function(x, y) { return board.setEnd(x, y); });
+    // Generate the board. First create the obstructions then attempt to create the start
+    // and end points. If the endpoints collide with the obstructions, clear the board and
+    // try again. Limit this loop to 50 so it doesn't go on forever in case of a bug.
+    function generateBoard(board) {
+        var endpoints = false;
+
+        // Don't run forever.
+        for (var i = 0; i < 50 && !endpoints; i++) {
+            createObstructions(board);
+            endpoints = createEndpoints(board);
+
+            if (!endpoints) {
+                board.clear();
+                console.log('Regnerating board, endpoint collision.');
+            }
+        }
     }
 
-    function createSingleEndpoint(updateMethod) {
-        var x = Math.floor(Math.random() * (c_grid_cells_x - 1));
-        var y = Math.floor(Math.random() * (c_grid_cells_y - 1));
-        var setEndpoint = false;
+    // Randomly place the start and end points. The start is in the top left corner and the end
+    // is in the bottom right.
+    function createEndpoints(board) {
+        var xStart = Math.floor(Math.random() * c_grid_cells_x * 0.15);
+        var yStart = Math.floor(Math.random() * c_grid_cells_y * 0.15);
+        var xEnd = Math.floor(Math.random() * c_grid_cells_x * 0.15) + Math.floor(c_grid_cells_x * 0.85);
+        var yEnd = Math.floor(Math.random() * c_grid_cells_y * 0.15) + Math.floor(c_grid_cells_y * 0.85);
+        var result = false;
 
-        for (var i = 0; i < 50 && !setEndpoint; i++) {
-            setEndpoint = updateMethod(x, y);
+        result = board.setStart(xStart, yStart);
+        result = result && board.setEnd(xEnd, yEnd);
+
+        if (result) {
+            console.log('Start (' + xStart + ', ' + yStart + ')');
+            console.log('End   (' + xEnd + ', ' + yEnd + ')');
         }
 
-        if (!setEndpoint) {
-            throw "Unable to create endpoint.";
-        }
+        return result;
     }
 
     // This method creates the set of obstructions on the board. The count of obstructions is a
