@@ -17,16 +17,38 @@
             g_board = new Board('canvas', c_grid_size, c_grid_cells_x, c_grid_cells_y);
             g_board.drawGrid();
 
-            for (var x = 0; x < c_grid_cells_x; x++) {
+            createEndpoints(g_board);
+            createObstructions(g_board);
+
+            /*for (var x = 0; x < c_grid_cells_x; x++) {
                 for (var y = 0; y < c_grid_cells_y; y++) {
                     g_board.updateCell(x, y, Math.random());
                 }
-            }
+            }*/
 
-            createObstructions(g_board);
             g_board.paintGrid();
         } catch(e) {
             console.log('Exception: ' + e);
+        }
+    }
+
+    function createEndpoints(board) {
+        // One for the start, one for the end.
+        createSingleEndpoint(function(x, y) { return board.setStart(x, y); });
+        createSingleEndpoint(function(x, y) { return board.setEnd(x, y); });
+    }
+
+    function createSingleEndpoint(updateMethod) {
+        var x = Math.floor(Math.random() * (c_grid_cells_x - 1));
+        var y = Math.floor(Math.random() * (c_grid_cells_y - 1));
+        var setEndpoint = false;
+
+        for (var i = 0; i < 50 && !setEndpoint; i++) {
+            setEndpoint = updateMethod(x, y);
+        }
+
+        if (!setEndpoint) {
+            throw "Unable to create endpoint.";
         }
     }
 
@@ -68,6 +90,7 @@
 
         for (var j = 0; j < size && (j + x) < c_grid_cells_x; j++) {
             for (var k = 0; k < size && (k + y) < c_grid_cells_y; k++) {
+                board.updateCell(x + j, y + k, (j && k && j != size - 1 && k != size - 1 ? 0.8 : 1.0));
                 board.blockCell(x + j, y + k);
             }
         }

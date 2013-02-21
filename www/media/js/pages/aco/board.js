@@ -53,38 +53,63 @@ var Board = (function() {
 
     // Update the weight value of this cell, increasing it by delta. The weight is capped at 1.0.
     Board.prototype.updateCell = function(x, y, delta) {
-        if (x < 0 || x >= this.m_grid_x) {
-            throw "Invalid x value (" + x + ") in Board.updateCell";
-        }
+        this.validateCoordinates(x, y, 'Board.updateCell');
 
-        if (y < 0 || y >= this.m_grid_y) {
-            throw "Invalid y value (" + y + ") in Board.updateCell";
-        }
+        var cell = this.m_grid[x][y];
 
-        this.m_grid[x][y]['weight'] += delta;
+        // Don't update blocked cells for style reasons.
+        if (!cell['blocked']) {
+            cell['weight'] += delta;
 
-        if (this.m_grid[x][y]['weight'] > 1.0) {
-            this.m_grid[x][y]['weight'] = 1.0;
+            if (cell['weight'] > 1.0) {
+                cell['weight'] = 1.0;
+            }
         }
     };
+
+    Board.prototype.setStart = function(x, y) {
+        this.validateCoordinates(x, y, 'Board.setStart');
+
+        if (this.m_grid[x][y]['blocked']) {
+            return false;
+        } else {
+            this.m_grid[x][y]['start'] = true;
+            return true;
+        }
+    }
+
+    Board.prototype.setEnd = function(x, y) {
+        this.validateCoordinates(x, y, 'Board.setEnd');
+
+        if (this.m_grid[x][y]['blocked']) {
+            return false;
+        } else {
+            this.m_grid[x][y]['end'] = true;
+            return true;
+        }
+    }
 
     // Mark this cell as blocked.
     Board.prototype.blockCell = function(x, y) {
+        this.validateCoordinates(x, y, 'Board.blockCell');
+        this.m_grid[x][y]['blocked'] = true;
+    };
+
+    // Validate the coordinates, throw an exception if they are invalid.
+    Board.prototype.validateCoordinates = function(x, y, method) {
         if (x < 0 || x >= this.m_grid_x) {
-            throw "Invalid x value (" + x + ") in Board.blockCell";
+            throw "Invalid x value (" + x + ") in " + method;
         }
 
         if (y < 0 || y >= this.m_grid_y) {
-            throw "Invalid y value (" + y + ") in Board.blockCell";
+            throw "Invalid y value (" + y + ") in " + method;
         }
-
-        this.m_grid[x][y]['blocked'] = true;
-    };
+    }
 
     // Draw the grid on the canvas. This method makes explicity assumptions about the size of the canvas
     // relative to the grid size. These rules are enforced in the constructor.
     Board.prototype.drawGrid = function() {
-        var strokeStyle = 'rgba(0, 0, 0, 0.1)';
+        var strokeStyle = 'rgba(0, 0, 0, 0.05)';
 
         for (var i = 0; i <= this.m_grid_x; i++)
         {
@@ -121,10 +146,14 @@ var Board = (function() {
         $.each(grid, function(x) {
             $.each(grid[x], function(y) {
                 var cell = grid[x][y];
-                var style = 'rgb(0, 0, 0)';
-                
-                if (!cell['blocked']) {
-                    var style = 'rgba(40, 88, 180, ' + cell['weight'] + ')';
+                var style = 'rgba(40, 88, 200, ' + cell['weight'] + ')';
+
+                if (cell['start']) {
+                    style = 'rgb(20, 240, 20)';
+                } else if (cell['end']) {
+                    style = 'rgb(240, 20, 20)';
+                } else if (!cell['blocked']) {
+                    style = 'rgba(40, 88, 180, ' + cell['weight'] + ')';
                 }
 
                 canvas.drawRect({
