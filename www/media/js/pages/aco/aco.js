@@ -1,7 +1,6 @@
 var ACO = (function() {
     // Setup the simulation
     function ACO(canvas_id, grid_size, grid_cells_x, grid_cells_y) {
-        console.log('ACO constructor');
         try {
             this.m_grid_size = grid_size;
             this.m_grid_cells_x = grid_cells_x;
@@ -9,6 +8,7 @@ var ACO = (function() {
             this.m_board = new Board(canvas_id, this.m_grid_size, this.m_grid_cells_x, this.m_grid_cells_y);
 
             this.generateBoard();
+            this.generateAnts();
 
             this.m_board.drawGrid();
             this.m_board.paintGrid();
@@ -16,6 +16,27 @@ var ACO = (function() {
             console.log('Exception: ' + e);
         }
     }
+
+    ACO.prototype.RunSimulation = function() {
+        for (var i = 0; i < 1; i++) {
+            $.each(this.m_ants, function() {
+                this.advance();
+            });
+        }
+    };
+
+    // Generate the set of ants.
+    ACO.prototype.generateAnts = function() {
+        var start = this.m_board.getStart();
+        var board = this.m_board;
+        var ants = new Array(1);
+
+        $.each(ants, function(i) {
+            ants[i] = new Ant(board, start.x, start.y);
+        });
+
+        this.m_ants = ants;
+    };
 
     // Generate the board. First create the obstructions then attempt to create the start
     // and end points. If the endpoints collide with the obstructions, clear the board and
@@ -59,12 +80,13 @@ var ACO = (function() {
     // weighted probability distribution.
     ACO.prototype.createObstructions = function() {
         var weight_counts =
-            [6, 6,
-             7, 7, 7,
-             8, 8, 8, 8, 8, 8,
-             9, 9, 9, 9,
-             10, 10, 10,
-             11];
+            [7, 7, 7,
+             8, 8, 8, 8, 8,
+             9, 9, 9, 9, 9, 9,
+             10, 10, 10, 10, 10, 10,
+             11, 11, 11, 11,
+             12, 12, 12,
+             13, 13];
         var count = this.getWeightedProbability(weight_counts);
 
         console.log('Creating ' + count + ' obstructions.');

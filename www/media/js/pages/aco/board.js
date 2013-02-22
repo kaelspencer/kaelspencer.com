@@ -17,6 +17,10 @@ var Board = (function() {
         this.m_grid_size = grid_size;
         this.m_grid_x = grid_x;
         this.m_grid_y = grid_y;
+        this.m_start = {
+            x: 0,
+            y: 0
+        };
 
         // Don't use jQuery to set the height and width of the canvas.
         // It sets the CSS property which zooms the canvas.
@@ -52,13 +56,19 @@ var Board = (function() {
                     weight: 0.0,
                     blocked: false,
                     start: false,
-                    end: false
+                    end: false,
+                    x: i,
+                    y: j
                 };
             });
         });
 
         this.m_grid = grid;
     }
+
+    Board.prototype.getStart = function() {
+        return this.m_start;
+    };
 
     // Update the weight value of this cell, increasing it by delta. The weight is capped at 1.0.
     Board.prototype.updateCell = function(x, y, delta) {
@@ -67,11 +77,11 @@ var Board = (function() {
         var cell = this.m_grid[x][y];
 
         // Don't update blocked cells for style reasons.
-        if (!cell['blocked']) {
-            cell['weight'] += delta;
+        if (!cell.blocked) {
+            cell.weight += delta;
 
-            if (cell['weight'] > 1.0) {
-                cell['weight'] = 1.0;
+            if (cell.weight > 1.0) {
+                cell.weight = 1.0;
             }
         }
     };
@@ -79,10 +89,12 @@ var Board = (function() {
     Board.prototype.setStart = function(x, y) {
         this.validateCoordinates(x, y, 'Board.setStart');
 
-        if (this.m_grid[x][y]['blocked']) {
+        if (this.m_grid[x][y].blocked) {
             return false;
         } else {
-            this.m_grid[x][y]['start'] = true;
+            this.m_grid[x][y].start = true;
+            this.m_start.x = x;
+            this.m_start.y = y;
             return true;
         }
     }
@@ -90,10 +102,10 @@ var Board = (function() {
     Board.prototype.setEnd = function(x, y) {
         this.validateCoordinates(x, y, 'Board.setEnd');
 
-        if (this.m_grid[x][y]['blocked']) {
+        if (this.m_grid[x][y].blocked) {
             return false;
         } else {
-            this.m_grid[x][y]['end'] = true;
+            this.m_grid[x][y].end = true;
             return true;
         }
     }
@@ -101,7 +113,7 @@ var Board = (function() {
     // Mark this cell as blocked.
     Board.prototype.blockCell = function(x, y) {
         this.validateCoordinates(x, y, 'Board.blockCell');
-        this.m_grid[x][y]['blocked'] = true;
+        this.m_grid[x][y].blocked = true;
     };
 
     // Validate the coordinates, throw an exception if they are invalid.
@@ -114,6 +126,27 @@ var Board = (function() {
             throw "Invalid y value (" + y + ") in " + method;
         }
     }
+
+    // Find all the non-blocked, non-starting neighbor cells.
+    Board.prototype.getNeighboringCells = function(x, y) {
+        this.validateCoordinates(x, y, 'Board.getNeighboringCells');
+        var neighbors = new Array();
+
+        // Loop around (x, y). That is [x - 1, x + 1] and [y - 1, y + 1].
+        for (var i = -1; i < 2 && x + i <= this.m_grid_x; i++) {
+            for (var j = -1; j < 2 && y + j <= this.m_grid_y; j++) {
+                if (i + x >= 0 && j + y >= 0) {
+                    var cell = this.m_grid[i + x][j + y];
+
+                    if (!cell.blocked && !cell.start) {
+                        neighbors.push(cell);
+                    }
+                }
+            }
+        }
+
+        return neighbors;
+    };
 
     // Draw the grid on the canvas. This method makes explicity assumptions about the size of the canvas
     // relative to the grid size. These rules are enforced in the constructor.
@@ -155,14 +188,14 @@ var Board = (function() {
         $.each(grid, function(x) {
             $.each(grid[x], function(y) {
                 var cell = grid[x][y];
-                var style = 'rgba(40, 88, 200, ' + cell['weight'] + ')';
+                var style = 'rgba(40, 88, 200, ' + cell.weight + ')';
 
                 if (cell['start']) {
                     style = 'rgb(20, 240, 20)';
                 } else if (cell['end']) {
                     style = 'rgb(240, 20, 20)';
                 } else if (!cell['blocked']) {
-                    style = 'rgba(40, 88, 180, ' + cell['weight'] + ')';
+                    style = 'rgba(40, 88, 180, ' + cell.weight + ')';
                 }
 
                 canvas.drawRect({
