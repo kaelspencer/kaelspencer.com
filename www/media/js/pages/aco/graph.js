@@ -13,6 +13,21 @@ var Vertex = (function() {
         this.m_edges.push(edge);
     };
 
+    // Average the weights of all connecting edges.
+    Vertex.prototype.getAverageWeight = function() {
+        var average = 0;
+
+        if (this.m_edges.length) {
+            $.each(this.m_edges, function() {
+                average += this.getWeight();
+            });
+
+            average /= this.m_edges.length;
+        }
+
+        return average;
+    };
+
     return Vertex;
 })();
 
@@ -33,6 +48,11 @@ var Edge = (function() {
 
         vertex1.addEdge(this);
         vertex2.addEdge(this);
+    };
+
+    // getWeight
+    Edge.prototype.getWeight = function() {
+        return this.m_weight;
     };
 
     return Edge;

@@ -48,22 +48,35 @@ var Board = (function() {
         // Create a multidimensional array that will represent the grid.
         var grid = new Array(this.m_grid_x);
         var grid_y = this.m_grid_y;
+        var graph = new Graph();
 
-        $.each(grid, function(i) {
-            grid[i] = new Array(grid_y);
-            $.each(grid[i], function(j) {
-                grid[i][j] = {
+        $.each(grid, function(x) {
+            grid[x] = new Array(grid_y);
+            $.each(grid[x], function(y) {
+                var v = graph.addVertex();
+
+                if (x - 1 >= 0) {
+                    graph.connect(grid[x - 1][y].vertex, v);
+                }
+
+                if (y - 1 >= 0) {
+                    graph.connect(grid[x][y - 1].vertex, v);
+                }
+
+                grid[x][y] = {
                     weight: 0.0,
                     blocked: false,
                     start: false,
                     end: false,
-                    x: i,
-                    y: j
+                    x: x,
+                    y: y,
+                    vertex: v
                 };
             });
         });
 
         this.m_grid = grid;
+        this.m_graph = graph;
     }
 
     Board.prototype.getStart = function() {

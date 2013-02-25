@@ -13,7 +13,11 @@ var ACO = (function() {
             this.m_board.drawGrid();
             this.m_board.paintGrid();
         } catch(e) {
-            console.log('Exception: ' + e);
+            if (e.stack) {
+                console.log(e.stack);
+            } else {
+                console.log('Exception: ' + e);
+            }
         }
     }
 
