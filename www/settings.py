@@ -130,7 +130,8 @@ INSTALLED_APPS = (
     'blog',
     'paste',
     'pages',
-    'smuggler'
+    'smuggler',
+    'eve'
 )
 
 if DEBUG:

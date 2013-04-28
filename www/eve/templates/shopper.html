@@ -1,0 +1,27 @@
+{% extends "base_onecol.html" %}
+
+{% block title %}shopper{% endblock %}
+
+{% block cssid %}style{% endblock %}
+
+{% block jqueryinclude %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+{% endblock %}
+
+{% block extrahead %}
+<script type="text/javascript" src="{{ MEDIA_URL }}js/eve/shopper/shopper.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/eve/shopper/page.js"></script>
+
+<link rel="stylesheet" type="text/css" media="screen" href="{{ MEDIA_URL }}css/pages/playfair/playfair.css" />
+{% endblock %}
+
+{% block content %}
+<article>
+    <header>EVE Shopper</header>
+    <div>
+        <table id="sell_orders">
+            <tr><th>Location</th><th>Jumps</th><th>Price</th></tr>
+        </table>
+    </div>
+</article>
+{% endblock %}
