@@ -12,15 +12,24 @@
 <script type="text/javascript" src="{{ MEDIA_URL }}js/eve/shopper/shopper.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/eve/shopper/page.js"></script>
 
-<link rel="stylesheet" type="text/css" media="screen" href="{{ MEDIA_URL }}css/pages/playfair/playfair.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="{{ MEDIA_URL }}css/eve/shopper.css" />
 {% endblock %}
 
 {% block content %}
 <article>
-    <header>EVE Shopper</header>
+    <header id="sell_header">Sell Orders</header>
     <div>
-        <table id="sell_orders">
-            <tr><th>Location</th><th>Jumps</th><th>Price</th></tr>
+        <table id="sell_orders" class="orders">
+            <thead>
+                <tr>
+                    <th>Location</th>
+                    <th style="width: 10%; text-align: center;">Jumps</th>
+                    <th style="width: 10%; text-align: center;">Price</th>
+                    <th style="width: 10%; text-align: center;">Station</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
         </table>
     </div>
 </article>

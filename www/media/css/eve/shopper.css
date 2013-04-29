@@ -1,0 +1,30 @@
+table.orders {
+    width: 100%;
+    border-top: 1px solid rgb(215, 215, 215);
+    border-right: 1px solid rgb(215, 215, 215);
+}
+
+table.orders th {
+    font-weight: bold;
+    font-size: 1.25em;
+    background-color: rgb(240, 240, 240);
+    border-bottom: 1px solid rgb(215, 215, 215);
+    border-left: 1px solid rgb(215, 215, 215);
+    padding: 0.3em 1em;
+}
+
+table.orders tr.odd {
+    background-color: rgb(240, 240, 240);
+}
+
+table.orders td {
+    border-bottom: 1px solid rgb(215, 215, 215);
+    border-left: 1px solid rgb(215, 215, 215);
+    padding: 0.3em 1em;
+}
+
+table.orders tr > td:first-child + td,
+table.orders tr > td:first-child + td + td,
+table.orders tr > td:first-child + td + td + td {
+    text-align: center;
+}
