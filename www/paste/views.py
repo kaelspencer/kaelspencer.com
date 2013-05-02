@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils import simplejson
 from django.db.models import Q
 import datetime
+from honeypot.decorators import check_honeypot
 
 EXPIRATION_CHOICES = (
     (0, u'Never'),
@@ -30,6 +31,7 @@ class NewPasteForm(ModelForm):
         }
     expiration = ChoiceField(choices=EXPIRATION_CHOICES, widget=chosenwidgets.ChosenSelect())
 
+@check_honeypot(field_name='pastetype')
 def new(request):
     if request.method == 'POST':
         form = NewPasteForm(request.POST)
@@ -65,7 +67,6 @@ class ExistingDetailView(DetailView):
 
 @csrf_exempt
 def api_paste(request):
-
     if request.method == 'POST':
         json_data = simplejson.loads(request.raw_post_data)
 

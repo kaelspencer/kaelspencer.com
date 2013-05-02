@@ -1,4 +1,5 @@
 {% extends "paste.html" %}
+{% load honeypot %}
 
 {% block extrahead %}
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.autosize-min.js"></script>
@@ -20,10 +21,10 @@
             <article>
                 <header>New Paste</header>
                 <form class="newpaste" action="/p/" method="post">{% csrf_token %}
-                    
+
                     {{ form.rawbody }}
                     {{ form.non_field_errors }}
-                    
+
                     {% if form.lexer.errors or form.exposed.errors or form.expiration.errors %}
                     <div class="grid_12 alpha omega">
                         <div class="grid_2 alpha">&nbsp;</div>
@@ -34,7 +35,7 @@
                         <div class="grid_2 fortext omega">{{ form.expiration.errors }}</div>
                     </div>
                     {% endif %}
-                    
+
                     <div class="grid_12 alpha omega">
                         <div class="grid_2 alpha fortext">Language:</div>
                         <div class="grid_4 fortext">{{ form.lexer }}</div>
@@ -43,9 +44,9 @@
                         <div class="grid_2 fortext">Expiration:</div>
                         <div class="grid_2 fortext omega">{{ form.expiration }}</div>
                     </div>
-                    
+
                     <div class="clear"></div>
-                    
+
                     {% if form.title.errors %}
                     <div class="grid_12 alpha omega">
                         <div class="grid_2 alpha fortext">&nbsp;</div>
@@ -53,13 +54,15 @@
                         <div class="grid_3 prefix_2 omega">&nbsp;</div>
                     </div>
                     {% endif %}
-                    
+
                     <div class="grid_12 alpha omega">
                         <div class="grid_2 alpha fortext">Title:</div>
                         <div class="grid_5">{{ form.title }}</div>
                         <div class="grid_3 prefix_2 omega"><input type="submit" id="newpaste_submit" value="Paste" /></div>
                     </div>
-                    
+
+                    {% render_honeypot_field "pastetype" %}
+
                     <div class="clear"></div>
                 </form>
             </article>
