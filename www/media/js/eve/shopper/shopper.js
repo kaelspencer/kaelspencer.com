@@ -13,15 +13,25 @@ var EveShopper = (function() {
     };
 
     EveShopper.prototype.runTest = function() {
+        $('#loading_indicator').show().children().removeClass('loading_stop');
+
         $.ajax({
             //url: this.m_apiQuicklook + '?typeid=4305',
             url: '/media/js/eve/shopper/quicklook.xml',
             dataType: 'xml',
             context: this,
-            success: this.onQuicklook
+            success: this.onQuicklook,
+            error: function(xhr, status) { this.errorHandler('quicklook', xhr, status); }
         }).done(function() {
             this.updateJumpCounts(this.m_sellOrders);
         });
+    };
+
+    EveShopper.prototype.errorHandler = function(fetchItem, xhr, status) {
+        var message = 'Failed to fetch ' + fetchItem + '. HTTP ' + xhr.status + ' (' + status + ')';
+        console.log(message);
+        $('#status').text(message).show();
+        $('#loading_indicator').hide().children().addClass('loading_stop');
     };
 
     EveShopper.prototype.onQuicklook = function(data) {
@@ -58,12 +68,11 @@ var EveShopper = (function() {
                 that.m_jumpCount[value.station_name] = 0;
 
                 requests.push($.ajax({
-                    url: url + value.station_name + '/',
+                    url: url + value.station_name,
                     dataType: 'json',
                     context: this,
-                    success: function(data) {
-                        that.m_jumpCount[value.station_name] = data.jumps;
-                    }
+                    success: function(data) { that.m_jumpCount[value.station_name] = data.jumps; },
+                    error: function(xhr, status) { that.errorHandler('jump count for ' + value.station_name, xhr, status); }
                 }));
             }
 
@@ -90,6 +99,8 @@ var EveShopper = (function() {
 
             container.append(tr);
         });
+
+        $('#loading_indicator').hide().children().addClass('loading_stop');
     };
 
     return EveShopper;

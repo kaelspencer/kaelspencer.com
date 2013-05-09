@@ -5,6 +5,7 @@
     <title>kaelspencer | {% block title %}{% endblock %}</title>
 
     <link href="{{ MEDIA_URL }}css/{% block cssid %}style{% endblock %}.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="{{ MEDIA_URL }}css/loading.css" rel="stylesheet" type="text/css" media="screen" />
 
     {# Some files use old jQuery. #}
     {% block jqueryinclude %}
@@ -36,6 +37,10 @@
             <span class="grid_3 prefix_10">&copy; Kael Spencer, {% now "Y" %}</span>
         </div>
     {% endblock %}
+        <div id="loading_indicator" class="loading_container" style="display: none;">
+            <div class="loading_circle loading_stop"></div>
+            <div class="loading_circle1 loading_stop"></div>
+        </div>
     </footer>
 </body>
 

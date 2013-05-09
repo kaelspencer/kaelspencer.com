@@ -2,8 +2,6 @@
 
 {% block title %}shopper{% endblock %}
 
-{% block cssid %}style{% endblock %}
-
 {% block jqueryinclude %}
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 {% endblock %}
@@ -18,6 +16,7 @@
 {% block content %}
 <article>
     <header id="sell_header">Sell Orders</header>
+    <div id="status" style="display: none;"></div>
     <div>
         <table id="sell_orders" class="orders">
             <thead>
