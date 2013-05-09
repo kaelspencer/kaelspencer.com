@@ -4,8 +4,12 @@ var EveShopper = (function() {
         this.m_api = 'http://api.eve-central.com/api/';
         this.m_apiRoute = this.m_api + 'route/';
         this.m_apiQuicklook = this.m_api + 'quicklook';
+        this.m_everest = 'http://localhost:5000/';
+        //this.m_everest = 'http://everest.kaelspencer.com/'
+        this.m_everestJumpCount = this.m_everest + 'jump/station/';
+        this.m_currentStation = 'Jita IV - Moon 4 - Caldari Navy Assembly Plant';
         this.m_sellOrders = undefined;
-        this.m_jumpCount = Array();
+        this.m_jumpCount = [];
     };
 
     EveShopper.prototype.runTest = function() {
@@ -16,30 +20,7 @@ var EveShopper = (function() {
             context: this,
             success: this.onQuicklook
         }).done(function() {
-            console.log(this.m_sellOrders);
-
-            if (this.m_sellOrders) {
-                var container = $('#sell_orders tbody');
-                var odd = false;
-
-                this.updateJumpCounts(this.m_sellOrders);
-
-                $.each(this.m_sellOrders, function() {
-                    var tr = $('<tr />')
-                        .append($('<td />', { text: this.station_name }))
-                        .append($('<td />', { text: '0' }))
-                        .append($('<td />', { text: this.price }))
-                        .append($('<td />', { text: this.system }));
-
-                    if (odd) {
-                        tr.addClass('odd');
-                    }
-
-                    odd = !odd;
-
-                    container.append(tr);
-                });
-            }
+            this.updateJumpCounts(this.m_sellOrders);
         });
     };
 
@@ -53,9 +34,9 @@ var EveShopper = (function() {
 
         sell.each(function() {
             sellOrders.push({
-                'station_id': $(this).children('station').text(),
-                'station_name': $(this).children('station_name').text(),
-                'price': $(this).children('price').text()
+                'station_id': $(this).children('station').text().trim(),
+                'station_name': $(this).children('station_name').text().trim(),
+                'price': $(this).children('price').text().trim()
             });
         });
 
@@ -67,15 +48,48 @@ var EveShopper = (function() {
     };
 
     EveShopper.prototype.updateJumpCounts = function(orders) {
-        $.each(orders, function(key, value) {
-            var split = value.station_name.split(' - ');
-            var stationArr = split[0].split(' ');
-            var system = stationArr.splice(0, stationArr.length - 1).join(' ');
+        that = this;
+        url = this.m_everestJumpCount + this.m_currentStation + '/';
+        requests = [];
 
-            orders[key].system = system;
-            this.m_jumpCount[system] = 0;
+        $.each(orders, function(key, value) {
+            if (!(value.station_name in that.m_jumpCount)) {
+                console.log(url + value.station_name + '/');
+                that.m_jumpCount[value.station_name] = 0;
+
+                requests.push($.ajax({
+                    url: url + value.station_name + '/',
+                    dataType: 'json',
+                    context: this,
+                    success: function(data) {
+                        that.m_jumpCount[value.station_name] = data.jumps;
+                    }
+                }));
+            }
+
+            orders[key].system = 'TBA';
         });
 
+        $.when.apply($, requests).done(function() { that.drawTable(that); });
+    };
+
+    EveShopper.prototype.drawTable = function(that) {
+        var container = $('#sell_orders tbody');
+        var odd = true;
+
+        $.each(that.m_sellOrders, function() {
+            var tr = $('<tr />')
+                .append($('<td />', { text: this.system }))
+                .append($('<td />', { text: this.station_name }))
+                .append($('<td />', { text: that.m_jumpCount[this.station_name] }))
+                .append($('<td />', { text: this.price }));
+
+            if (odd = !odd) {
+                tr.addClass('odd');
+            }
+
+            container.append(tr);
+        });
     };
 
     return EveShopper;

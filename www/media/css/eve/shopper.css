@@ -23,7 +23,6 @@ table.orders td {
     padding: 0.3em 1em;
 }
 
-table.orders tr > td:first-child + td,
 table.orders tr > td:first-child + td + td,
 table.orders tr > td:first-child + td + td + td {
     text-align: center;
