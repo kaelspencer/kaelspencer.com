@@ -7,7 +7,8 @@ var EveShopper = (function() {
         this.m_everest = 'http://localhost:5000/';
         //this.m_everest = 'http://everest.kaelspencer.com/'
         this.m_everestJumpCount = this.m_everest + 'jump/station/';
-        this.m_currentStation = 'Jita IV - Moon 4 - Caldari Navy Assembly Plant';
+        this.m_currentStation = 'Rens VI - Moon 8 - Brutor Tribe Treasury';
+        this.m_currentStationBestPrice = undefined;
         this.m_sellOrders = undefined;
         this.m_jumpCount = [];
     };
@@ -16,7 +17,7 @@ var EveShopper = (function() {
         $('#loading_indicator').show().children().removeClass('loading_stop');
 
         $.ajax({
-            //url: this.m_apiQuicklook + '?typeid=4305',
+            //url: this.m_apiQuicklook + '?typeid=657',
             url: '/media/js/eve/shopper/quicklook.xml',
             dataType: 'xml',
             context: this,
@@ -42,13 +43,19 @@ var EveShopper = (function() {
 
         $('#sell_header').text('Sell Orders: ' + xml.children('itemname').text());
 
-        sell.each(function() {
-            sellOrders.push({
-                'station_id': $(this).children('station').text().trim(),
-                'station_name': $(this).children('station_name').text().trim(),
-                'price': $(this).children('price').text().trim()
-            });
-        });
+        sell.each(function(key, value) {
+            var order = {
+                'station_id': $(value).children('station').text().trim(),
+                'station_name': $(value).children('station_name').text().trim(),
+                'price': parseInt($(value).children('price').text().trim())
+            };
+            sellOrders.push(order);
+
+            if (order.station_name == this.m_currentStation &&
+                (this.m_currentStationBestPrice === undefined || this.m_currentStationBestPrice > order.price)) {
+                    this.m_currentStationBestPrice = order.price;
+            }
+        }.bind(this));
 
         sellOrders.sort(function(a, b) {
             return (a.price == b.price ? 0 : (a.price < b.price ? -1 : 1));
@@ -58,47 +65,63 @@ var EveShopper = (function() {
     };
 
     EveShopper.prototype.updateJumpCounts = function(orders) {
-        that = this;
-        url = this.m_everestJumpCount + this.m_currentStation + '/';
-        requests = [];
+        var url = this.m_everestJumpCount + this.m_currentStation + '/';
+        var requests = [];
+
+        // After these requests are complete, draw the table.
+        var self = this;
+        $(document).ajaxStop(function() {
+            console.log('ajaxStop');
+            $(this).unbind('ajaxStop');
+            self.drawTable();
+        });
 
         $.each(orders, function(key, value) {
-            if (!(value.station_name in that.m_jumpCount)) {
-                console.log(url + value.station_name + '/');
-                that.m_jumpCount[value.station_name] = 0;
+            if (!(value.station_name in this.m_jumpCount)) {
+                this.m_jumpCount[value.station_name] = 0;
 
                 requests.push($.ajax({
                     url: url + value.station_name,
                     dataType: 'json',
                     context: this,
-                    success: function(data) { that.m_jumpCount[value.station_name] = data.jumps; },
-                    error: function(xhr, status) { that.errorHandler('jump count for ' + value.station_name, xhr, status); }
+                    success: function(data) { this.m_jumpCount[value.station_name] = data.jumps; },
+                    error: function(xhr, status) {
+                        console.log('Failed to fetch jump count for ' + value.station_name + '. HTTP ' + xhr.status + ' (' + status + ')');
+                        this.m_jumpCount[value.station_name] = undefined;
+                    }
                 }));
             }
 
             orders[key].system = 'TBA';
-        });
-
-        $.when.apply($, requests).done(function() { that.drawTable(that); });
+        }.bind(this));
     };
 
-    EveShopper.prototype.drawTable = function(that) {
+    EveShopper.prototype.drawTable = function() {
         var container = $('#sell_orders tbody');
         var odd = true;
 
-        $.each(that.m_sellOrders, function() {
-            var tr = $('<tr />')
-                .append($('<td />', { text: this.system }))
-                .append($('<td />', { text: this.station_name }))
-                .append($('<td />', { text: that.m_jumpCount[this.station_name] }))
-                .append($('<td />', { text: this.price }));
+        var fnSavings = function(price, jumps) {
+            var a = (this.m_currentStationBestPrice - price) / this.m_currentStationBestPrice;
+            a = Math.round(a * 100) / 100;
+            return a.toString() + '%';
+        }.bind(this);
 
-            if (odd = !odd) {
-                tr.addClass('odd');
+        $.each(this.m_sellOrders, function(key, value) {
+            if (this.m_jumpCount[value.station_name] !== undefined) {
+                var tr = $('<tr />')
+                    .append($('<td />', { text: value.system }))
+                    .append($('<td />', { text: value.station_name }))
+                    .append($('<td />', { text: this.m_jumpCount[value.station_name] }))
+                    .append($('<td />', { text: value.price }))
+                    .append($('<td />', { text: fnSavings(value.price, this.m_jumpCount[value.station_name]) }));
+
+                if (odd = !odd) {
+                    tr.addClass('odd');
+                }
+
+                container.append(tr);
             }
-
-            container.append(tr);
-        });
+        }.bind(this));
 
         $('#loading_indicator').hide().children().addClass('loading_stop');
     };

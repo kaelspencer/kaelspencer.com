@@ -21,9 +21,11 @@ table.orders td {
     border-bottom: 1px solid rgb(215, 215, 215);
     border-left: 1px solid rgb(215, 215, 215);
     padding: 0.3em 1em;
+    font-size: 0.9em;
 }
 
 table.orders tr > td:first-child + td + td,
-table.orders tr > td:first-child + td + td + td {
+table.orders tr > td:first-child + td + td + td,
+table.orders tr > td:first-child + td + td + td + td {
     text-align: center;
 }
