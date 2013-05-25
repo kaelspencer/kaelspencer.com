@@ -11,16 +11,18 @@ var EveShopper = (function() {
         this.m_currentStationBestPrice = undefined;
         this.m_sellOrders = undefined;
         this.m_jumpCount = [];
+        this.m_jumpLimit = 0;
     };
 
     EveShopper.prototype.shop = function(validator) {
         $('#loading_indicator').show().children().removeClass('loading_stop');
 
         this.m_currentStation = validator.currentLocation();
+        this.m_jumpLimit = validator.jumpLimit();
 
         $.ajax({
-            //url: this.m_apiQuicklook + '?typeid=' + validator.item(),
-            url: '/media/js/eve/shopper/quicklook.xml',
+            url: this.m_apiQuicklook + '?typeid=' + validator.item(),
+            //url: '/media/js/eve/shopper/quicklook.xml',
             dataType: 'xml',
             context: this,
             success: this.onQuicklook,
@@ -109,6 +111,7 @@ var EveShopper = (function() {
 
         $.each(this.m_sellOrders, function(key, value) {
             if (this.m_jumpCount[value.station_name] === undefined) return;
+            if (this.m_jumpLimit > 0 && this.m_jumpCount[value.station_name] > this.m_jumpLimit) return;
             count++;
 
             container.append($('<tr />')
