@@ -1,7 +1,9 @@
+/* Display area */
 table.orders {
     width: 100%;
     border-top: 1px solid rgb(215, 215, 215);
     border-right: 1px solid rgb(215, 215, 215);
+    margin-top: 10px;
 }
 
 table.orders th {
@@ -18,7 +20,7 @@ table.orders th span.subheader {
     display: block;
 }
 
-table.orders tr.odd {
+table.orders tr:nth-of-type(even) {
     background-color: rgb(240, 240, 240);
 }
 
@@ -32,4 +34,28 @@ table.orders tr > td:first-child + td,
 table.orders tr > td:first-child + td + td,
 table.orders tr > td:first-child + td + td + td {
     text-align: center;
+}
+
+/* Input area */
+.fortext {
+    margin-top: 10px;
+}
+
+.search input, select, textarea {
+    margin: 5px 0;
+    padding: 5px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(240, 240, 240, 1);
+    font-size: 1.07em;
+    width: 100%;
+}
+
+.search input[type=submit] {
+    width: 117%;
+}
+
+.form_error {
+    font-size: 0.8em;
+    color: red;
 }

@@ -4,22 +4,22 @@ var EveShopper = (function() {
         this.m_api = 'http://api.eve-central.com/api/';
         this.m_apiRoute = this.m_api + 'route/';
         this.m_apiQuicklook = this.m_api + 'quicklook';
-        this.m_everest = 'http://localhost:5000/';
+        this.m_everest = 'http://10.10.0.10/';
         //this.m_everest = 'http://everest.kaelspencer.com/'
         this.m_everestJumpCount = this.m_everest + 'jump/station/';
-        this.m_currentStation = 'Rens VI - Moon 8 - Brutor Tribe Treasury';
-        this.m_currentStation = 'Hek VIII - Moon 12 - Boundless Creation Factory';
+        this.m_currentStation = undefined;
         this.m_currentStationBestPrice = undefined;
         this.m_sellOrders = undefined;
         this.m_jumpCount = [];
     };
 
-    EveShopper.prototype.runTest = function() {
+    EveShopper.prototype.shop = function(validator) {
         $('#loading_indicator').show().children().removeClass('loading_stop');
 
+        this.m_currentStation = validator.currentLocation();
+
         $.ajax({
-            //url: this.m_apiQuicklook + '?typeid=657',
-            //url: this.m_apiQuicklook + '?typeid=17636',
+            //url: this.m_apiQuicklook + '?typeid=' + validator.item(),
             url: '/media/js/eve/shopper/quicklook.xml',
             dataType: 'xml',
             context: this,
@@ -99,7 +99,7 @@ var EveShopper = (function() {
 
     EveShopper.prototype.drawTable = function() {
         var container = $('#sell_orders tbody');
-        var odd = true;
+        var count = 0;
 
         var fnSavings = function(price, jumps) {
             var totalSavings = Math.round((this.m_currentStationBestPrice - price) / this.m_currentStationBestPrice * 1000) / 10;
@@ -109,21 +109,21 @@ var EveShopper = (function() {
 
         $.each(this.m_sellOrders, function(key, value) {
             if (this.m_jumpCount[value.station_name] === undefined) return;
+            count++;
 
-            var tr = $('<tr />')
+            container.append($('<tr />')
                 .append($('<td />', { text: value.station_name }))
                 .append($('<td />', { text: value.price.toLocaleString() }))
                 .append($('<td />', { text: fnSavings(value.price, this.m_jumpCount[value.station_name]) }))
-                .append($('<td />', { text: this.m_jumpCount[value.station_name] }));
-
-            if (odd = !odd) {
-                tr.addClass('odd');
-            }
-
-            container.append(tr);
+                .append($('<td />', { text: this.m_jumpCount[value.station_name] })));
         }.bind(this));
 
-        $('#sell_orders').tablesorter({ sortList: [[2, 1], [3, 0]] });
+        if (count > 0) {
+            $('#sell_orders').tablesorter({ sortList: [[2, 1], [3, 0]] }).show();
+        } else {
+            $('#status').text('No items were retrieved').show();
+        }
+
         $('#loading_indicator').hide().children().addClass('loading_stop');
     };
 
