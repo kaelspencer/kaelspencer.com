@@ -5,10 +5,11 @@
     <title>kaelspencer | {% block title %}{% endblock %}</title>
 
     <link href="{{ MEDIA_URL }}css/{% block cssid %}style{% endblock %}.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="{{ MEDIA_URL }}css/loading.css" rel="stylesheet" type="text/css" media="screen" />
 
     {# Some files use old jQuery. #}
     {% block jqueryinclude %}
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     {% endblock %}
 
     {% block commonhead %}
@@ -33,9 +34,13 @@
     <footer class="mainfoot">{% block footer %}
         <div class="container_16">
             <span class="grid_3"><a id="footer-to-top" href="#top">Back to Top</a></span>
-            <span class="grid_3 prefix_10">&copy; Kael Spencer, 2012</span>
+            <span class="grid_3 prefix_10">&copy; Kael Spencer, {% now "Y" %}</span>
         </div>
     {% endblock %}
+        <div id="loading_indicator" class="loading_container" style="display: none;">
+            <div class="loading_circle loading_stop"></div>
+            <div class="loading_circle1 loading_stop"></div>
+        </div>
     </footer>
 </body>
 

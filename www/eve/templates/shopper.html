@@ -1,0 +1,51 @@
+{% extends "base_onecol.html" %}
+
+{% block title %}shopper{% endblock %}
+
+{% block extrahead %}
+<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/eve/shopper/validator.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/eve/shopper/shopper.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/eve/shopper/page.js"></script>
+
+<link rel="stylesheet" type="text/css" media="screen" href="{{ MEDIA_URL }}css/eve/shopper.css" />
+{% endblock %}
+
+{% block content %}
+<article>
+    <header id="sell_header">Sell Orders</header>
+
+    <form id="search" class="search">
+        <div class="grid_15 alpha omega" id="form_errors" style="display: none;">
+            <div id="item_error" class="grid_4 alpha form_error">&nbsp;</div>
+            <div id="location_error" class="grid_4 form_error">&nbsp;</div>
+            <div id="jump_error" class="grid_4 form_error">&nbsp;</div>
+        </div>
+        <div class="grid_15 alpha omega">
+            <div class="grid_4 alpha"><input id="search_item" type="text" name="item" placeholder="Item id" /></div>
+            <div class="grid_4"><input id="current_location" type="text" name="item" placeholder="Current location (e.g. Jita)" /></div>
+            <div class="grid_2"><input id="jump_limit" type="text" name="item" placeholder="Jump limit" /></div>
+            <div class="grid_3 prefix_2 omega"><input type="submit" id="search_submit" value="Search" /></div>
+        </div>
+    </form>
+
+    <div class="clear"></div>
+    <div id="status" style="display: none;"></div>
+
+    <div>
+        <table id="sell_orders" class="orders" style="display: none;">
+            <thead>
+                <tr>
+                    <th>Location</th>
+                    <th style="width: 10%; text-align: center;">Price</th>
+                    <th style="width: 10%; text-align: center;">Savings <span class="subheader">(per jump)</span></th>
+                    <th style="width: 8%; text-align: center;">Jumps</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+</article>
+{% endblock %}

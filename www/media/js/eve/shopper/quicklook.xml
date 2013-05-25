@@ -1,0 +1,965 @@
+<evec_api method="quicklook" version="2.0">
+<quicklook>
+<item>24640</item>
+<itemname>Zainou 'Deadeye' Guided Missile Precision GP-805</itemname>
+<regions/>
+<hours>360</hours>
+<minqty>1</minqty>
+<sell_orders>
+<order id="2936786553">
+<region>10000030</region>
+<station>60004588</station>
+<station_name>Rens VI - Moon 8 - Brutor Tribe Treasury</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>161699998.99</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 20:17:20</reported_time>
+</order>
+<order id="2928184738">
+<region>10000030</region>
+<station>60004588</station>
+<station_name>Rens VI - Moon 8 - Brutor Tribe Treasury</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>163300000.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 20:17:20</reported_time>
+</order>
+<order id="2901766200">
+<region>10000030</region>
+<station>60004588</station>
+<station_name>Rens VI - Moon 8 - Brutor Tribe Treasury</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>161699999.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 20:17:20</reported_time>
+</order>
+<order id="2890852918">
+<region>10000030</region>
+<station>60004588</station>
+<station_name>Rens VI - Moon 8 - Brutor Tribe Treasury</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>162799999.98</price>
+<vol_remain>4</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 20:17:20</reported_time>
+</order>
+<order id="2707076963">
+<region>10000030</region>
+<station>60004588</station>
+<station_name>Rens VI - Moon 8 - Brutor Tribe Treasury</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>168800000.01</price>
+<vol_remain>2</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 20:17:20</reported_time>
+</order>
+<order id="2928187780">
+<region>10000030</region>
+<station>60004588</station>
+<station_name>Rens VI - Moon 8 - Brutor Tribe Treasury</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>161600000.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 20:17:20</reported_time>
+</order>
+<order id="2917804316">
+<region>10000016</region>
+<station>60003892</station>
+<station_name>
+Kakakela VI - Moon 18 - Caldari Navy Assembly Plant
+</station_name>
+<security>1.0</security>
+<range>32767</range>
+<price>200000000.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-07 12:59:46</reported_time>
+</order>
+<order id="2689342924">
+<region>10000016</region>
+<station>60002326</station>
+<station_name>Torrinos V - Moon 5 - Lai Dai Corporation Factory</station_name>
+<security>0.5</security>
+<range>32767</range>
+<price>177300000.00</price>
+<vol_remain>7</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-07 12:59:46</reported_time>
+</order>
+<order id="2689342990">
+<region>10000016</region>
+<station>60002326</station>
+<station_name>Torrinos V - Moon 5 - Lai Dai Corporation Factory</station_name>
+<security>0.5</security>
+<range>32767</range>
+<price>177300000.00</price>
+<vol_remain>8</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-07 12:59:46</reported_time>
+</order>
+<order id="2945149525">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>139999999.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2945008730">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>143999999.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2946287302">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>133999999.99</price>
+<vol_remain>4</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2945937538">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>135999999.97</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2875265775">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>152997879.00</price>
+<vol_remain>5</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-06-08</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2892188058">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>153995897.97</price>
+<vol_remain>8</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2901878159">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>148999992.90</price>
+<vol_remain>6</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2937336097">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>144000000.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2835394533">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>154999997.17</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2835394716">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>154999985.36</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2935476665">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>148999899.95</price>
+<vol_remain>6</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-06-08</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2918327105">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>152000000.00</price>
+<vol_remain>2</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2927467572">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>149600000.00</price>
+<vol_remain>25</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2946506728">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>133999999.97</price>
+<vol_remain>3</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2945235847">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>131000000.00</price>
+<vol_remain>3</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2946015972">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>131000000.00</price>
+<vol_remain>5</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2947257911">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>130999999.99</price>
+<vol_remain>4</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2931345200">
+<region>10000043</region>
+<station>60008494</station>
+<station_name>Amarr VIII (Oris) - Emperor Family Academy</station_name>
+<security>1.0</security>
+<range>32767</range>
+<price>183999999.99</price>
+<vol_remain>2</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 13:31:01</reported_time>
+</order>
+<order id="2944678446">
+<region>10000043</region>
+<station>60008494</station>
+<station_name>Amarr VIII (Oris) - Emperor Family Academy</station_name>
+<security>1.0</security>
+<range>32767</range>
+<price>179499999.00</price>
+<vol_remain>2</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 13:31:01</reported_time>
+</order>
+<order id="2945502629">
+<region>10000043</region>
+<station>60008494</station>
+<station_name>Amarr VIII (Oris) - Emperor Family Academy</station_name>
+<security>1.0</security>
+<range>32767</range>
+<price>179499998.90</price>
+<vol_remain>3</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 13:31:01</reported_time>
+</order>
+<order id="2940394865">
+<region>10000043</region>
+<station>60008137</station>
+<station_name>
+Shuria X - Moon 16 - Ministry of Internal Order Assembly Plant
+</station_name>
+<security>0.5</security>
+<range>32767</range>
+<price>180000000.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 13:31:01</reported_time>
+</order>
+<order id="2906452795">
+<region>10000048</region>
+<station>60011824</station>
+<station_name>Orvolle I - Federation Navy Assembly Plant</station_name>
+<security>0.7</security>
+<range>32767</range>
+<price>165000000.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-07 22:07:16</reported_time>
+</order>
+<order id="2838677003">
+<region>10000033</region>
+<station>60004351</station>
+<station_name>
+Waskisen IX - Moon 11 - Corporate Police Force Logistic Support
+</station_name>
+<security>0.7</security>
+<range>32767</range>
+<price>159896472.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 22:10:56</reported_time>
+</order>
+<order id="2882929135">
+<region>10000033</region>
+<station>60004351</station>
+<station_name>
+Waskisen IX - Moon 11 - Corporate Police Force Logistic Support
+</station_name>
+<security>0.7</security>
+<range>32767</range>
+<price>159850000.00</price>
+<vol_remain>2</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 22:10:56</reported_time>
+</order>
+<order id="2867345637">
+<region>10000033</region>
+<station>60004351</station>
+<station_name>
+Waskisen IX - Moon 11 - Corporate Police Force Logistic Support
+</station_name>
+<security>0.7</security>
+<range>32767</range>
+<price>159990900.00</price>
+<vol_remain>3</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 22:10:56</reported_time>
+</order>
+<order id="2914663830">
+<region>10000033</region>
+<station>60004408</station>
+<station_name>Hysera II - Corporate Police Force Assembly Plant</station_name>
+<security>0.4</security>
+<range>32767</range>
+<price>151000000.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 22:10:56</reported_time>
+</order>
+<order id="2917809523">
+<region>10000033</region>
+<station>60004408</station>
+<station_name>Hysera II - Corporate Police Force Assembly Plant</station_name>
+<security>0.4</security>
+<range>32767</range>
+<price>148000000.00</price>
+<vol_remain>2</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 22:10:56</reported_time>
+</order>
+<order id="2871748223">
+<region>10000064</region>
+<station>60011740</station>
+<station_name>
+Oursulaert III - Federation Navy Testing Facilities
+</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>168999000.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-07 03:12:51</reported_time>
+</order>
+<order id="2911188865">
+<region>10000064</region>
+<station>60011740</station>
+<station_name>
+Oursulaert III - Federation Navy Testing Facilities
+</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>168999999.99</price>
+<vol_remain>2</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-07 03:12:51</reported_time>
+</order>
+<order id="2652158789">
+<region>10000064</region>
+<station>60012607</station>
+<station_name>Arnon IX - Moon 3 - Sisters of EVE Bureau</station_name>
+<security>0.6</security>
+<range>32767</range>
+<price>169000000.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-07 03:12:51</reported_time>
+</order>
+<order id="2785212090">
+<region>10000064</region>
+<station>60011974</station>
+<station_name>
+Ignebaener IV - Federal Intelligence Office Logistic Support
+</station_name>
+<security>0.5</security>
+<range>32767</range>
+<price>164999999.00</price>
+<vol_remain>5</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-07 03:12:51</reported_time>
+</order>
+<order id="2689234704">
+<region>10000064</region>
+<station>60011965</station>
+<station_name>
+Cat VI - Moon 7 - Federal Intelligence Office Logistic Support
+</station_name>
+<security>0.7</security>
+<range>32767</range>
+<price>164799999.00</price>
+<vol_remain>7</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-07 03:12:51</reported_time>
+</order>
+<order id="2944864701">
+<region>10000032</region>
+<station>60011866</station>
+<station_name>
+Dodixie IX - Moon 20 - Federation Navy Assembly Plant
+</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>163899999.99</price>
+<vol_remain>2</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 20:38:26</reported_time>
+</order>
+<order id="2944666181">
+<region>10000032</region>
+<station>60011866</station>
+<station_name>
+Dodixie IX - Moon 20 - Federation Navy Assembly Plant
+</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>163997998.93</price>
+<vol_remain>2</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 20:38:26</reported_time>
+</order>
+<order id="2939459150">
+<region>10000032</region>
+<station>60005191</station>
+<station_name>
+Adrallezoen V - Republic Security Services Logistic Support
+</station_name>
+<security>0.5</security>
+<range>32767</range>
+<price>164000000.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 20:38:26</reported_time>
+</order>
+<order id="2946623359">
+<region>10000032</region>
+<station>60011866</station>
+<station_name>
+Dodixie IX - Moon 20 - Federation Navy Assembly Plant
+</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>156000000.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 20:38:26</reported_time>
+</order>
+<order id="2945338882">
+<region>10000032</region>
+<station>60011866</station>
+<station_name>
+Dodixie IX - Moon 20 - Federation Navy Assembly Plant
+</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>155975000.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 20:38:26</reported_time>
+</order>
+<order id="2946993713">
+<region>10000032</region>
+<station>60011866</station>
+<station_name>
+Dodixie IX - Moon 20 - Federation Navy Assembly Plant
+</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>155974999.99</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 20:38:26</reported_time>
+</order>
+<order id="2939671596">
+<region>10000042</region>
+<station>60005686</station>
+<station_name>Hek VIII - Moon 12 - Boundless Creation Factory</station_name>
+<security>0.5</security>
+<range>32767</range>
+<price>164399999.98</price>
+<vol_remain>2</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 17:43:29</reported_time>
+</order>
+<order id="2936746722">
+<region>10000042</region>
+<station>60005686</station>
+<station_name>Hek VIII - Moon 12 - Boundless Creation Factory</station_name>
+<security>0.5</security>
+<range>32767</range>
+<price>164199999.99</price>
+<vol_remain>2</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 17:43:29</reported_time>
+</order>
+<order id="2906726472">
+<region>10000042</region>
+<station>60005686</station>
+<station_name>Hek VIII - Moon 12 - Boundless Creation Factory</station_name>
+<security>0.5</security>
+<range>32767</range>
+<price>168799999.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 17:43:29</reported_time>
+</order>
+<order id="2705403024">
+<region>10000042</region>
+<station>60005686</station>
+<station_name>Hek VIII - Moon 12 - Boundless Creation Factory</station_name>
+<security>0.5</security>
+<range>32767</range>
+<price>169990990.09</price>
+<vol_remain>3</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 17:43:29</reported_time>
+</order>
+<order id="2707089483">
+<region>10000042</region>
+<station>60005686</station>
+<station_name>Hek VIII - Moon 12 - Boundless Creation Factory</station_name>
+<security>0.5</security>
+<range>32767</range>
+<price>164900000.01</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 17:43:29</reported_time>
+</order>
+<order id="2915308788">
+<region>10000042</region>
+<station>60005686</station>
+<station_name>Hek VIII - Moon 12 - Boundless Creation Factory</station_name>
+<security>0.5</security>
+<range>32767</range>
+<price>164100000.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 17:43:29</reported_time>
+</order>
+</sell_orders>
+<buy_orders>
+<order id="2916050013">
+<region>10000030</region>
+<station>60004588</station>
+<station_name>Rens VI - Moon 8 - Brutor Tribe Treasury</station_name>
+<security>0.9</security>
+<range>-1</range>
+<price>101511000.01</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 20:17:20</reported_time>
+</order>
+<order id="2696262081">
+<region>10000030</region>
+<station>60004588</station>
+<station_name>Rens VI - Moon 8 - Brutor Tribe Treasury</station_name>
+<security>0.9</security>
+<range>-1</range>
+<price>101511000.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 20:17:20</reported_time>
+</order>
+<order id="2697544066">
+<region>10000030</region>
+<station>60004588</station>
+<station_name>Rens VI - Moon 8 - Brutor Tribe Treasury</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>101000000.00</price>
+<vol_remain>10</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 20:17:20</reported_time>
+</order>
+<order id="2902139365">
+<region>10000030</region>
+<station>60004615</station>
+<station_name>Frarn VI - Moon 18 - Brutor Tribe Bureau</station_name>
+<security>0.8</security>
+<range>3</range>
+<price>101510000.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 20:17:20</reported_time>
+</order>
+<order id="2901611107">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>-1</range>
+<price>13600001.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2939997275">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>-1</range>
+<price>100000000.00</price>
+<vol_remain>10</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2664509994">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>-1</range>
+<price>79100000.05</price>
+<vol_remain>2</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2913847167">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>10</range>
+<price>80000000.00</price>
+<vol_remain>2</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2886709667">
+<region>10000002</region>
+<station>60012667</station>
+<station_name>Osmon II - Moon 1 - Sisters of EVE Bureau</station_name>
+<security>0.7</security>
+<range>-1</range>
+<price>125000000.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2935267712">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>-1</range>
+<price>120000000.00</price>
+<vol_remain>6</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2946690516">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>-1</range>
+<price>120000000.01</price>
+<vol_remain>3</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2947246027">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>-1</range>
+<price>120000000.03</price>
+<vol_remain>5</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2943494082">
+<region>10000002</region>
+<station>60003760</station>
+<station_name>Jita IV - Moon 4 - Caldari Navy Assembly Plant</station_name>
+<security>0.9</security>
+<range>-1</range>
+<price>121000000.00</price>
+<vol_remain>5</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-09 01:54:08</reported_time>
+</order>
+<order id="2946222395">
+<region>10000043</region>
+<station>60008494</station>
+<station_name>Amarr VIII (Oris) - Emperor Family Academy</station_name>
+<security>1.0</security>
+<range>32767</range>
+<price>14000000.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 13:31:01</reported_time>
+</order>
+<order id="2920253719">
+<region>10000020</region>
+<station>60008758</station>
+<station_name>
+Tash-Murkon Prime V - Moon 5 - Tash-Murkon Family Bureau
+</station_name>
+<security>0.8</security>
+<range>20</range>
+<price>1000000.00</price>
+<vol_remain>10</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-06 21:54:37</reported_time>
+</order>
+<order id="2765376094">
+<region>10000033</region>
+<station>60000880</station>
+<station_name>
+Halaima VII - Moon 6 - Caldari Provisions Warehouse
+</station_name>
+<security>0.7</security>
+<range>40</range>
+<price>85000000.00</price>
+<vol_remain>3</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 22:10:56</reported_time>
+</order>
+<order id="2809507248">
+<region>10000033</region>
+<station>60003787</station>
+<station_name>Motsu VII - Moon 6 - Caldari Navy Logistic Support</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>85000001.02</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 22:10:56</reported_time>
+</order>
+<order id="2724242193">
+<region>10000033</region>
+<station>60003787</station>
+<station_name>Motsu VII - Moon 6 - Caldari Navy Logistic Support</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>85000001.03</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 22:10:56</reported_time>
+</order>
+<order id="2913926004">
+<region>10000032</region>
+<station>60011866</station>
+<station_name>
+Dodixie IX - Moon 20 - Federation Navy Assembly Plant
+</station_name>
+<security>0.9</security>
+<range>-1</range>
+<price>125000000.10</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 20:38:26</reported_time>
+</order>
+<order id="2927897100">
+<region>10000032</region>
+<station>60011866</station>
+<station_name>
+Dodixie IX - Moon 20 - Federation Navy Assembly Plant
+</station_name>
+<security>0.9</security>
+<range>-1</range>
+<price>125000000.08</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 20:38:26</reported_time>
+</order>
+<order id="2862732930">
+<region>10000032</region>
+<station>60011866</station>
+<station_name>
+Dodixie IX - Moon 20 - Federation Navy Assembly Plant
+</station_name>
+<security>0.9</security>
+<range>32767</range>
+<price>1429750.00</price>
+<vol_remain>1</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 20:38:26</reported_time>
+</order>
+<order id="2921683852">
+<region>10000042</region>
+<station>60005686</station>
+<station_name>Hek VIII - Moon 12 - Boundless Creation Factory</station_name>
+<security>0.5</security>
+<range>-1</range>
+<price>100000000.00</price>
+<vol_remain>2</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-08 17:43:29</reported_time>
+</order>
+<order id="2920789012">
+<region>10000052</region>
+<station>60005938</station>
+<station_name>Romi V - Moon 1 - Freedom Extension Storage</station_name>
+<security>0.7</security>
+<range>20</range>
+<price>1000000.00</price>
+<vol_remain>10</vol_remain>
+<min_volume>1</min_volume>
+<expires>2013-08-07</expires>
+<reported_time>05-06 21:37:35</reported_time>
+</order>
+</buy_orders>
+</quicklook>
+</evec_api>

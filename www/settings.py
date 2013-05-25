@@ -131,7 +131,8 @@ INSTALLED_APPS = (
     'paste',
     'pages',
     'smuggler',
-    'honeypot'
+    'honeypot',
+    'eve'
 )
 
 if DEBUG:
