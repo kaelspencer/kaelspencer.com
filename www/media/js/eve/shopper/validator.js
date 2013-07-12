@@ -29,9 +29,9 @@ var Validator = (function() {
         $('#jump_error').text('\xa0');
         $('#status').text('').hide();
 
-        if (item == null || item == '') {
+        if (item == null || item == '' || item == 0) {
             error = true;
-            $('#item_error').text('Item ID is required');
+            $('#item_error').text('Item is required');
         } else if (isNaN(item)) {
             error = true;
             $('#item_error').text('Item ID must be a number');

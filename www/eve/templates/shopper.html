@@ -7,7 +7,9 @@
 <script type="text/javascript" src="{{ MEDIA_URL }}js/eve/shopper/validator.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/eve/shopper/shopper.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/eve/shopper/page.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/chosen.jquery.v0-12-1.min.js"></script>
 
+<link rel="stylesheet" type="text/css" media="screen" href="{{ MEDIA_URL }}css/chosen.min.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="{{ MEDIA_URL }}css/eve/shopper.css" />
 {% endblock %}
 
@@ -22,10 +24,14 @@
             <div id="jump_error" class="grid_4 form_error">&nbsp;</div>
         </div>
         <div class="grid_15 alpha omega">
-            <div class="grid_4 alpha"><input id="search_item" type="text" name="item" placeholder="Item id" /></div>
+            <div class="grid_5 alpha" style="padding-top: 10px;">
+                <select id="search_item" name="item" class="chosen">
+                    {% include "itemoptions.html" %}
+                </select>
+            </div>
             <div class="grid_4"><input id="current_location" type="text" name="item" placeholder="Current location (e.g. Jita)" /></div>
             <div class="grid_2"><input id="jump_limit" type="text" name="item" placeholder="Jump limit" /></div>
-            <div class="grid_3 prefix_2 omega"><input type="submit" id="search_submit" value="Search" /></div>
+            <div class="grid_3 prefix_1 omega"><input type="submit" id="search_submit" value="Search" /></div>
         </div>
     </form>
 
