@@ -2,20 +2,24 @@ var EveShopper = (function() {
 
     function EveShopper() {
         this.m_api = 'http://api.eve-central.com/api/';
-        this.m_apiRoute = this.m_api + 'route/';
         this.m_apiQuicklook = this.m_api + 'quicklook';
-        this.m_everest = 'http://10.10.0.10/';
-        //this.m_everest = 'http://everest.kaelspencer.com/'
+        //this.m_everest = 'http://10.10.0.10/';
+        this.m_everest = 'http://everest.kaelspencer.com/'
         this.m_everestJumpCount = this.m_everest + 'jump/station/';
         this.m_currentStation = undefined;
         this.m_currentStationBestPrice = undefined;
         this.m_sellOrders = undefined;
         this.m_jumpCount = [];
         this.m_jumpLimit = 0;
+        this.m_bestPrices = [];
+        this.m_bestPrice = 0;
+        this.m_bestPriceJumps = 0;
     };
 
     EveShopper.prototype.shop = function(validator) {
         $('#loading_indicator').show().children().removeClass('loading_stop');
+
+        this.clean();
 
         this.m_currentStation = validator.currentLocation();
         this.m_jumpLimit = validator.jumpLimit();
@@ -30,6 +34,20 @@ var EveShopper = (function() {
         }).done(function() {
             this.updateJumpCounts(this.m_sellOrders);
         });
+    };
+
+    EveShopper.prototype.clean = function() {
+        var table = $('#sell_orders');
+        table.find('tbody').children().remove();
+        table.trigger('destroy');
+        this.m_currentStation = undefined;
+        this.m_currentStationBestPrice = undefined;
+        this.m_sellOrders = undefined;
+        this.m_jumpCount = [];
+        this.m_jumpLimit = 0;
+        this.m_bestPrices = [];
+        this.m_bestPrice = 0;
+        this.m_bestPriceJumps = 0;
     };
 
     EveShopper.prototype.errorHandler = function(fetchItem, xhr, status) {
@@ -54,11 +72,6 @@ var EveShopper = (function() {
                 'price': parseInt($(value).children('price').text().trim())
             };
             sellOrders.push(order);
-
-            if (order.station_name == this.m_currentStation &&
-                (this.m_currentStationBestPrice === undefined || this.m_currentStationBestPrice > order.price)) {
-                    this.m_currentStationBestPrice = order.price;
-            }
         }.bind(this));
 
         sellOrders.sort(function(a, b) {
@@ -76,6 +89,17 @@ var EveShopper = (function() {
         var self = this;
         $(document).ajaxStop(function() {
             $(this).unbind('ajaxStop');
+
+            // Update the best prices list.
+            $.each(orders, function(key, value) {
+                var jumpCount = self.m_jumpCount[value.station_name];
+
+                if (jumpCount !== undefined && (!(jumpCount in self.m_bestPrices) || self.m_bestPrices[jumpCount] > value.price)) {
+                    self.m_bestPrices[jumpCount] = value.price;
+                }
+            });
+
+            self.ensureBestPrice();
             self.drawTable();
         });
 
@@ -99,13 +123,24 @@ var EveShopper = (function() {
         }.bind(this));
     };
 
+    EveShopper.prototype.ensureBestPrice = function() {
+        $.each(this.m_bestPrices, function(key, value) {
+            if (value !== undefined) {
+                this.m_bestPrice = value;
+                this.m_bestPriceJumps = key;
+                return false;
+            }
+        }.bind(this));
+    };
+
     EveShopper.prototype.drawTable = function() {
         var container = $('#sell_orders tbody');
         var count = 0;
 
         var fnSavings = function(price, jumps) {
-            var totalSavings = Math.round((this.m_currentStationBestPrice - price) / this.m_currentStationBestPrice * 1000) / 10;
-            var perJumpSavings = (jumps == 0 ? 0 : Math.round(totalSavings / jumps * 10) / 10);
+            var totalSavings = Math.round((this.m_bestPrice - price) / this.m_bestPrice * 1000) / 10;
+            var jumpDiff = jumps - this.m_bestPriceJumps;
+            var perJumpSavings = (jumpDiff == 0 ? 0 : Math.round(totalSavings / jumpDiff * 10) / 10);
             return perJumpSavings.toString() + '%';
         }.bind(this);
 
