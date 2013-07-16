@@ -5,9 +5,8 @@ var EveShopper = (function() {
         this.m_apiQuicklook = this.m_api + 'quicklook';
         //this.m_everest = 'http://10.10.0.10/';
         this.m_everest = 'http://everest.kaelspencer.com/'
-        this.m_everestJumpCount = this.m_everest + 'jump/station/';
+        this.m_everestJumpBatch = this.m_everest + 'jump/batch/';
         this.m_currentStation = undefined;
-        this.m_currentStationBestPrice = undefined;
         this.m_sellOrders = undefined;
         this.m_jumpCount = [];
         this.m_jumpLimit = 0;
@@ -41,7 +40,6 @@ var EveShopper = (function() {
         table.find('tbody').children().remove();
         table.trigger('destroy');
         this.m_currentStation = undefined;
-        this.m_currentStationBestPrice = undefined;
         this.m_sellOrders = undefined;
         this.m_jumpCount = [];
         this.m_jumpLimit = 0;
@@ -82,45 +80,51 @@ var EveShopper = (function() {
     };
 
     EveShopper.prototype.updateJumpCounts = function(orders) {
-        var url = this.m_everestJumpCount + this.m_currentStation + '/';
-        var requests = [];
+        var postdata = {
+            source: this.m_currentStation,
+            destinations: []
+        };
 
-        // After these requests are complete, draw the table.
+        // Add all of the destinations.
         var self = this;
-        $(document).ajaxStop(function() {
-            $(this).unbind('ajaxStop');
-
-            // Update the best prices list.
-            $.each(orders, function(key, value) {
-                var jumpCount = self.m_jumpCount[value.station_name];
-
-                if (jumpCount !== undefined && (!(jumpCount in self.m_bestPrices) || self.m_bestPrices[jumpCount] > value.price)) {
-                    self.m_bestPrices[jumpCount] = value.price;
-                }
-            });
-
-            self.ensureBestPrice();
-            self.drawTable();
+        $.each(orders, function(key, value) {
+            if (!(value.station_name in self.m_jumpCount)) {
+                self.m_jumpCount[value.station_name] = 0;
+                postdata.destinations.push(value.station_name);
+            }
         });
 
-        $.each(orders, function(key, value) {
-            if (!(value.station_name in this.m_jumpCount)) {
-                this.m_jumpCount[value.station_name] = 0;
-
-                requests.push($.ajax({
-                    url: url + value.station_name,
-                    dataType: 'json',
-                    context: this,
-                    success: function(data) { this.m_jumpCount[value.station_name] = data.jumps; },
-                    error: function(xhr, status) {
-                        console.log('Failed to fetch jump count for ' + value.station_name + '. HTTP ' + xhr.status + ' (' + status + ')');
-                        this.m_jumpCount[value.station_name] = undefined;
+        $.ajax({
+            url: this.m_everestJumpBatch,
+            data: JSON.stringify(postdata),
+            contentType: 'application/json; charset=utf-8',
+            type: 'POST',
+            dataType: 'json',
+            success: function(data) {
+                $.each(data.destinations, function(key, value) {
+                    if (value.jumps > 0) {
+                        self.m_jumpCount[value.destination] = value.jumps;
+                    } else {
+                        self.m_jumpCount[value.destination] = undefined;
                     }
-                }));
-            }
+                });
 
-            orders[key].system = 'TBA';
-        }.bind(this));
+                // Update the best prices list.
+                $.each(orders, function(key, value) {
+                    var jumpCount = self.m_jumpCount[value.station_name];
+
+                    if (jumpCount !== undefined && (!(jumpCount in self.m_bestPrices) || self.m_bestPrices[jumpCount] > value.price)) {
+                        self.m_bestPrices[jumpCount] = value.price;
+                    }
+                });
+
+                self.ensureBestPrice();
+                self.drawTable();
+            },
+            error: function(xhr, status) {
+                self.errorHandler('jump counts', xhr, status);
+            }
+        });
     };
 
     EveShopper.prototype.ensureBestPrice = function() {
