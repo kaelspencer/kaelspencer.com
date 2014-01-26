@@ -5,7 +5,7 @@ var EveIndustry = (function() {
         this.m_everest = 'http://localhost:5000/';
         //this.m_everest = 'http://10.10.0.10/';
         //this.m_everest = 'http://everest.kaelspencer.com/'
-        this.m_everestIndustry = this.m_everest + "industry/all/names/";
+        this.m_everestIndustry = this.m_everest + "industry/norigs/names/";
         this.m_pe = 5; // Production Effeciency Skill
         this.m_ind = 5; // Industry Skill
         this.m_imp = 1; // Implant: 1 - % benefit
@@ -139,22 +139,26 @@ var EveIndustry = (function() {
 
         var net = (this.m_uniquePriceItems[itemid] - matcost) * runs - invention;
 
-        /*console.log('Decryptor: ' + decryptor.name);
-        console.log('Time: ' + pt.toFixed(2) + ' (' + pt24 + ') hours');
-        console.log('Runs: ' + runs);
-        console.log('Invention cost per run: ' + this.comma((invention / runs).toFixed(2)));
-        console.log('Material price (each): ' + this.comma(matcost.toFixed(2)));
-        console.log('Sell price (each): ' + this.comma(this.m_uniquePriceItems[itemid].toFixed(2)));
-        console.log('Net: ' + this.comma(net.toFixed(2)));
-        console.log('Net per hour: ' + this.comma((net / pt).toFixed(2)));
-        console.log('Net per 24 hour: ' + this.comma((net / pt24).toFixed(2)) + '\n');*/
+        if (net > 0) {
+            /*
+            console.log('Decryptor: ' + decryptor.name);
+            console.log('Time: ' + pt.toFixed(2) + ' (' + pt24 + ') hours');
+            console.log('Runs: ' + runs);
+            console.log('Invention cost per run: ' + this.comma((invention / runs).toFixed(2)));
+            console.log('Material price (each): ' + this.comma(matcost.toFixed(2)));
+            console.log('Sell price (each): ' + this.comma(this.m_uniquePriceItems[itemid].toFixed(2)));
+            console.log('Net: ' + this.comma(net.toFixed(2)));
+            console.log('Net per hour: ' + this.comma((net / pt).toFixed(2)));
+            console.log('Net per 24 hour: ' + this.comma((net / pt24).toFixed(2)) + '\n');
+            /**/
 
-       table.append($('<tr />')
-            .append($('<td />', { text: item.typeName }))
-            .append($('<td />', { text: decryptor.name }))
-            .append($('<td />', { text: pt.toFixed(2) }))
-            .append($('<td />', { text: this.comma((net / pt).toFixed(2)) }))
-            .append($('<td />', { text: this.comma((net / pt24).toFixed(2)) })));
+           table.append($('<tr />')
+                .append($('<td />', { text: item.typeName }))
+                .append($('<td />', { text: decryptor.name }))
+                .append($('<td />', { text: pt.toFixed(2) }))
+                .append($('<td />', { text: this.comma((net / pt).toFixed(2)) }))
+                .append($('<td />', { text: this.comma((net / pt24).toFixed(2)) })));
+       }
     };
 
     // Given the count for a perfect blueprint, the blueprint's ME, the user's PE, and the waste factor

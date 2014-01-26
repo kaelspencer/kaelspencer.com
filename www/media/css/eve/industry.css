@@ -1,0 +1,11 @@
+@import url(table.css);
+
+table.orders tr > td:first-child + td {
+    text-align: center;
+}
+
+table.orders tr > td:first-child + td + td,
+table.orders tr > td:first-child + td + td + td,
+table.orders tr > td:first-child + td + td + td + td {
+    text-align: right;
+}

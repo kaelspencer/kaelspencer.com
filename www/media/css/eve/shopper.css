@@ -1,34 +1,4 @@
-/* Display area */
-table.orders {
-    width: 100%;
-    border-top: 1px solid rgb(215, 215, 215);
-    border-right: 1px solid rgb(215, 215, 215);
-    margin-top: 10px;
-}
-
-table.orders th {
-    font-weight: bold;
-    font-size: 1.25em;
-    background-color: rgb(240, 240, 240);
-    border-bottom: 1px solid rgb(215, 215, 215);
-    border-left: 1px solid rgb(215, 215, 215);
-    padding: 0.3em 1em;
-}
-
-table.orders th span.subheader {
-    font-size: 0.75em;
-    display: block;
-}
-
-table.orders tr:nth-of-type(even) {
-    background-color: rgb(240, 240, 240);
-}
-
-table.orders td {
-    border-bottom: 1px solid rgb(215, 215, 215);
-    border-left: 1px solid rgb(215, 215, 215);
-    padding: 0.3em 1em;
-}
+@import url(table.css);
 
 table.orders tr > td:first-child + td,
 table.orders tr > td:first-child + td + td,
