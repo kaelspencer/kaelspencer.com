@@ -1,7 +1,7 @@
 var EveIndustry = (function() {
 
     function EveIndustry() {
-        this.m_api = 'http://api.eve-central.com/api/marketstat?';
+        this.m_api = 'http://api.eve-marketdata.com/api/item_prices2.json?char_name=Dogen%20Okanata&region_ids=10000002&buysell=s&type_ids='
         this.m_everest = 'http://localhost:5000/';
         //this.m_everest = 'http://10.10.0.10/';
         //this.m_everest = 'http://everest.kaelspencer.com/'
@@ -87,7 +87,7 @@ var EveIndustry = (function() {
                         var valid = that.processItem(itemid, item, decryptor, table);
 
                         if (!valid) {
-                            this.log('Unable to fetch all details for ' + item.typeName + ' (' + itemid + ').', 0);
+                            that.log('Unable to fetch all details for ' + item.typeName + ' (' + itemid + ').', 0);
                             return false;
                         }
                     });
@@ -101,15 +101,14 @@ var EveIndustry = (function() {
 
     // Called upon return from EVE-Central with price data.
     EveIndustry.prototype.onLoadPriceData = function(price_data) {
-        var types = $(price_data).children('evec_api').children('marketstat').children('type');
         var that = this;
 
-        types.each(function(key, value) {
-            if (that.m_uniquePriceItems.hasOwnProperty($(this).attr('id'))) {
-                var cost = parseFloat($(this).children('sell').children('min').text().trim());
+        $.each(price_data.emd.result, function(key, obj) {
+            if (that.m_uniquePriceItems.hasOwnProperty(obj.row.typeID)) {
+                var cost = parseFloat(obj.row.price);
 
                 if (!isNaN(cost)) {
-                    that.m_uniquePriceItems[$(this).attr('id')] = cost;
+                    that.m_uniquePriceItems[obj.row.typeID] = cost;
                 }
             }
         });
@@ -250,25 +249,29 @@ var EveIndustry = (function() {
     // There is a max length for the HTTP URI. It is easily exceeded. Break it up into multiple
     // requests and return an array of deferrals.
     EveIndustry.prototype.fetchPriceData = function() {
-        var pre = this.m_api + 'regionlimit=10000002';
-        var url = pre;
+        var url = this.m_api;
         var deferrals = [];
 
         // 2000 is a reasonable max length. Leave some buffer so no backtracking is necessary.
         var maxLength = 1980;
+        // The API limits the number of returned rows to 10,000.
+        var maxCount = 10000;
+        var count = 0;
 
         $.each(Object.keys(this.m_uniquePriceItems), function(key, val) {
-            url += '&typeid=' + val;
+            url += val + ',';
+            count++;
 
-            if (url.length > maxLength) {
+            if (url.length > maxLength || count > maxCount) {
                 // The length was just exceeded. Kick off the request.
-                deferrals.push($.ajax({ url: url, context: this }).done(this.onLoadPriceData));
-                url = pre;
+                deferrals.push($.ajax({ url: url, context: this, dataType: 'jsonp' }).done(this.onLoadPriceData));
+                url = this.m_api;
+                count = 0;
             }
         }.bind(this));
 
-        if (url != pre) {
-            deferrals.push($.ajax({ url: url, context: this }).done(this.onLoadPriceData));
+        if (url != this.m_api) {
+            deferrals.push($.ajax({ url: url, context: this, dataType: 'jsonp' }).done(this.onLoadPriceData));
         }
 
         return deferrals;
