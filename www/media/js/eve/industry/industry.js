@@ -1,7 +1,8 @@
 var EveIndustry = (function() {
 
     function EveIndustry() {
-        this.m_api = 'http://api.eve-marketdata.com/api/item_prices2.json?char_name=Dogen%20Okanata&region_ids=10000002&buysell=s&type_ids='
+        this.m_apiPrices = 'http://api.eve-marketdata.com/api/item_prices2.json?char_name=Dogen%20Okanata&region_ids=10000002&buysell=s&type_ids='
+        this.m_apiVolume = 'http://api.eve-marketdata.com/api/item_history2.json?char_name=Dogen%20Okanata&region_ids=10000002&days=20&type_ids='
         this.m_everest = 'http://localhost:5000/';
         //this.m_everest = 'http://10.10.0.10/';
         //this.m_everest = 'http://everest.kaelspencer.com/'
@@ -12,7 +13,8 @@ var EveIndustry = (function() {
         this.m_slt = 0.75 // Slot modifier (POS).
         this.m_logLevel = 0; // 0 is important only, 1 is verbose, 2 is very verbose.
 
-        this.m_uniquePriceItems = [];
+        this.m_uniquePriceItems = {};
+        this.m_inventableVolume = {};
         this.m_decryptors = [
             { 'name': 'None', 'probability': 1, 'run': 0, 'me': 0, 'pe': 0,
                 'items': { '728': 0, '729': 0, '730': 0, '731': 0 }},
@@ -61,6 +63,7 @@ var EveIndustry = (function() {
         // First loop through the result set. Just get the item ID's and store them in a unique list.
         $.each(industry_data.items, function(itemid, item) {
             that.addUniquePriceItem(itemid);
+            that.m_inventableVolume[itemid] = 0;
 
             $.each(item.perfectMaterials, function(i, material) {
                 that.addUniquePriceItem(material.typeID);
@@ -79,7 +82,9 @@ var EveIndustry = (function() {
         });
 
         // Fetch all of the price data, then process each item and decryptor combination.
-        $.when.apply($, this.fetchPriceData())
+        var deferrals = this.fetchPriceData(this.m_uniquePriceItems, this.m_apiPrices, this.onLoadPrices);
+        deferrals = deferrals.concat(this.fetchPriceData(this.m_inventableVolume, this.m_apiVolume, this.onLoadVolumes));
+        $.when.apply($, deferrals)
             .done(function() {
                 var table = $('#industry tbody');
                 $.each(industry_data.items, function(itemid, item) {
@@ -93,25 +98,56 @@ var EveIndustry = (function() {
                     });
                 });
 
-                $('#industry').tablesorter({ sortList: [[4, 1]]}).show();
+                $('#industry').tablesorter({ sortList: [[5, 1]]}).show();
                 $('#loading_indicator').hide().children().addClass('loading_stop');
             })
-            .fail(function(xhr, status) { this.errorHandler('industy list', xhr, status); })
+            .fail(function(xhr, status) { this.errorHandler('price data', xhr, status); })
     };
 
     // Called upon return from EVE-Central with price data.
-    EveIndustry.prototype.onLoadPriceData = function(price_data) {
-        var that = this;
-
+    EveIndustry.prototype.onLoadPrices = function(price_data) {
+        var d = new Date();
+        this.log('onLoadPrices: ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds(), 0);
         $.each(price_data.emd.result, function(key, obj) {
-            if (that.m_uniquePriceItems.hasOwnProperty(obj.row.typeID)) {
+            if (this.m_uniquePriceItems.hasOwnProperty(obj.row.typeID)) {
                 var cost = parseFloat(obj.row.price);
 
                 if (!isNaN(cost)) {
-                    that.m_uniquePriceItems[obj.row.typeID] = cost;
+                    this.m_uniquePriceItems[obj.row.typeID] = cost;
                 }
             }
+        }.bind(this));
+    };
+
+    // Average out the volumes. Drop the current date's volume because it will be incomplete - not
+    // a full day.
+    EveIndustry.prototype.onLoadVolumes = function(volume_data) {
+        var d = new Date();
+        this.log('onLoadVolumes: ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds(), 0);
+        // Get just the date portion.
+        var current_date = new Date(volume_data.emd.currentTime.replace(/(.*)T.*/, '$1'));
+        var volumes = {};
+
+        $.each(volume_data.emd.result, function(key, value) {
+            var this_date = new Date(value.row.date);
+
+            if (!volumes.hasOwnProperty(value.row.typeID)) {
+                volumes[value.row.typeID] = {'volume': 0, 'count': 0 };
+            }
+
+            // Exclude today's because it will be low (partial).
+            if (this_date.getTime() != current_date.getTime()) {
+                volumes[value.row.typeID].volume += parseInt(value.row.volume);
+                volumes[value.row.typeID].count++;
+            }
         });
+
+        // Now create averages.
+        $.each(volumes, function(typeid, volume) {
+            if (volume.count > 0) {
+                this.m_inventableVolume[typeid] = Math.round(volume.volume / volume.count);
+            }
+        }.bind(this));
     };
 
     // Calculate all of the good information about the blueprint.
@@ -162,6 +198,7 @@ var EveIndustry = (function() {
             this.log('Invention cost per run: ' + this.comma((invention / runs).toFixed(2)), 1);
             this.log('Material price (each): ' + this.comma(matcost.toFixed(2)), 1);
             this.log('Sell price (each): ' + this.comma(this.m_uniquePriceItems[itemid].toFixed(2)), 1);
+            this.log('Volume: ' + this.m_inventableVolume[itemid], 1);
             this.log('Net: ' + this.comma(net.toFixed(2)), 1);
             this.log('Net per hour: ' + this.comma((net / pt).toFixed(2)), 1);
             this.log('Net per 24 hour: ' + this.comma((net / pt24).toFixed(2)) + '\n', 1);
@@ -169,6 +206,7 @@ var EveIndustry = (function() {
            table.append($('<tr />')
                 .append($('<td />', { text: item.typeName }))
                 .append($('<td />', { text: decryptor.name }))
+                .append($('<td />', { text: this.m_inventableVolume[itemid] }))
                 .append($('<td />', { text: pt.toFixed(2) }))
                 .append($('<td />', { text: this.comma((net / pt).toFixed(2)) }))
                 .append($('<td />', { text: this.comma((net / pt24).toFixed(2)) })));
@@ -246,32 +284,31 @@ var EveIndustry = (function() {
         }
     };
 
-    // There is a max length for the HTTP URI. It is easily exceeded. Break it up into multiple
-    // requests and return an array of deferrals.
-    EveIndustry.prototype.fetchPriceData = function() {
-        var url = this.m_api;
+    // There is a max length for the HTTP URI. It is easily exceeded. 2000 is a reasonable max
+    // length. Leave some buffer so no backtracking is necessary. Additionallyl, the API limits
+    // the number of returned rows to 10,000. Break it up into multiple requests and return an
+    // array of deferrals.
+    EveIndustry.prototype.fetchPriceData = function(items, urlbase, callback) {
         var deferrals = [];
-
-        // 2000 is a reasonable max length. Leave some buffer so no backtracking is necessary.
+        var url = urlbase;
         var maxLength = 1980;
-        // The API limits the number of returned rows to 10,000.
         var maxCount = 10000;
         var count = 0;
 
-        $.each(Object.keys(this.m_uniquePriceItems), function(key, val) {
+        $.each(Object.keys(items), function(key, val) {
             url += val + ',';
             count++;
 
             if (url.length > maxLength || count > maxCount) {
                 // The length was just exceeded. Kick off the request.
-                deferrals.push($.ajax({ url: url, context: this, dataType: 'jsonp' }).done(this.onLoadPriceData));
-                url = this.m_api;
+                deferrals.push($.ajax({ url: url, context: this, dataType: 'jsonp' }).done(callback));
+                url = urlbase;
                 count = 0;
             }
         }.bind(this));
 
-        if (url != this.m_api) {
-            deferrals.push($.ajax({ url: url, context: this, dataType: 'jsonp' }).done(this.onLoadPriceData));
+        if (url != urlbase) {
+            deferrals.push($.ajax({ url: url, context: this, dataType: 'jsonp' }).done(callback));
         }
 
         return deferrals;
