@@ -83,7 +83,12 @@ var EveIndustry = (function() {
                 var table = $('#industry tbody');
                 $.each(industry_data.items, function(itemid, item) {
                     $.each(that.m_decryptors, function(k, decryptor) {
-                        that.processItem(itemid, item, decryptor, table);
+                        var valid = that.processItem(itemid, item, decryptor, table);
+
+                        if (!valid) {
+                            console.log('Unable to fetch all details for ' + item.typeName + ' (' + itemid + ').');
+                            return false;
+                        }
                     });
                 });
 
@@ -111,6 +116,8 @@ var EveIndustry = (function() {
 
     // Calculate all of the good information about the blueprint.
     EveIndustry.prototype.processItem = function(itemid, item, decryptor, table) {
+        // An item will be marked as invalid if one of the materials doesn't have a valid price associated with it.
+        var valid = true;
         var that = this;
         var bp_pe = -4 + decryptor.pe;
         var bp_me = -4 + decryptor.me;
@@ -139,11 +146,17 @@ var EveIndustry = (function() {
 
             // TODO: Should actual be saved?
             //console.log('\t' + material.name + ' ' + actual + ' (' + material.quantity + ') -> ' + that.comma(Math.round(actual * material.dmg * that.m_uniquePriceItems[materialid]).toFixed(2)));
+
+            if (that.m_uniquePriceItems[materialid] == 0) {
+                valid = false;
+                console.log('Failed to fetch price for ' + material.name + ' (' + materialid + ').');
+                return false;
+            }
         });
 
         var net = (this.m_uniquePriceItems[itemid] - matcost) * runs - invention;
 
-        if (net > 0) {
+        if (net > 0 && valid) {
             /*
             console.log('Decryptor: ' + decryptor.name);
             console.log('Time: ' + pt.toFixed(2) + ' (' + pt24 + ') hours');
@@ -163,6 +176,8 @@ var EveIndustry = (function() {
                 .append($('<td />', { text: this.comma((net / pt).toFixed(2)) }))
                 .append($('<td />', { text: this.comma((net / pt24).toFixed(2)) })));
        }
+
+       return valid;
     };
 
     // Given the count for a perfect blueprint, the blueprint's ME, the user's PE, the waste factor of the
