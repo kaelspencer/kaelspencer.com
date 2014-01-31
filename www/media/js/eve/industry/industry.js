@@ -61,8 +61,8 @@ var EveIndustry = (function() {
         $.each(industry_data.items, function(itemid, item) {
             that.addUniquePriceItem(itemid);
 
-            $.each(item.perfectMaterials, function(materialid) {
-                that.addUniquePriceItem(materialid);
+            $.each(item.perfectMaterials, function(i, material) {
+                that.addUniquePriceItem(material.typeID);
             });
 
             $.each(item.datacores, function(k, datacore) {
@@ -77,6 +77,7 @@ var EveIndustry = (function() {
             });
         });
 
+        // Fetch all of the price data, then process each item and decryptor combination.
         $.when.apply($, this.fetchPriceData())
             .done(function() {
                 var table = $('#industry tbody');
@@ -116,26 +117,29 @@ var EveIndustry = (function() {
         var runs = item.maxProductionLimit / 10 + decryptor.run;
         var pt = this.calculateProductionTime(item.productionTime, this.m_ind, this.m_imp, this.m_slt, item.productivityModifier, bp_pe);
 
-        // Production time is in hour units and is for the entire blueprint (not each individual run);
+        // Production time is in hour units and is for the entire blueprint (not each individual run).
+        // If the production time is an exact multiple of 24 hours, add an extra day. Continuous runs aren't
+        // happening.
         pt = pt * runs / (60 * 60);
         var pt24 = Math.ceil(pt / 24) * 24;
+
+        if (pt % 24 == 0) {
+            pt24 += 24;
+        }
+
         var matcost = 0;
 
         var invention = this.calculateInventionCost(item, decryptor);
 
-        $.each(item.perfectMaterials, function(materialid, material) {
-            var actual = material.quantity;
-
-            if (material.waste) {
-                actual = that.calculateActualRequired(material.quantity, bp_me, that.m_pe, item.wasteFactor);
-            }
+        $.each(item.perfectMaterials, function(i, material) {
+            var materialid = material.typeID;
+            var actual = that.calculateActualRequired(material.quantity, item.wasteFactor, bp_me, material.wasteME, that.m_pe, material.wastePE);
 
             matcost += actual * material.dmg * that.m_uniquePriceItems[materialid];
 
             // TODO: Should actual be saved?
-            ////console.log('\t' + material.name + ' ' + actual + ' (' + material.quantity + ') -> ' +
-            //    that.comma((actual * material.dmg * that.m_uniquePriceItems[materialid].toFixed(2))));
-        })
+            //console.log('\t' + material.name + ' ' + actual + ' (' + material.quantity + ') -> ' + that.comma(Math.round(actual * material.dmg * that.m_uniquePriceItems[materialid]).toFixed(2)));
+        });
 
         var net = (this.m_uniquePriceItems[itemid] - matcost) * runs - invention;
 
@@ -161,17 +165,35 @@ var EveIndustry = (function() {
        }
     };
 
-    // Given the count for a perfect blueprint, the blueprint's ME, the user's PE, and the waste factor
-    // of the blueprint, calculate the actual number of units required.
-    EveIndustry.prototype.calculateActualRequired = function(perfect, me, pe, wf) {
-        if (me >= 0) {
-            var temp = Math.round(perfect + perfect * ((wf / (me + 1)) / 100));
-        } else {
-            var temp = Math.round(perfect + perfect * (wf / 100) * (1 - me));
+    // Given the count for a perfect blueprint, the blueprint's ME, the user's PE, the waste factor of the
+    // blueprint and which waste type applies, calculate the actual number of units required.
+    EveIndustry.prototype.calculateActualRequired = function(perfect, wf, me, meApplies, pe, peApplies) {
+        var actual = perfect;
+
+        if (meApplies) {
+            actual += this.calculateWasteME(perfect, me, wf);
         }
 
-        temp += perfect * (0.25 - 0.05 * pe);
-        return temp;
+        if (peApplies) {
+            actual += this.calculateWastePE(perfect, pe);
+        }
+
+        return actual;
+    };
+
+    // Given the count for a perfect blueprint, the blueprint's ME, and the waste factor of the blueprint,
+    // calculate the result of ME waste.
+    EveIndustry.prototype.calculateWasteME = function(perfect, me, wf) {
+        if (me >= 0) {
+            return Math.round(perfect * ((wf / (me + 1)) / 100));
+        } else {
+            return Math.round(perfect * (wf / 100) * (1 - me));
+        }
+    };
+
+    // Given the count for a perfect blueprint and the user's PE, calculate the result of PE waste.
+    EveIndustry.prototype.calculateWastePE = function(perfect, pe) {
+        return perfect * (0.25 - 0.05 * pe);
     };
 
     // Give the base production time in seconds, industry skill, implant modifier, production slot modifier
@@ -191,15 +213,19 @@ var EveIndustry = (function() {
         // Hardcode encryption and science skills to 4 for now.
         var e = 4, d1 = 4, d2 = 4, meta = 0;
         var chance = item.chance * (1 + (0.01 * e)) * (1 + ((d1 + d1) * (0.1 / (5 - meta)))) * decryptor.probability;
-        //console.log('Invention chance: ' + (chance * 100).toFixed(2) + '%');
 
         var costPerAttempt = this.m_uniquePriceItems[item.datacores[0].typeID] * item.datacores[0].quantity +
                              this.m_uniquePriceItems[item.datacores[1].typeID] * item.datacores[1].quantity;
         costPerAttempt += this.m_uniquePriceItems[decryptor.items[item.decryptor_category]];
-        //console.log('Raw cost: ' + this.comma(costPerAttempt.toFixed(2)));
-        //console.log('Decryptor cost (' + decryptor.items[item.decryptor_category] + '): ' + this.comma(this.m_uniquePriceItems[decryptor.items[item.decryptor_category]].toFixed(2)))
         var costPerSuccess = costPerAttempt / chance;
-        //console.log('Cost per successful invention: ' + this.comma((costPerSuccess.toFixed(2))));
+
+        /*
+        console.log('Invention chance: ' + (chance * 100).toFixed(2) + '%');
+        console.log('Raw cost: ' + this.comma(costPerAttempt.toFixed(2)));
+        console.log('Decryptor cost (' + decryptor.items[item.decryptor_category] + '): ' + this.comma(this.m_uniquePriceItems[decryptor.items[item.decryptor_category]].toFixed(2)))
+        console.log('Cost per successful invention: ' + this.comma((costPerSuccess.toFixed(2))));
+        /**/
+
         return costPerSuccess;
     };
 
