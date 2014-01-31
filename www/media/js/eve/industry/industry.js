@@ -10,6 +10,7 @@ var EveIndustry = (function() {
         this.m_ind = 5; // Industry Skill
         this.m_imp = 1; // Implant: 1 - % benefit
         this.m_slt = 0.75 // Slot modifier (POS).
+        this.m_logLevel = 0; // 0 is important only, 1 is verbose, 2 is very verbose.
 
         this.m_uniquePriceItems = [];
         this.m_decryptors = [
@@ -44,7 +45,7 @@ var EveIndustry = (function() {
 
     EveIndustry.prototype.errorHandler = function(fetchItem, xhr, status) {
         var message = 'Failed to fetch ' + fetchItem + '. HTTP ' + xhr.status + ' (' + status + ')';
-        console.log(message);
+        this.log(message, 0);
         $('#status').text(message).show();
         $('#loading_indicator').hide().children().addClass('loading_stop');
     };
@@ -86,7 +87,7 @@ var EveIndustry = (function() {
                         var valid = that.processItem(itemid, item, decryptor, table);
 
                         if (!valid) {
-                            console.log('Unable to fetch all details for ' + item.typeName + ' (' + itemid + ').');
+                            this.log('Unable to fetch all details for ' + item.typeName + ' (' + itemid + ').', 0);
                             return false;
                         }
                     });
@@ -135,7 +136,6 @@ var EveIndustry = (function() {
         }
 
         var matcost = 0;
-
         var invention = this.calculateInventionCost(item, decryptor);
 
         $.each(item.perfectMaterials, function(i, material) {
@@ -145,11 +145,11 @@ var EveIndustry = (function() {
             matcost += actual * material.dmg * that.m_uniquePriceItems[materialid];
 
             // TODO: Should actual be saved?
-            //console.log('\t' + material.name + ' ' + actual + ' (' + material.quantity + ') -> ' + that.comma(Math.round(actual * material.dmg * that.m_uniquePriceItems[materialid]).toFixed(2)));
+            that.log('\t' + material.name + ' ' + actual + ' (' + material.quantity + ') -> ' + that.comma(Math.round(actual * material.dmg * that.m_uniquePriceItems[materialid]).toFixed(2)), 2);
 
             if (that.m_uniquePriceItems[materialid] == 0) {
                 valid = false;
-                console.log('Failed to fetch price for ' + material.name + ' (' + materialid + ').');
+                that.log('Failed to fetch price for ' + material.name + ' (' + materialid + ').', 0);
                 return false;
             }
         });
@@ -157,17 +157,15 @@ var EveIndustry = (function() {
         var net = (this.m_uniquePriceItems[itemid] - matcost) * runs - invention;
 
         if (net > 0 && valid) {
-            /*
-            console.log('Decryptor: ' + decryptor.name);
-            console.log('Time: ' + pt.toFixed(2) + ' (' + pt24 + ') hours');
-            console.log('Runs: ' + runs);
-            console.log('Invention cost per run: ' + this.comma((invention / runs).toFixed(2)));
-            console.log('Material price (each): ' + this.comma(matcost.toFixed(2)));
-            console.log('Sell price (each): ' + this.comma(this.m_uniquePriceItems[itemid].toFixed(2)));
-            console.log('Net: ' + this.comma(net.toFixed(2)));
-            console.log('Net per hour: ' + this.comma((net / pt).toFixed(2)));
-            console.log('Net per 24 hour: ' + this.comma((net / pt24).toFixed(2)) + '\n');
-            /**/
+            this.log('Decryptor: ' + decryptor.name, 1);
+            this.log('Time: ' + pt.toFixed(2) + ' (' + pt24 + ') hours', 1);
+            this.log('Runs: ' + runs, 1);
+            this.log('Invention cost per run: ' + this.comma((invention / runs).toFixed(2)), 1);
+            this.log('Material price (each): ' + this.comma(matcost.toFixed(2)), 1);
+            this.log('Sell price (each): ' + this.comma(this.m_uniquePriceItems[itemid].toFixed(2)), 1);
+            this.log('Net: ' + this.comma(net.toFixed(2)), 1);
+            this.log('Net per hour: ' + this.comma((net / pt).toFixed(2)), 1);
+            this.log('Net per 24 hour: ' + this.comma((net / pt24).toFixed(2)) + '\n', 1);
 
            table.append($('<tr />')
                 .append($('<td />', { text: item.typeName }))
@@ -234,12 +232,10 @@ var EveIndustry = (function() {
         costPerAttempt += this.m_uniquePriceItems[decryptor.items[item.decryptor_category]];
         var costPerSuccess = costPerAttempt / chance;
 
-        /*
-        console.log('Invention chance: ' + (chance * 100).toFixed(2) + '%');
-        console.log('Raw cost: ' + this.comma(costPerAttempt.toFixed(2)));
-        console.log('Decryptor cost (' + decryptor.items[item.decryptor_category] + '): ' + this.comma(this.m_uniquePriceItems[decryptor.items[item.decryptor_category]].toFixed(2)))
-        console.log('Cost per successful invention: ' + this.comma((costPerSuccess.toFixed(2))));
-        /**/
+        this.log('Invention chance: ' + (chance * 100).toFixed(2) + '%', 1);
+        this.log('Raw cost: ' + this.comma(costPerAttempt.toFixed(2)), 1);
+        this.log('Decryptor cost (' + decryptor.items[item.decryptor_category] + '): ' + this.comma(this.m_uniquePriceItems[decryptor.items[item.decryptor_category]].toFixed(2), 1))
+        this.log('Cost per successful invention: ' + this.comma((costPerSuccess.toFixed(2))), 1);
 
         return costPerSuccess;
     };
@@ -254,7 +250,6 @@ var EveIndustry = (function() {
     // There is a max length for the HTTP URI. It is easily exceeded. Break it up into multiple
     // requests and return an array of deferrals.
     EveIndustry.prototype.fetchPriceData = function() {
-        //$.ajax({ url: '/media/js/eve/industry/marketstat.xml', context: this, })
         var pre = this.m_api + 'regionlimit=10000002';
         var url = pre;
         var deferrals = [];
@@ -281,6 +276,12 @@ var EveIndustry = (function() {
 
     EveIndustry.prototype.comma = function(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    };
+
+    EveIndustry.prototype.log = function(message, level) {
+        if (level <= this.m_logLevel) {
+            console.log(message);
+        }
     };
 
     return EveIndustry;
