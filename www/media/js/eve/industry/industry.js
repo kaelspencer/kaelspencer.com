@@ -3,13 +3,11 @@ var EveIndustry = (function() {
     function EveIndustry() {
         this.m_apiPrices = 'http://api.eve-marketdata.com/api/item_prices2.json?char_name=Dogen%20Okanata&region_ids=10000002&buysell=s&type_ids='
         this.m_apiVolume = 'http://api.eve-marketdata.com/api/item_history2.json?char_name=Dogen%20Okanata&region_ids=10000002&days=20&type_ids='
-        this.m_everest = 'http://localhost:5000/';
-        //this.m_everest = 'http://10.10.0.10/';
-        //this.m_everest = 'http://everest.kaelspencer.com/'
+        this.m_everest = 'http://everest.kaelspencer.com/'
         this.m_everestIndustry = this.m_everest + "industry/norigs/names/";
         this.m_pe = 5; // Production Effeciency Skill
         this.m_ind = 5; // Industry Skill
-        this.m_imp = 1; // Implant: 1 - % benefit
+        this.m_imp = 0.98; // Implant: 1 - % benefit
         this.m_slt = 0.75 // Slot modifier (POS).
         this.m_logLevel = 0; // 0 is important only, 1 is verbose, 2 is very verbose.
 
@@ -158,7 +156,14 @@ var EveIndustry = (function() {
         var bp_pe = -4 + decryptor.pe;
         var bp_me = -4 + decryptor.me;
         var runs = item.maxProductionLimit / 10 + decryptor.run;
-        var pt = this.calculateProductionTime(item.productionTime, this.m_ind, this.m_imp, this.m_slt, item.productivityModifier, bp_pe);
+
+        // If the item is a ship it will be built in a station instead of a POS. The slot modifier in this case is 1.
+        var slt = this.m_slt;
+        if (item.categoryName == "Ship") {
+            slt = 1;
+        }
+
+        var pt = this.calculateProductionTime(item.productionTime, this.m_ind, this.m_imp, slt, item.productivityModifier, bp_pe);
 
         // Production time is in hour units and is for the entire blueprint (not each individual run).
         // If the production time is an exact multiple of 24 hours, add an extra day. Continuous runs aren't
