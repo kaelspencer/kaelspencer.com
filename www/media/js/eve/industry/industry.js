@@ -86,14 +86,45 @@ var EveIndustry = (function() {
             .done(function() {
                 var table = $('#industry tbody');
                 $.each(industry_data.items, function(itemid, item) {
-                    $.each(that.m_decryptors, function(k, decryptor) {
-                        var valid = that.processItem(itemid, item, decryptor, table);
+                    var best = { 'iph24': 0, 'valid': false };
 
-                        if (!valid) {
+                    $.each(that.m_decryptors, function(k, decryptor) {
+                        var result = that.processItem(itemid, item, decryptor, table);
+
+                        if (result.valid) {
+                            if (result.iph24 > best.iph24 || !best.valid) {
+                                best = result;
+                                best.decryptor = decryptor;
+                            }
+                        } else {
                             that.log('Unable to fetch all details for ' + item.typeName + ' (' + itemid + ').', 0);
                             return false;
                         }
+
                     });
+
+                    if (best.valid && best.iph24 > 0) {
+                        that.log('Details for ' + itemid + ' (' + item.typeName + ')', 1);
+                        that.log('Decryptor: ' + best.decryptor.name, 1);
+                        that.log('Time: ' + best.production_time.toFixed(2) + ' (' + best.production_time24 + ') hours', 1);
+                        that.log('Runs: ' + best.runs, 1);
+                        that.log('Invention cost per run: ' + that.comma((best.invention_cost / best.runs).toFixed(2)), 1);
+                        that.log('Material price (each): ' + that.comma(best.material_cost.toFixed(2)), 1);
+                        that.log('Sell price (each): ' + that.comma(that.m_uniquePriceItems[itemid].toFixed(2)), 1);
+                        that.log('Volume: ' + that.m_inventableVolume[itemid], 1);
+                        that.log('Net: ' + that.comma(best.net.toFixed(2)), 1);
+                        that.log('Net per hour: ' + that.comma((best.net / best.production_time).toFixed(2)), 1);
+                        that.log('Net per 24 hour: ' + that.comma((best.net / best.production_time24).toFixed(2)) + '\n', 1);
+                        that.log('', 1);
+
+                       table.append($('<tr />')
+                            .append($('<td />', { text: item.typeName }))
+                            .append($('<td />', { text: best.decryptor.name }))
+                            .append($('<td />', { text: that.m_inventableVolume[itemid] }))
+                            .append($('<td />', { text: best.production_time.toFixed(2) }))
+                            .append($('<td />', { text: that.comma((best.net / best.production_time).toFixed(2)) }))
+                            .append($('<td />', { text: that.comma((best.net / best.production_time24).toFixed(2)) })));
+                    }
                 });
 
                 $('#industry').tablesorter({ sortList: [[5, 1]]}).show();
@@ -151,6 +182,17 @@ var EveIndustry = (function() {
     // Calculate all of the good information about the blueprint.
     EveIndustry.prototype.processItem = function(itemid, item, decryptor, table) {
         // An item will be marked as invalid if one of the materials doesn't have a valid price associated with it.
+        var result = {
+            'valid': true,
+            'production_time': 0,
+            'production_time24': 0,
+            'runs': item.maxProductionLimit / 10 + decryptor.run,
+            'material_cost': 0,
+            'invention_cost': 0,
+            'net': 0,
+            'iph': 0,
+            'iph24': 0
+        };
         var valid = true;
         var that = this;
         var bp_pe = -4 + decryptor.pe;
@@ -163,61 +205,41 @@ var EveIndustry = (function() {
             slt = 1;
         }
 
-        var pt = this.calculateProductionTime(item.productionTime, this.m_ind, this.m_imp, slt, item.productivityModifier, bp_pe);
+        result.production_time = this.calculateProductionTime(item.productionTime, this.m_ind, this.m_imp, slt, item.productivityModifier, bp_pe);
 
         // Production time is in hour units and is for the entire blueprint (not each individual run).
         // If the production time is an exact multiple of 24 hours, add an extra day. Continuous runs aren't
         // happening.
-        pt = pt * runs / (60 * 60);
-        var pt24 = Math.ceil(pt / 24) * 24;
+        result.production_time = result.production_time * result.runs / (60 * 60);
+        result.production_time24 = Math.ceil(result.production_time / 24) * 24;
 
-        if (pt % 24 == 0) {
-            pt24 += 24;
+        if (result.production_time % 24 == 0) {
+            result.production_time24 += 24;
         }
 
-        var matcost = 0;
-        var invention = this.calculateInventionCost(item, decryptor);
+        result.invention_cost = this.calculateInventionCost(item, decryptor);
 
         $.each(item.perfectMaterials, function(i, material) {
             var materialid = material.typeID;
             var actual = that.calculateActualRequired(material.quantity, item.wasteFactor, bp_me, material.wasteME, that.m_pe, material.wastePE);
 
-            matcost += actual * material.dmg * that.m_uniquePriceItems[materialid];
+            result.material_cost += actual * material.dmg * that.m_uniquePriceItems[materialid];
 
             // TODO: Should actual be saved?
             that.log('\t' + material.name + ' ' + actual + ' (' + material.quantity + ') -> ' + that.comma(Math.round(actual * material.dmg * that.m_uniquePriceItems[materialid]).toFixed(2)), 2);
 
             if (that.m_uniquePriceItems[materialid] == 0) {
-                valid = false;
+                result.valid = false;
                 that.log('Failed to fetch price for ' + material.name + ' (' + materialid + ').', 0);
                 return false;
             }
         });
 
-        var net = (this.m_uniquePriceItems[itemid] - matcost) * runs - invention;
+        result.net = (this.m_uniquePriceItems[itemid] - result.material_cost) * result.runs - result.invention_cost;
+        result.iph = result.net / result.production_time;
+        result.iph24 = result.net / result.production_time24;
 
-        if (net > 0 && valid) {
-            this.log('Decryptor: ' + decryptor.name, 1);
-            this.log('Time: ' + pt.toFixed(2) + ' (' + pt24 + ') hours', 1);
-            this.log('Runs: ' + runs, 1);
-            this.log('Invention cost per run: ' + this.comma((invention / runs).toFixed(2)), 1);
-            this.log('Material price (each): ' + this.comma(matcost.toFixed(2)), 1);
-            this.log('Sell price (each): ' + this.comma(this.m_uniquePriceItems[itemid].toFixed(2)), 1);
-            this.log('Volume: ' + this.m_inventableVolume[itemid], 1);
-            this.log('Net: ' + this.comma(net.toFixed(2)), 1);
-            this.log('Net per hour: ' + this.comma((net / pt).toFixed(2)), 1);
-            this.log('Net per 24 hour: ' + this.comma((net / pt24).toFixed(2)) + '\n', 1);
-
-           table.append($('<tr />')
-                .append($('<td />', { text: item.typeName }))
-                .append($('<td />', { text: decryptor.name }))
-                .append($('<td />', { text: this.m_inventableVolume[itemid] }))
-                .append($('<td />', { text: pt.toFixed(2) }))
-                .append($('<td />', { text: this.comma((net / pt).toFixed(2)) }))
-                .append($('<td />', { text: this.comma((net / pt24).toFixed(2)) })));
-       }
-
-       return valid;
+        return result;
     };
 
     // Given the count for a perfect blueprint, the blueprint's ME, the user's PE, the waste factor of the
@@ -274,10 +296,10 @@ var EveIndustry = (function() {
         costPerAttempt += this.m_uniquePriceItems[decryptor.items[item.decryptor_category]];
         var costPerSuccess = costPerAttempt / chance;
 
-        this.log('Invention chance: ' + (chance * 100).toFixed(2) + '%', 1);
-        this.log('Raw cost: ' + this.comma(costPerAttempt.toFixed(2)), 1);
-        this.log('Decryptor cost (' + decryptor.items[item.decryptor_category] + '): ' + this.comma(this.m_uniquePriceItems[decryptor.items[item.decryptor_category]].toFixed(2), 1))
-        this.log('Cost per successful invention: ' + this.comma((costPerSuccess.toFixed(2))), 1);
+        this.log('Invention chance: ' + (chance * 100).toFixed(2) + '%', 2);
+        this.log('Raw cost: ' + this.comma(costPerAttempt.toFixed(2)), 2);
+        this.log('Decryptor cost (' + decryptor.items[item.decryptor_category] + '): ' + this.comma(this.m_uniquePriceItems[decryptor.items[item.decryptor_category]].toFixed(2), 2));
+        this.log('Cost per successful invention: ' + this.comma((costPerSuccess.toFixed(2))), 2);
 
         return costPerSuccess;
     };
