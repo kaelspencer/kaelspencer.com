@@ -1,12 +1,41 @@
 @import url(table.css);
 
-table.orders tr > td:first-child + td,
-table.orders tr > td:first-child + td + td {
+table.industry_all_decryptors {
+    display: none;
+}
+
+table.industry_all_decryptors th {
     text-align: center;
 }
 
-table.orders tr > td:first-child + td + td + td,
-table.orders tr > td:first-child + td + td + td + td,
-table.orders tr > td:first-child + td + td + td + td + td {
+table.industry_all_decryptors tr > td:first-child + td,
+table.industry_all_decryptors tr > td:first-child + td + td {
+    text-align: center;
+}
+
+table.industry_all_decryptors tr > td:first-child + td + td + td,
+table.industry_all_decryptors tr > td:first-child + td + td + td + td,
+table.industry_all_decryptors tr > td:first-child + td + td + td + td + td {
+    text-align: right;
+}
+
+table.industry_detail_decryptors {
+    display: none;
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+table.industry_detail_decryptors th {
+    text-align: center;
+}
+
+table.industry_detail_decryptors tr > td:first-child + td {
+    text-align: center;
+}
+
+table.industry_detail_decryptors tr > td:first-child + td + td,
+table.industry_detail_decryptors tr > td:first-child + td + td + td,
+table.industry_detail_decryptors tr > td:first-child + td + td + td + td {
     text-align: right;
 }

@@ -3,9 +3,13 @@
 {% block title %}industry{% endblock %}
 
 {% block extrahead %}
+<script type="text/javascript">
+var itemid = {{ itemid|safe }};
+</script>
+
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.tablesorter.min.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/eve/industry/industry.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}js/eve/industry/industry_page.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/eve/industry/industry_detail_page.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/chosen.jquery.v0-12-1.min.js"></script>
 
 <link rel="stylesheet" type="text/css" media="screen" href="{{ MEDIA_URL }}css/eve/industry.css" />
@@ -13,21 +17,20 @@
 
 {% block content %}
 <article>
-    <header>Industry</header>
+    <header>Industry Detail: <span id="typename">{{ itemid|safe }}</span></header>
 
     <div class="clear"></div>
     <div id="status" style="display: none;"></div>
 
     <div>
-        <table id="industry" class="eve industry_all_decryptors">
+        <table id="industry" class="eve industry_detail_decryptors">
             <thead>
                 <tr>
-                    <th style="width: 40%;">Item</th>
-                    <th style="width: 20%;">Decryptor</th>
-                    <th style="width: 5%;">Vol</th>
-                    <th style="width: 5%;">Time</th>
-                    <th style="width: 15%;">IPH</th>
-                    <th style="width: 15%;">IPH (24)</th>
+                    <th style="width: 40%;">Decryptor</th>
+                    <th style="width: 10%;">Vol</th>
+                    <th style="width: 10%;">Time</th>
+                    <th style="width: 20%;">IPH</th>
+                    <th style="width: 20%;">IPH (24)</th>
                 </tr>
             </thead>
             <tbody>

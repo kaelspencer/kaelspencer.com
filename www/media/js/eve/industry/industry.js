@@ -4,12 +4,18 @@ var EveIndustry = (function() {
         this.m_apiPrices = 'http://api.eve-marketdata.com/api/item_prices2.json?char_name=Dogen%20Okanata&region_ids=10000002&buysell=s&type_ids='
         this.m_apiVolume = 'http://api.eve-marketdata.com/api/item_history2.json?char_name=Dogen%20Okanata&region_ids=10000002&days=20&type_ids='
         this.m_everest = 'http://everest.kaelspencer.com/'
+        //this.m_everest = 'http://localhost:5000/'
         this.m_everestIndustry = this.m_everest + "industry/norigs/names/";
+        this.m_everestIndustryDetail = this.m_everest + "industry/detail/";
         this.m_pe = 5; // Production Effeciency Skill
         this.m_ind = 5; // Industry Skill
         this.m_imp = 0.98; // Implant: 1 - % benefit
         this.m_slt = 0.75 // Slot modifier (POS).
         this.m_logLevel = 0; // 0 is important only, 1 is verbose, 2 is very verbose.
+        // The method provided by the caller to handle the results of computation. It is called per
+        // item. It is a list of results for each decryptor.
+        this.m_handleResults = undefined;
+        this.m_onDrawComplete = undefined; // Called when drawing is completed.
 
         this.m_uniquePriceItems = {};
         this.m_inventableVolume = {};
@@ -35,19 +41,48 @@ var EveIndustry = (function() {
         ];
     };
 
-    EveIndustry.prototype.industrate = function(validator) {
-        $('#loading_indicator').show().children().removeClass('loading_stop');
+    EveIndustry.prototype.industrate = function(handleResults, onDrawComplete) {
+        if (typeof handleResults !== 'function') {
+            this.errorHandler('Invalid handleResults function provided (' + typeof handleResults + ')');
+        } else if (typeof onDrawComplete !== 'function') {
+            this.errorHandler('Invalid onDrawComplete function provided (' + typeof onDrawComplete + ')');
+        } else {
+            this.m_handleResults = handleResults;
+            this.m_onDrawComplete = onDrawComplete;
 
-        $.ajax({ url: this.m_everestIndustry, context: this, })
-            .done(this.onLoadIndustryItems)
-            .fail(function(xhr, status) { this.errorHandler('industy list', xhr, status); });
+            $.ajax({ url: this.m_everestIndustry, context: this, })
+                .done(this.onLoadIndustryItems)
+                .fail(function(xhr, status) { this.errorHandler('industy list', xhr, status); });
+        }
+    };
+
+    // Go into detail mode. Only information for the provided itemID is retrieved and calculated.
+    EveIndustry.prototype.industrate_detail = function(itemid, handleResults, onDrawComplete) {
+        if (typeof handleResults !== 'function') {
+            this.errorHandler('Invalid handleResults function provided (' + typeof handleResults + ')');
+        } else if (typeof onDrawComplete !== 'function') {
+            this.errorHandler('Invalid onDrawComplete function provided (' + typeof onDrawComplete + ')');
+        } else if (typeof itemid !== 'number') {
+            this.errorHandler('Incorrect itemid provided (' + typeof itemid + ')');
+        } else {
+            this.m_handleResults = handleResults;
+            this.m_onDrawComplete = onDrawComplete;
+
+            $.ajax({ url: this.m_everestIndustryDetail + itemid + '/', context: this, })
+                .done(this.onLoadIndustryItems)
+                .fail(function(xhr, status) { this.errorHandler('industy list', xhr, status); });
+        }
     };
 
     EveIndustry.prototype.errorHandler = function(fetchItem, xhr, status) {
-        var message = 'Failed to fetch ' + fetchItem + '. HTTP ' + xhr.status + ' (' + status + ')';
+        if (typeof xhr === 'undefined') {
+            var message = fetchItem;
+        } else {
+            var message = 'Failed to fetch ' + fetchItem + '. HTTP ' + xhr.status + ' (' + status + ')';
+        }
+
         this.log(message, 0);
         $('#status').text(message).show();
-        $('#loading_indicator').hide().children().addClass('loading_stop');
     };
 
     // Called upon return from everest. Contains a list of inventable items and their information.
@@ -84,51 +119,24 @@ var EveIndustry = (function() {
         deferrals = deferrals.concat(this.fetchPriceData(this.m_inventableVolume, this.m_apiVolume, this.onLoadVolumes));
         $.when.apply($, deferrals)
             .done(function() {
-                var table = $('#industry tbody');
                 $.each(industry_data.items, function(itemid, item) {
-                    var best = { 'iph24': 0, 'valid': false };
-
+                    var results = [];
+                    var valid = true;
                     $.each(that.m_decryptors, function(k, decryptor) {
-                        var result = that.processItem(itemid, item, decryptor, table);
+                        var i = results.push(that.processItem(itemid, item, decryptor));
 
-                        if (result.valid) {
-                            if (result.iph24 > best.iph24 || !best.valid) {
-                                best = result;
-                                best.decryptor = decryptor;
-                            }
-                        } else {
+                        if (!results[i-1].valid) {
                             that.log('Unable to fetch all details for ' + item.typeName + ' (' + itemid + ').', 0);
-                            return false;
+                            return valid = false;
                         }
-
                     });
 
-                    if (best.valid && best.iph24 > 0) {
-                        that.log('Details for ' + itemid + ' (' + item.typeName + ')', 1);
-                        that.log('Decryptor: ' + best.decryptor.name, 1);
-                        that.log('Time: ' + best.production_time.toFixed(2) + ' (' + best.production_time24 + ') hours', 1);
-                        that.log('Runs: ' + best.runs, 1);
-                        that.log('Invention cost per run: ' + that.comma((best.invention_cost / best.runs).toFixed(2)), 1);
-                        that.log('Material price (each): ' + that.comma(best.material_cost.toFixed(2)), 1);
-                        that.log('Sell price (each): ' + that.comma(that.m_uniquePriceItems[itemid].toFixed(2)), 1);
-                        that.log('Volume: ' + that.m_inventableVolume[itemid], 1);
-                        that.log('Net: ' + that.comma(best.net.toFixed(2)), 1);
-                        that.log('Net per hour: ' + that.comma((best.net / best.production_time).toFixed(2)), 1);
-                        that.log('Net per 24 hour: ' + that.comma((best.net / best.production_time24).toFixed(2)) + '\n', 1);
-                        that.log('', 1);
-
-                       table.append($('<tr />')
-                            .append($('<td />', { text: item.typeName }))
-                            .append($('<td />', { text: best.decryptor.name }))
-                            .append($('<td />', { text: that.m_inventableVolume[itemid] }))
-                            .append($('<td />', { text: best.production_time.toFixed(2) }))
-                            .append($('<td />', { text: that.comma((best.net / best.production_time).toFixed(2)) }))
-                            .append($('<td />', { text: that.comma((best.net / best.production_time24).toFixed(2)) })));
+                    if (valid) {
+                        that.m_handleResults(results);
                     }
                 });
 
-                $('#industry').tablesorter({ sortList: [[5, 1]]}).show();
-                $('#loading_indicator').hide().children().addClass('loading_stop');
+                that.m_onDrawComplete();
             })
             .fail(function(xhr, status) { this.errorHandler('price data', xhr, status); })
     };
@@ -180,7 +188,7 @@ var EveIndustry = (function() {
     };
 
     // Calculate all of the good information about the blueprint.
-    EveIndustry.prototype.processItem = function(itemid, item, decryptor, table) {
+    EveIndustry.prototype.processItem = function(itemid, item, decryptor) {
         // An item will be marked as invalid if one of the materials doesn't have a valid price associated with it.
         var result = {
             'valid': true,
@@ -191,7 +199,11 @@ var EveIndustry = (function() {
             'invention_cost': 0,
             'net': 0,
             'iph': 0,
-            'iph24': 0
+            'iph24': 0,
+            'itemid': itemid,
+            'typeName': item.typeName,
+            'decryptor': decryptor,
+            'volume': this.m_inventableVolume[itemid]
         };
         var valid = true;
         var that = this;
