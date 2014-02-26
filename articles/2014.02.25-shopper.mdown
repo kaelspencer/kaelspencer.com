@@ -1,0 +1,19 @@
+<!---
+    Date: 2014-02-25
+-->
+For the past year or so I've been playing [EVE](http://en.wikipedia.org/wiki/Eve_online "EVE Online"). I often found myself needing to purchase something and looking through [EVE-Central](https://eve-central.com/ "EVE-Central") (a site which displays where items are for sale and how much they are). The best prices were typically many jumps away. In my head, I would try to locate systems nearby that might be a bit more expensive than the best price. 10 jumps away, item A is for sale at 5m ISK. Only 5 jumps way, that same item is for sale at 6m ISK. In your current system, that same item is for sale for for 10m ISK. Where should you buy it?
+
+The system 10 jumps away saves you 50%. The system 5 jumps away saves you a bit less at 40%. The thing to consider is really whether 5 more jumps is worth it. This is what [shopper](/eve/shopper/ "shopper") does for you. It doesn't simply calculate the percent savings based on distance, it calculates how much you save per jump. In our example, going 10 jumps saves you 5% per jump, while going to the system 5 jumps away saves you 8% per jump.
+
+This is a bit of a contrived example. In reality, you're using dealing with fewer percentage points of savings, but greater jump distances. There is an underlying usefulness to this: you can see the closest sell order at a reasonable price!
+
+Shopper requires a couple of things. First, the item you're looking for needs to be selected from the dropdown. Enter the name of your current system (or station, if you want to refine further). This is how the "best-near" price is determined. If there are sell orders in your current system, the best price is chosen as the base of savings. If you want to be particular about sell orders enter your station. Optionally, if you're only willing to travel a set number of jumps you can filter the result set.
+
+Check out [shopper](/eve/shopper/ "shopper").
+
+Implementation Details
+======================
+
+I am using EVE-Central to source all of the market data. It works fairly well with one caveat. The API returns sell orders from certain null-sec stations that most players don't have access too. The public facing site doesn't list this. If I'm unable to locate the station I don't show the result (for the obvious reason of I don't know how far away it is).
+
+The other needed thing for this project is a system that determines how far away different systems are. I picked up a copy of the static data dump and then needed to calculate shortest path routes between systems. I didn't really want to calculate this for every possibility once, pass it to the user, then have a simple JavaScript lookup. It probably would have been too much data. Instead, I created [everest](https://github.com/kaelspencer/everest "everest"). This a RESTful API backed by the static data dump and the Python library [NetworkX](http://networkx.github.io/ "NetworkX: High-productivity software for complex networks"). Each distance calculation is cached by memcached so the longer it is running (and used) the faster it gets. Everest was actually more fun to write than the client side price calculation. I'll have a writeup on that soon.
