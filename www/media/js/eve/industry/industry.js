@@ -34,9 +34,9 @@ var EveIndustry = (function() {
                 'items': { '728': 23178, '729': 21579, '730': 23183, '731': 21573 }},
             { 'name': 'Symmetry', 'probability': 1.0, 'run': 2, 'me': 1, 'pe': 4,
                 'items': { '728': 23180, '729': 21581, '730': 23185, '731': 21575 }},
-            { 'name': 'Optimized Attainment', 'probability': 1.9, 'run': 2, 'me': 1, 'pe': -1,
+            { 'name': 'Opt Attainment', 'probability': 1.9, 'run': 2, 'me': 1, 'pe': -1,
                 'items': { '728': 33317, '729': 33324, '730': 33326, '731': 33325 }},
-            { 'name': 'Optimized Augmentation', 'probability': 0.9, 'run': 7, 'me': 2, 'pe': 0,
+            { 'name': 'Opt Augmentation', 'probability': 0.9, 'run': 7, 'me': 2, 'pe': 0,
                 'items': { '728': 33316, '729': 33321, '730': 33323, '731': 33322 }}
         ];
     };

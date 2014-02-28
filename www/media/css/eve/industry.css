@@ -1,7 +1,23 @@
 @import url(table.css);
 
+table.fill {
+    width: 95%;
+}
+
+table.industry {
+    font-size: 0.75em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 table.industry_all_decryptors {
     display: none;
+    width: 100%;
+}
+
+table.industry_all_decryptors th,
+table.industry_all_decryptors td {
+    white-space: nowrap;
 }
 
 table.industry_all_decryptors th {
@@ -15,15 +31,14 @@ table.industry_all_decryptors tr > td:first-child + td + td {
 
 table.industry_all_decryptors tr > td:first-child + td + td + td,
 table.industry_all_decryptors tr > td:first-child + td + td + td + td,
-table.industry_all_decryptors tr > td:first-child + td + td + td + td + td {
+table.industry_all_decryptors tr > td:first-child + td + td + td + td + td,
+table.industry_all_decryptors tr > td:first-child + td + td + td + td + td + td {
     text-align: right;
 }
 
 table.industry_detail_decryptors {
     display: none;
     width: 70%;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 table.industry_detail_decryptors th {
@@ -36,6 +51,7 @@ table.industry_detail_decryptors tr > td:first-child + td {
 
 table.industry_detail_decryptors tr > td:first-child + td + td,
 table.industry_detail_decryptors tr > td:first-child + td + td + td,
-table.industry_detail_decryptors tr > td:first-child + td + td + td + td {
+table.industry_detail_decryptors tr > td:first-child + td + td + td + td,
+table.industry_detail_decryptors tr > td:first-child + td + td + td + td + td{
     text-align: right;
 }

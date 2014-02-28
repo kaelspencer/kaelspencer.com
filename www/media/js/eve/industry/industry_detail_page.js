@@ -20,10 +20,11 @@
                 table.append($('<tr />')
                     .append($('<td />', { text: result.decryptor.name }))
                     .append($('<td />', { text: result.volume }))
-                    .append($('<td />', { text: result.production_time.toFixed(2) }))
+                    .append($('<td />', { text: result.production_time.toFixed(1) }))
                     // TODO: Move comma to a common helper.
-                    .append($('<td />', { text: (new EveIndustry()).comma((result.net / result.production_time).toFixed(2)) }))
-                    .append($('<td />', { text: (new EveIndustry()).comma((result.net / result.production_time24).toFixed(2)) })));
+                    .append($('<td />', { text: (new EveIndustry()).comma((result.net / result.production_time).toFixed(0)) }))
+                    .append($('<td />', { text: (new EveIndustry()).comma((result.net / result.production_time24).toFixed(0)) }))
+                    .append($('<td />', { html: '&nbsp;' })));
             }
         });
     }
