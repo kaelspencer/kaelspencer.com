@@ -24,9 +24,8 @@
                 .append($('<td />', { text: best.decryptor.name }))
                 .append($('<td />', { text: best.volume }))
                 .append($('<td />', { text: best.production_time.toFixed(1) }))
-                // TODO: Move comma to a common helper.
-                .append($('<td />', { text: (new EveIndustry()).comma((best.net / best.production_time).toFixed(0)) }))
-                .append($('<td />', { text: (new EveIndustry()).comma((best.net / best.production_time24).toFixed(0)) }))
+                .append($('<td />', { text: K.comma((best.net / best.production_time).toFixed(0)) }))
+                .append($('<td />', { text: K.comma((best.net / best.production_time24).toFixed(0)) }))
                 .append($('<td />', { html: '&nbsp;' })));
         }
     }

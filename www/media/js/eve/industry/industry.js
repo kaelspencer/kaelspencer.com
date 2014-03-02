@@ -249,7 +249,7 @@ var EveIndustry = (function() {
             result.material_cost += actual * material.dmg * that.m_uniquePriceItems[materialid];
 
             // TODO: Should actual be saved?
-            that.log('\t' + material.name + ' ' + actual + ' (' + material.quantity + ') -> ' + that.comma(Math.round(actual * material.dmg * that.m_uniquePriceItems[materialid]).toFixed(2)), 2);
+            that.log('\t' + material.name + ' ' + actual + ' (' + material.quantity + ') -> ' + K.comma(Math.round(actual * material.dmg * that.m_uniquePriceItems[materialid]).toFixed(2)), 2);
 
             if (that.m_uniquePriceItems[materialid] == 0) {
                 result.valid = false;
@@ -320,9 +320,9 @@ var EveIndustry = (function() {
         var costPerSuccess = costPerAttempt / chance;
 
         this.log('Invention chance: ' + (chance * 100).toFixed(2) + '%', 2);
-        this.log('Raw cost: ' + this.comma(costPerAttempt.toFixed(2)), 2);
-        this.log('Decryptor cost (' + decryptor.items[item.decryptor_category] + '): ' + this.comma(this.m_uniquePriceItems[decryptor.items[item.decryptor_category]].toFixed(2), 2));
-        this.log('Cost per successful invention: ' + this.comma((costPerSuccess.toFixed(2))), 2);
+        this.log('Raw cost: ' + K.comma(costPerAttempt.toFixed(2)), 2);
+        this.log('Decryptor cost (' + decryptor.items[item.decryptor_category] + '): ' + K.comma(this.m_uniquePriceItems[decryptor.items[item.decryptor_category]].toFixed(2), 2));
+        this.log('Cost per successful invention: ' + K.comma((costPerSuccess.toFixed(2))), 2);
 
         return costPerSuccess;
     };
@@ -378,10 +378,6 @@ var EveIndustry = (function() {
         if (typeof this.m_handleOverview === 'function') {
             this.m_handleOverview(data);
         }
-    };
-
-    EveIndustry.prototype.comma = function(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
 
     EveIndustry.prototype.log = function(message, level) {

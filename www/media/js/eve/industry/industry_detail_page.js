@@ -20,9 +20,8 @@
                 table.append($('<tr />')
                     .append($('<td />', { text: result.decryptor.name }))
                     .append($('<td />', { text: result.production_time.toFixed(1) }))
-                    // TODO: Move comma to a common helper.
-                    .append($('<td />', { text: (new EveIndustry()).comma((result.net / result.production_time).toFixed(0)) }))
-                    .append($('<td />', { text: (new EveIndustry()).comma((result.net / result.production_time24).toFixed(0)) }))
+                    .append($('<td />', { text: K.comma((result.net / result.production_time).toFixed(0)) }))
+                    .append($('<td />', { text: K.comma((result.net / result.production_time24).toFixed(0)) }))
                     .append($('<td />', { html: '&nbsp;' })));
             }
         });
@@ -31,7 +30,7 @@
     function handleOverview(item) {
         $('#bpo tr').eq(0).children().eq(1).text(item.categoryName);
         $('#bpo tr').eq(1).children().eq(1).text(item.t1bpo.typeName);
-        $('#bpo tr').eq(2).children().eq(1).text(prettyTime(item.copyTime));
+        $('#bpo tr').eq(2).children().eq(1).text(K.prettyTime(item.copyTime));
         $('#bpo tr').eq(3).children().eq(1).text(item.vol);
 
         $('#datacores tr').eq(0).children().eq(1).text(getDecryptorCategory(item.decryptor_category));
@@ -63,23 +62,5 @@
             default:
                 return 'Error! ID ' + id
         }
-    }
-
-    // Convert seconds into a reasonable time format.
-    function prettyTime(seconds) {
-        var s = Math.floor(seconds) % 60;
-        var m = Math.floor(seconds / 60) % 60;
-        var h = Math.floor(seconds / (60 * 60)) % 24;
-        var d = Math.floor(seconds / (60 * 60 * 24));
-
-        function pad(n) { return ('00' + n).substr(-2); }
-
-        var result = pad(h) + ':' + pad(m) + '::' + pad(s);
-
-        if (d > 0) {
-            result = d + 'd ' + result;
-        }
-
-        return result;
     }
 })();
