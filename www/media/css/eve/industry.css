@@ -38,20 +38,16 @@ table.industry_all_decryptors tr > td:first-child + td + td + td + td + td + td 
 
 table.industry_detail_decryptors {
     display: none;
-    width: 70%;
+    width: 60%;
 }
 
 table.industry_detail_decryptors th {
     text-align: center;
 }
 
-table.industry_detail_decryptors tr > td:first-child + td {
-    text-align: center;
-}
-
+table.industry_detail_decryptors tr > td:first-child + td,
 table.industry_detail_decryptors tr > td:first-child + td + td,
 table.industry_detail_decryptors tr > td:first-child + td + td + td,
-table.industry_detail_decryptors tr > td:first-child + td + td + td + td,
-table.industry_detail_decryptors tr > td:first-child + td + td + td + td + td{
+table.industry_detail_decryptors tr > td:first-child + td + td + td + td {
     text-align: right;
 }

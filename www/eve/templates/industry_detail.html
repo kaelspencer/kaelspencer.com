@@ -22,22 +22,42 @@ var itemid = {{ itemid|safe }};
     <div class="clear"></div>
     <div id="status" style="display: none;"></div>
 
-    <div>
-        <table id="industry" class="eve industry industry_detail_decryptors">
-            <thead>
-                <tr>
-                    <th><span title="The decryptor used for this invention.">Decryptor</span></th>
-                    <th><span title="Daily average quantity sold in Jita.">Vol</span></th>
-                    <th><span title="Time in hours to build.">Tm</span></th>
-                    <th><span title="ISK per hour.">IPH</span></th>
-                    <th><span title="ISK per hour when the build time is rounded up to the nearest day.">IPH 24</span></th>
-                    <th><span title="Expected ISK per day considering T1 BPO copy time.">IPD</span></th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
+    <table class="table-container">
+        <tr><td>
+            <table id="bpo" class="evehorizontal industry">
+                <tbody>
+                    <tr><td><span title="Category of the item.">Item Category</span></td><td>&nbsp;</td></tr>
+                    <tr><td><span title="The name of the source T1 BPO.">T1 BPO</span></td><td>&nbsp;</td></tr>
+                    <tr><td><span title="BPO copy time.">Copy Time</span></td><td>&nbsp;</td></tr>
+                    <tr><td><span title="Daily average quantity sold in Jita.">Volume</span></td><td>&nbsp;</td></tr>
+                </tbody>
+            </table>
+        </td><td>
+            <table id="datacores" class="evehorizontal industry">
+                <tbody>
+                    <tr><td><span title="The type of decryptor.">Decryptor Type</span></td><td>&nbsp;</td></tr>
+                    <tr><td><span title="The first datacore.">Datacore</span></td><td>&nbsp;</td></tr>
+                    <tr><td><span title="The second datacore.">Datacore</span></td><td>&nbsp;</td></tr>
+                </tbody>
+            </table>
+        </td></tr>
+    </table>
+
+    <div class="clear"></div>
+
+    <table id="industry_decryptors" class="eve industry industry_detail_decryptors">
+        <thead>
+            <tr>
+                <th><span title="The decryptor used for this invention.">Decryptor</span></th>
+                <th><span title="Time in hours to build.">Time</span></th>
+                <th><span title="ISK per hour.">IPH</span></th>
+                <th><span title="ISK per hour when the build time is rounded up to the nearest day.">IPH 24</span></th>
+                <th><span title="Expected ISK per day considering T1 BPO copy time.">IPD</span></th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 
 </article>
 {% endblock %}

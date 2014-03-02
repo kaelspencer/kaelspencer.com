@@ -27,3 +27,31 @@ table.eve td {
     border-left: 1px solid rgb(215, 215, 215);
     padding: 0.3em 1em;
 }
+
+table.evehorizontal {
+    border-top: 1px solid rgb(215, 215, 215);
+    border-right: 1px solid rgb(215, 215, 215);
+    margin-top: 10px;
+}
+
+table.evehorizontal td {
+    border: 1px solid rgb(215, 215, 215);
+    padding: 0.3em 1em;
+}
+
+table.evehorizontal tr > td:first-child {
+    font-weight: bold;
+    font-size: 1.25em;
+    background-color: rgb(240, 240, 240);
+    padding: 0.3em 1em;
+}
+
+table.table-container {
+    margin-left: auto;
+    margin-right: auto;
+    display: none;
+}
+
+table.table-container td {
+    padding: 0.3em 1em;
+}

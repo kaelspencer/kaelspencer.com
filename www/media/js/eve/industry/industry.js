@@ -6,16 +6,20 @@ var EveIndustry = (function() {
         this.m_everest = 'http://everest.kaelspencer.com/'
         //this.m_everest = 'http://localhost:5000/'
         this.m_everestIndustry = this.m_everest + "industry/norigs/names/";
-        this.m_everestIndustryDetail = this.m_everest + "industry/detail/";
+        this.m_everestIndustryDetail = this.m_everest + "industry/detail/names/";
         this.m_pe = 5; // Production Effeciency Skill
         this.m_ind = 5; // Industry Skill
-        this.m_imp = 0.98; // Implant: 1 - % benefit
-        this.m_slt = 0.75 // Slot modifier (POS).
+        this.m_indImp = 0.98; // Implant: 1 - % benefit, for manufacturing.
+        this.m_copyImp = 0.97; // Implant: 1 - % benefit, for copying.
+        this.m_indSlt = 0.75 // Slot modifier (POS) for manufacturing.
+        this.m_copySlt = 0.65 // Slot modifier (POS) for copying.
+        this.m_science = 5; // Science skill.
         this.m_logLevel = 0; // 0 is important only, 1 is verbose, 2 is very verbose.
         // The method provided by the caller to handle the results of computation. It is called per
         // item. It is a list of results for each decryptor.
         this.m_handleResults = undefined;
         this.m_onDrawComplete = undefined; // Called when drawing is completed.
+        this.m_handleOverview = undefined; // Called with detail information for each item.
 
         this.m_uniquePriceItems = {};
         this.m_inventableVolume = {};
@@ -57,7 +61,7 @@ var EveIndustry = (function() {
     };
 
     // Go into detail mode. Only information for the provided itemID is retrieved and calculated.
-    EveIndustry.prototype.industrate_detail = function(itemid, handleResults, onDrawComplete) {
+    EveIndustry.prototype.industrate_detail = function(itemid, handleResults, onDrawComplete, handleOverview) {
         if (typeof handleResults !== 'function') {
             this.errorHandler('Invalid handleResults function provided (' + typeof handleResults + ')');
         } else if (typeof onDrawComplete !== 'function') {
@@ -67,6 +71,7 @@ var EveIndustry = (function() {
         } else {
             this.m_handleResults = handleResults;
             this.m_onDrawComplete = onDrawComplete;
+            this.m_handleOverview = handleOverview;
 
             $.ajax({ url: this.m_everestIndustryDetail + itemid + '/', context: this, })
                 .done(this.onLoadIndustryItems)
@@ -132,6 +137,12 @@ var EveIndustry = (function() {
                     });
 
                     if (valid) {
+                        var overview = item;
+                        overview['vol'] = that.m_inventableVolume[itemid];
+                        // TODO: This is calculating copy time only for single run blueprints. It's wrong for everything other
+                        // than ships and rigs.
+                        overview.copyTime = that.calculateCopyTime(item.t1bpo.researchCopyTime, 1, item.t1bpo.maxProductionLimit);
+                        that.handleOverview(overview);
                         that.m_handleResults(results);
                     }
                 });
@@ -212,12 +223,12 @@ var EveIndustry = (function() {
         var runs = item.maxProductionLimit / 10 + decryptor.run;
 
         // If the item is a ship it will be built in a station instead of a POS. The slot modifier in this case is 1.
-        var slt = this.m_slt;
+        var slt = this.m_indSlt;
         if (item.categoryName == "Ship") {
             slt = 1;
         }
 
-        result.production_time = this.calculateProductionTime(item.productionTime, this.m_ind, this.m_imp, slt, item.productivityModifier, bp_pe);
+        result.production_time = this.calculateProductionTime(item.productionTime, this.m_ind, this.m_indImp, slt, item.productivityModifier, bp_pe);
 
         // Production time is in hour units and is for the entire blueprint (not each individual run).
         // If the production time is an exact multiple of 24 hours, add an extra day. Continuous runs aren't
@@ -316,6 +327,15 @@ var EveIndustry = (function() {
         return costPerSuccess;
     };
 
+    // Copying is affected by skills, the POS (always use a POS), and the number of runs in the copy. This is for
+    // a single copy.
+    EveIndustry.prototype.calculateCopyTime = function(base, runs, prodLimit) {
+        // Here is some craziness. The number listed in the DB for copyResearchTime is the copy time for half of the
+        // production limit. Not a single run or the full run, but half. So, double it...
+        var max = base * 2 * (1 - 0.05 * this.m_science) * this.m_copySlt * this.m_copyImp;
+        return runs * max / prodLimit;
+    };
+
     // Add an element to the price array and ensure uniqueness.
     EveIndustry.prototype.addUniquePriceItem = function(itemid) {
         if (!this.m_uniquePriceItems.hasOwnProperty(itemid)) {
@@ -351,6 +371,13 @@ var EveIndustry = (function() {
         }
 
         return deferrals;
+    };
+
+    // If the m_handleOverview is set, call it.
+    EveIndustry.prototype.handleOverview = function(data) {
+        if (typeof this.m_handleOverview === 'function') {
+            this.m_handleOverview(data);
+        }
     };
 
     EveIndustry.prototype.comma = function(x) {
