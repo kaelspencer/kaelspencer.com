@@ -23,10 +23,10 @@
                 .append($('<td />', { html: '<a href="/eve/industry/' + best.itemid + '/">' + best.typeName + '</a>' }))
                 .append($('<td />', { text: best.decryptor.name }))
                 .append($('<td />', { text: best.volume }))
-                .append($('<td />', { text: best.production_time.toFixed(1) }))
+                .append($('<td />', { text: K.prettyTime(best.production_time * 60 * 60) }))
                 .append($('<td />', { text: K.comma((best.net / best.production_time).toFixed(0)) }))
                 .append($('<td />', { text: K.comma((best.net / best.production_time24).toFixed(0)) }))
-                .append($('<td />', { html: '&nbsp;' })));
+                .append($('<td />', { html: K.comma(best.ipd.toFixed(0)) })));
         }
     }
 

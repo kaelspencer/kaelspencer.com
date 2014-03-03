@@ -127,6 +127,7 @@ var EveIndustry = (function() {
                 $.each(industry_data.items, function(itemid, item) {
                     var results = [];
                     var valid = true;
+                    item['resultingRuns'] = item.maxProductionLimit / 10;
                     $.each(that.m_decryptors, function(k, decryptor) {
                         var i = results.push(that.processItem(itemid, item, decryptor));
 
@@ -139,9 +140,8 @@ var EveIndustry = (function() {
                     if (valid) {
                         var overview = item;
                         overview['vol'] = that.m_inventableVolume[itemid];
-                        // TODO: This is calculating copy time only for single run blueprints. It's wrong for everything other
-                        // than ships and rigs.
-                        overview.copyTime = that.calculateCopyTime(item.t1bpo.researchCopyTime, 1, item.t1bpo.maxProductionLimit);
+                        var runs = (item.resultingRuns == 1 ? 1 : item.t1bpo.maxProductionLimit);
+                        overview.copyTime = that.calculateCopyTime(item.t1bpo.researchCopyTime, runs, item.t1bpo.maxProductionLimit);
                         that.handleOverview(overview);
                         that.m_handleResults(results);
                     }
@@ -211,6 +211,7 @@ var EveIndustry = (function() {
             'net': 0,
             'iph': 0,
             'iph24': 0,
+            'ipd': 0,
             'itemid': itemid,
             'typeName': item.typeName,
             'decryptor': decryptor,
@@ -261,6 +262,7 @@ var EveIndustry = (function() {
         result.net = (this.m_uniquePriceItems[itemid] - result.material_cost) * result.runs - result.invention_cost;
         result.iph = result.net / result.production_time;
         result.iph24 = result.net / result.production_time24;
+        result.ipd = result.net / (result.production_time24 / 24);
 
         return result;
     };

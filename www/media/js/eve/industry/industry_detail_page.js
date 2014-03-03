@@ -19,10 +19,11 @@
                 }
                 table.append($('<tr />')
                     .append($('<td />', { text: result.decryptor.name }))
-                    .append($('<td />', { text: result.production_time.toFixed(1) }))
+                    .append($('<td />', { text: K.prettyTime(result.production_time * 60 * 60) }))
+                    .append($('<td />', { text: result.runs }))
                     .append($('<td />', { text: K.comma((result.net / result.production_time).toFixed(0)) }))
                     .append($('<td />', { text: K.comma((result.net / result.production_time24).toFixed(0)) }))
-                    .append($('<td />', { html: '&nbsp;' })));
+                    .append($('<td />', { html: K.comma(result.ipd.toFixed(0)) })));
             }
         });
     }
@@ -40,7 +41,7 @@
 
     function onDrawComplete() {
         $('.table-container').show();
-        $('#industry_decryptors').tablesorter({ sortList: [[3, 1]]}).show();
+        $('#industry_decryptors').tablesorter({ sortList: [[4, 1]]}).show();
         $('#loading_indicator').hide().children().addClass('loading_stop');
     }
 
