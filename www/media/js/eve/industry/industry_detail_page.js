@@ -30,7 +30,7 @@
                     .append($('<td />', { text: result.decryptor.name }))
                     .append($('<td />', { text: K.comma(result.copiesPerDay.toFixed(2)) }))
                     .append($('<td />', { text: K.comma(result.bpcPerDay.toFixed(2)) }))
-                    .append($('<td />', { html: K.comma(result.maxPerDay.toFixed(2)) })));
+                    .append($('<td />', { html: K.comma(result.tipd.toFixed(2)) })));
             }
         });
     }

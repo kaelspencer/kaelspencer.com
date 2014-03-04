@@ -212,11 +212,11 @@ var EveIndustry = (function() {
             'iph24': 0,
             'itemid': itemid,
             'materialCost': 0,
-            'maxPerDay': 0,
             'net': 0,
             'productionTime': 0,
             'productionTime24': 0,
             'runs': item.maxProductionLimit / 10 + decryptor.run,
+            'tipd': 0,
             'typeName': item.typeName,
             'valid': true,
             'volume': this.m_inventableVolume[itemid],
@@ -270,11 +270,11 @@ var EveIndustry = (function() {
         result.iph24 = result.net / result.productionTime24;
         result.ipd = result.net / (result.productionTime24 / 24);
 
-        // Now figure out the max per day. This is done by determining how many copies can be produced from one
+        // Now figure out the total IPD. This is done by determining how many copies can be produced from one
         // BPO per day then how many successful inventions. Multiply the result by IPD to get a max per day (mpd).
         result.copiesPerDay = 24 * 60 * 60 / item.copyTime;
         result.bpcPerDay = result.copiesPerDay * result.inventionChance;
-        result.maxPerDay = result.bpcPerDay * result.ipd;
+        result.tipd = result.bpcPerDay * result.ipd;
 
         return result;
     };
