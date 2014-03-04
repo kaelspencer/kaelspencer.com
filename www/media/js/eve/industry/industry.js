@@ -127,7 +127,9 @@ var EveIndustry = (function() {
                 $.each(industry_data.items, function(itemid, item) {
                     var results = [];
                     var valid = true;
-                    item['resultingRuns'] = item.maxProductionLimit / 10;
+                    var runs = (item.maxProductionLimit / 10 == 1 ? 1 : item.t1bpo.maxProductionLimit);
+                    item.copyTime = that.calculateCopyTime(item.t1bpo.researchCopyTime, runs, item.t1bpo.maxProductionLimit);
+
                     $.each(that.m_decryptors, function(k, decryptor) {
                         var i = results.push(that.processItem(itemid, item, decryptor));
 
@@ -140,8 +142,6 @@ var EveIndustry = (function() {
                     if (valid) {
                         var overview = item;
                         overview['vol'] = that.m_inventableVolume[itemid];
-                        var runs = (item.resultingRuns == 1 ? 1 : item.t1bpo.maxProductionLimit);
-                        overview.copyTime = that.calculateCopyTime(item.t1bpo.researchCopyTime, runs, item.t1bpo.maxProductionLimit);
                         that.handleOverview(overview);
                         that.m_handleResults(results);
                     }
@@ -202,20 +202,24 @@ var EveIndustry = (function() {
     EveIndustry.prototype.processItem = function(itemid, item, decryptor) {
         // An item will be marked as invalid if one of the materials doesn't have a valid price associated with it.
         var result = {
-            'valid': true,
-            'production_time': 0,
-            'production_time24': 0,
-            'runs': item.maxProductionLimit / 10 + decryptor.run,
-            'material_cost': 0,
-            'invention_cost': 0,
-            'net': 0,
+            'bpcPerDay': 0,
+            'copyTime': 0,
+            'copiesPerDay': 0,
+            'decryptor': decryptor,
+            'inventionChance': 0,
+            'ipd': 0,
             'iph': 0,
             'iph24': 0,
-            'ipd': 0,
             'itemid': itemid,
+            'materialCost': 0,
+            'maxPerDay': 0,
+            'net': 0,
+            'productionTime': 0,
+            'productionTime24': 0,
+            'runs': item.maxProductionLimit / 10 + decryptor.run,
             'typeName': item.typeName,
-            'decryptor': decryptor,
-            'volume': this.m_inventableVolume[itemid]
+            'valid': true,
+            'volume': this.m_inventableVolume[itemid],
         };
         var valid = true;
         var that = this;
@@ -229,25 +233,27 @@ var EveIndustry = (function() {
             slt = 1;
         }
 
-        result.production_time = this.calculateProductionTime(item.productionTime, this.m_ind, this.m_indImp, slt, item.productivityModifier, bp_pe);
+        result.productionTime = this.calculateProductionTime(item.productionTime, this.m_ind, this.m_indImp, slt, item.productivityModifier, bp_pe);
 
         // Production time is in hour units and is for the entire blueprint (not each individual run).
         // If the production time is an exact multiple of 24 hours, add an extra day. Continuous runs aren't
         // happening.
-        result.production_time = result.production_time * result.runs / (60 * 60);
-        result.production_time24 = Math.ceil(result.production_time / 24) * 24;
+        result.productionTime = result.productionTime * result.runs / (60 * 60);
+        result.productionTime24 = Math.ceil(result.productionTime / 24) * 24;
 
-        if (result.production_time % 24 == 0) {
-            result.production_time24 += 24;
+        if (result.productionTime % 24 == 0) {
+            result.productionTime24 += 24;
         }
 
-        result.invention_cost = this.calculateInventionCost(item, decryptor);
+        var invention = this.calculateInventionCost(item, decryptor);
+        result.inventionChance = invention.cost;
+        result.inventionChance = invention.chance;
 
         $.each(item.perfectMaterials, function(i, material) {
             var materialid = material.typeID;
             var actual = that.calculateActualRequired(material.quantity, item.wasteFactor, bp_me, material.wasteME, that.m_pe, material.wastePE);
 
-            result.material_cost += actual * material.dmg * that.m_uniquePriceItems[materialid];
+            result.materialCost += actual * material.dmg * that.m_uniquePriceItems[materialid];
 
             // TODO: Should actual be saved?
             that.log('\t' + material.name + ' ' + actual + ' (' + material.quantity + ') -> ' + K.comma(Math.round(actual * material.dmg * that.m_uniquePriceItems[materialid]).toFixed(2)), 2);
@@ -259,10 +265,16 @@ var EveIndustry = (function() {
             }
         });
 
-        result.net = (this.m_uniquePriceItems[itemid] - result.material_cost) * result.runs - result.invention_cost;
-        result.iph = result.net / result.production_time;
-        result.iph24 = result.net / result.production_time24;
-        result.ipd = result.net / (result.production_time24 / 24);
+        result.net = (this.m_uniquePriceItems[itemid] - result.materialCost) * result.runs - result.inventionChance;
+        result.iph = result.net / result.productionTime;
+        result.iph24 = result.net / result.productionTime24;
+        result.ipd = result.net / (result.productionTime24 / 24);
+
+        // Now figure out the max per day. This is done by determining how many copies can be produced from one
+        // BPO per day then how many successful inventions. Multiply the result by IPD to get a max per day (mpd).
+        result.copiesPerDay = 24 * 60 * 60 / item.copyTime;
+        result.bpcPerDay = result.copiesPerDay * result.inventionChance;
+        result.maxPerDay = result.bpcPerDay * result.ipd;
 
         return result;
     };
@@ -326,7 +338,7 @@ var EveIndustry = (function() {
         this.log('Decryptor cost (' + decryptor.items[item.decryptor_category] + '): ' + K.comma(this.m_uniquePriceItems[decryptor.items[item.decryptor_category]].toFixed(2), 2));
         this.log('Cost per successful invention: ' + K.comma((costPerSuccess.toFixed(2))), 2);
 
-        return costPerSuccess;
+        return { 'cost': costPerSuccess, 'chance': chance };
     };
 
     // Copying is affected by skills, the POS (always use a POS), and the number of runs in the copy. This is for

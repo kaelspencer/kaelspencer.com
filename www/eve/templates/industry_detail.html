@@ -22,6 +22,8 @@ var itemid = {{ itemid|safe }};
     <div class="clear"></div>
     <div id="status" style="display: none;"></div>
 
+    <h1>Overview</h1>
+
     <table class="table-container">
         <tr><td>
             <table id="bpo" class="evehorizontal industry">
@@ -45,6 +47,8 @@ var itemid = {{ itemid|safe }};
 
     <div class="clear"></div>
 
+    <h1>All Decryptors</h1>
+
     <table id="industry_decryptors" class="eve industry industry_detail_decryptors">
         <thead>
             <tr>
@@ -54,6 +58,21 @@ var itemid = {{ itemid|safe }};
                 <th><span title="ISK per hour.">IPH</span></th>
                 <th><span title="ISK per hour when the build time is rounded up to the nearest day.">IPH 24</span></th>
                 <th><span title="Expected ISK per day considering T1 BPO copy time.">IPD</span></th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <h1>Max per Day</h1>
+
+    <table id="industry_mpd" class="eve industry industry_detail_decryptors">
+        <thead>
+            <tr>
+                <th><span title="The decryptor used for this invention.">Decryptor</span></th>
+                <th><span title="Max copies per day.">CPD</span></th>
+                <th><span title="Expected BPCs per day.">BPC PD</span></th>
+                <th><span title="Expected ISK per day.">IPD</span></th>
             </tr>
         </thead>
         <tbody>

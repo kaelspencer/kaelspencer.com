@@ -9,7 +9,8 @@
     });
 
     function handleResults(results) {
-        var table = $('#industry_decryptors tbody');
+        var decryptors = $('#industry_decryptors tbody');
+        var mpd = $('#industry_mpd tbody');
 
         $.each(results, function(i, result) {
             if (result.valid) {
@@ -17,13 +18,19 @@
                     name = true;
                     $('#typename').text(result.typeName);
                 }
-                table.append($('<tr />')
+                decryptors.append($('<tr />')
                     .append($('<td />', { text: result.decryptor.name }))
-                    .append($('<td />', { text: K.prettyTime(result.production_time * 60 * 60) }))
+                    .append($('<td />', { text: K.prettyTime(result.productionTime * 60 * 60) }))
                     .append($('<td />', { text: result.runs }))
-                    .append($('<td />', { text: K.comma((result.net / result.production_time).toFixed(0)) }))
-                    .append($('<td />', { text: K.comma((result.net / result.production_time24).toFixed(0)) }))
+                    .append($('<td />', { text: K.comma(result.iph.toFixed(0)) }))
+                    .append($('<td />', { text: K.comma(result.iph24.toFixed(0)) }))
                     .append($('<td />', { html: K.comma(result.ipd.toFixed(0)) })));
+
+                mpd.append($('<tr />')
+                    .append($('<td />', { text: result.decryptor.name }))
+                    .append($('<td />', { text: K.comma(result.copiesPerDay.toFixed(2)) }))
+                    .append($('<td />', { text: K.comma(result.bpcPerDay.toFixed(2)) }))
+                    .append($('<td />', { html: K.comma(result.maxPerDay.toFixed(2)) })));
             }
         });
     }
@@ -42,6 +49,7 @@
     function onDrawComplete() {
         $('.table-container').show();
         $('#industry_decryptors').tablesorter({ sortList: [[4, 1]]}).show();
+        $('#industry_mpd').tablesorter({ sortList: [[3, 1]]}).show();
         $('#loading_indicator').hide().children().addClass('loading_stop');
     }
 

@@ -18,7 +18,7 @@
 
             function pad(n) { return ('00' + n).substr(-2); }
 
-            var result = pad(h) + ':' + pad(m) + '::' + pad(s);
+            var result = pad(h) + ':' + pad(m) + ':' + pad(s);
 
             if (d > 0) {
                 result = d + 'd ' + result;

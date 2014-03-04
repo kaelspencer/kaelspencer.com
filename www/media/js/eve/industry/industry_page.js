@@ -23,9 +23,9 @@
                 .append($('<td />', { html: '<a href="/eve/industry/' + best.itemid + '/">' + best.typeName + '</a>' }))
                 .append($('<td />', { text: best.decryptor.name }))
                 .append($('<td />', { text: best.volume }))
-                .append($('<td />', { text: K.prettyTime(best.production_time * 60 * 60) }))
-                .append($('<td />', { text: K.comma((best.net / best.production_time).toFixed(0)) }))
-                .append($('<td />', { text: K.comma((best.net / best.production_time24).toFixed(0)) }))
+                .append($('<td />', { text: K.prettyTime(best.productionTime * 60 * 60) }))
+                .append($('<td />', { text: K.comma(best.iph.toFixed(0)) }))
+                .append($('<td />', { text: K.comma(best.iph24.toFixed(0)) }))
                 .append($('<td />', { html: K.comma(best.ipd.toFixed(0)) })));
         }
     }
