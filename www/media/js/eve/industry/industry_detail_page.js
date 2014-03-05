@@ -24,7 +24,7 @@
                     .append($('<td />', { text: result.runs }))
                     .append($('<td />', { text: K.comma(result.iph.toFixed(0)) }))
                     .append($('<td />', { text: K.comma(result.iph24.toFixed(0)) }))
-                    .append($('<td />', { html: K.comma(result.ipd.toFixed(0)) })));
+                    .append($('<td />', { html: K.comma(result.tipd.toFixed(0)) })));
 
                 mpd.append($('<tr />')
                     .append($('<td />', { text: result.decryptor.name }))
@@ -48,7 +48,7 @@
 
     function onDrawComplete() {
         $('.table-container').show();
-        $('#industry_decryptors').tablesorter({ sortList: [[4, 1]]}).show();
+        $('#industry_decryptors').tablesorter({ sortList: [[5, 1]]}).show();
         $('#industry_mpd').tablesorter({ sortList: [[3, 1]]}).show();
         $('#loading_indicator').hide().children().addClass('loading_stop');
     }

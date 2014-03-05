@@ -32,7 +32,8 @@ table.industry_all_decryptors tr > td:first-child + td + td {
 table.industry_all_decryptors tr > td:first-child + td + td + td,
 table.industry_all_decryptors tr > td:first-child + td + td + td + td,
 table.industry_all_decryptors tr > td:first-child + td + td + td + td + td,
-table.industry_all_decryptors tr > td:first-child + td + td + td + td + td + td {
+table.industry_all_decryptors tr > td:first-child + td + td + td + td + td + td,
+table.industry_all_decryptors tr > td:first-child + td + td + td + td + td + td + td {
     text-align: right;
 }
 
@@ -49,6 +50,7 @@ table.industry_detail_decryptors tr > td:first-child + td,
 table.industry_detail_decryptors tr > td:first-child + td + td,
 table.industry_detail_decryptors tr > td:first-child + td + td + td,
 table.industry_detail_decryptors tr > td:first-child + td + td + td + td,
-table.industry_detail_decryptors tr > td:first-child + td + td + td + td + td {
+table.industry_detail_decryptors tr > td:first-child + td + td + td + td + td,
+table.industry_detail_decryptors tr > td:first-child + td + td + td + td + td + td {
     text-align: right;
 }

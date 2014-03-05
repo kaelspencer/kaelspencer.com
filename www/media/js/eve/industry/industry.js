@@ -246,7 +246,7 @@ var EveIndustry = (function() {
         }
 
         var invention = this.calculateInventionCost(item, decryptor);
-        result.inventionChance = invention.cost;
+        result.inventionCost = invention.cost;
         result.inventionChance = invention.chance;
 
         $.each(item.perfectMaterials, function(i, material) {
@@ -265,14 +265,16 @@ var EveIndustry = (function() {
             }
         });
 
-        result.net = (this.m_uniquePriceItems[itemid] - result.materialCost) * result.runs - result.inventionChance;
+        result.net = (this.m_uniquePriceItems[itemid] - result.materialCost) * result.runs - result.inventionCost;
         result.iph = result.net / result.productionTime;
         result.iph24 = result.net / result.productionTime24;
         result.ipd = result.net / (result.productionTime24 / 24);
 
         // Now figure out the total IPD. This is done by determining how many copies can be produced from one
         // BPO per day then how many successful inventions. Multiply the result by IPD to get a max per day (mpd).
+        // 10 inventions per day is a reasonable limit. To implement this, cap copiesPerDay to 10.
         result.copiesPerDay = 24 * 60 * 60 / item.copyTime;
+        result.copiesPerDay = result.copiesPerDay > 10 ? 10 : result.copiesPerDay;
         result.bpcPerDay = result.copiesPerDay * result.inventionChance;
         result.tipd = result.bpcPerDay * result.ipd;
 
