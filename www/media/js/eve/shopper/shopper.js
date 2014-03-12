@@ -13,6 +13,13 @@ var EveShopper = (function() {
         this.m_bestPrices = [];
         this.m_bestPrice = 0;
         this.m_bestPriceJumps = 0;
+        this.m_tradeHubs =[
+            'Jita IV - Moon 4 - Caldari Navy Assembly Plant',
+            'Amarr VIII (Oris) - Emperor Family Academy',
+            'Rens VI - Moon 8 - Brutor Tribe Treasury',
+            'Dodixie IX - Moon 20 - Federation Navy Assembly Plant',
+            'Hek VIII - Moon 12 - Boundless Creation Factory'
+        ]
     };
 
     EveShopper.prototype.shop = function(validator) {
@@ -68,7 +75,8 @@ var EveShopper = (function() {
                 'station_id': $(value).children('station').text().trim(),
                 'station_name': $(value).children('station_name').text().trim(),
                 'price': parseInt($(value).children('price').text().trim()),
-                'quantity': parseInt($(value).children('vol_remain').text().trim())
+                'quantity': parseInt($(value).children('vol_remain').text().trim()),
+                'trade_hub': this.m_tradeHubs.indexOf($(value).children('station_name').text().trim()) >= 0
             };
             sellOrders.push(order);
         }.bind(this));
@@ -154,12 +162,18 @@ var EveShopper = (function() {
             if (this.m_jumpLimit > 0 && this.m_jumpCount[value.station_name] > this.m_jumpLimit) return;
             count++;
 
-            container.append($('<tr />')
+            var row = $('<tr />')
                 .append($('<td />', { text: value.station_name }))
                 .append($('<td />', { text: value.price.toLocaleString() }))
                 .append($('<td />', { text: fnSavings(value.price, this.m_jumpCount[value.station_name]) }))
                 .append($('<td />', { text: value.quantity }))
-                .append($('<td />', { text: this.m_jumpCount[value.station_name] })));
+                .append($('<td />', { text: this.m_jumpCount[value.station_name] }));
+
+            if (value.trade_hub) {
+                row.addClass('tradehub');
+            }
+
+            container.append(row);
         }.bind(this));
 
         if (count > 0) {

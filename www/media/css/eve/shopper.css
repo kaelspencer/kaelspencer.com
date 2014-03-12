@@ -13,6 +13,10 @@ table.orders td {
     white-space: nowrap;
 }
 
+table.orders tr.tradehub {
+    font-weight: bold;
+}
+
 table.orders thead tr > th:first-child + th,
 table.orders thead tr > th:first-child + th + th,
 table.orders thead tr > th:first-child + th + th + th,
