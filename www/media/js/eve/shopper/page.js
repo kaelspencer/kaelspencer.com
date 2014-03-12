@@ -12,5 +12,7 @@
 
             return false;
         });
+
+        $('#current_location').autocomplete({ source: systems, minLength: 2 });
     });
 })();
