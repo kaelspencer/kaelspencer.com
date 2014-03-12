@@ -76,7 +76,8 @@ var EveShopper = (function() {
                 'station_name': $(value).children('station_name').text().trim(),
                 'price': parseInt($(value).children('price').text().trim()),
                 'quantity': parseInt($(value).children('vol_remain').text().trim()),
-                'trade_hub': this.m_tradeHubs.indexOf($(value).children('station_name').text().trim()) >= 0
+                'trade_hub': this.m_tradeHubs.indexOf($(value).children('station_name').text().trim()) >= 0,
+                'sec': parseFloat($(value).children('security').text().trim()),
             };
             sellOrders.push(order);
         }.bind(this));
@@ -157,13 +158,24 @@ var EveShopper = (function() {
             return perJumpSavings.toString() + '%';
         }.bind(this);
 
+        var fnSecTag = function(security) {
+            var cls = 'secNull';
+            if (security >= 0.5) {
+                cls = 'secHigh';
+            } else if (security > 0) {
+                cls = 'secLow';
+            }
+            return $('<span />', { class: cls, text: ' (' + security.toFixed(1) + ')' });
+        }
+
         $.each(this.m_sellOrders, function(key, value) {
             if (this.m_jumpCount[value.station_name] === undefined) return;
             if (this.m_jumpLimit > 0 && this.m_jumpCount[value.station_name] > this.m_jumpLimit) return;
             count++;
 
             var row = $('<tr />')
-                .append($('<td />', { text: value.station_name }))
+                .append($('<td />', { text: value.station_name })
+                    .append(fnSecTag(value.sec)))
                 .append($('<td />', { text: value.price.toLocaleString() }))
                 .append($('<td />', { text: fnSavings(value.price, this.m_jumpCount[value.station_name]) }))
                 .append($('<td />', { text: value.quantity }))

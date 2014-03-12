@@ -1,7 +1,7 @@
 @import url(table.css);
 
 table.orders {
-    font-size: 0.75em;
+    font-size: 0.9em;
     margin-left: auto;
     margin-right: auto;
     display: none;
@@ -53,4 +53,17 @@ table.orders tr > td:first-child + td + td + td + td {
 .form_error {
     font-size: 0.8em;
     color: red;
+}
+
+/* Color codes for sec status. */
+.secHigh {
+    color: #00EF47;
+}
+
+.secLow {
+    color: #D77700;
+}
+
+.secNull {
+    color: #D73000;
 }
