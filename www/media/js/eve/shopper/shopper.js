@@ -189,7 +189,7 @@ var EveShopper = (function() {
         }.bind(this));
 
         if (count > 0) {
-            $('#sell_orders').tablesorter({ sortList: [[2, 1], [3, 0]] }).show();
+            $('#sell_orders').tablesorter({ sortList: [[2, 1], [4, 0]] }).show();
         } else {
             $('#status').text('No items were retrieved').show();
         }
