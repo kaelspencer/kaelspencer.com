@@ -1,3 +1,7 @@
+table.fill {
+    width: 95%;
+}
+
 table.eve {
     border-top: 1px solid rgb(215, 215, 215);
     border-right: 1px solid rgb(215, 215, 215);

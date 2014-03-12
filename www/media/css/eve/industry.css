@@ -1,9 +1,5 @@
 @import url(table.css);
 
-table.fill {
-    width: 95%;
-}
-
 table.industry {
     font-size: 0.75em;
     margin-left: auto;

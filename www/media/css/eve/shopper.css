@@ -1,8 +1,29 @@
 @import url(table.css);
 
+table.orders {
+    font-size: 0.75em;
+    margin-left: auto;
+    margin-right: auto;
+    display: none;
+    width: 100%;
+}
+
+table.orders th,
+table.orders td {
+    white-space: nowrap;
+}
+
+table.orders thead tr > th:first-child + th,
+table.orders thead tr > th:first-child + th + th,
+table.orders thead tr > th:first-child + th + th + th,
+table.orders thead tr > th:first-child + th + th + th + th {
+    text-align: center;
+}
+
 table.orders tr > td:first-child + td,
 table.orders tr > td:first-child + td + td,
-table.orders tr > td:first-child + td + td + td {
+table.orders tr > td:first-child + td + td + td,
+table.orders tr > td:first-child + td + td + td + td {
     text-align: center;
 }
 

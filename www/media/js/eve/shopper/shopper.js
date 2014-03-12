@@ -67,7 +67,8 @@ var EveShopper = (function() {
             var order = {
                 'station_id': $(value).children('station').text().trim(),
                 'station_name': $(value).children('station_name').text().trim(),
-                'price': parseInt($(value).children('price').text().trim())
+                'price': parseInt($(value).children('price').text().trim()),
+                'quantity': parseInt($(value).children('vol_remain').text().trim())
             };
             sellOrders.push(order);
         }.bind(this));
@@ -157,6 +158,7 @@ var EveShopper = (function() {
                 .append($('<td />', { text: value.station_name }))
                 .append($('<td />', { text: value.price.toLocaleString() }))
                 .append($('<td />', { text: fnSavings(value.price, this.m_jumpCount[value.station_name]) }))
+                .append($('<td />', { text: value.quantity }))
                 .append($('<td />', { text: this.m_jumpCount[value.station_name] })));
         }.bind(this));
 
