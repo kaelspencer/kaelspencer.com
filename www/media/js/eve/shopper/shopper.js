@@ -111,7 +111,7 @@ var EveShopper = (function() {
             dataType: 'json',
             success: function(data) {
                 $.each(data.destinations, function(key, value) {
-                    if (value.jumps > 0) {
+                    if (value.jumps >= 0) {
                         self.m_jumpCount[value.destination] = value.jumps;
                     } else {
                         self.m_jumpCount[value.destination] = undefined;
