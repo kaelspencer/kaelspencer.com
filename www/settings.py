@@ -37,6 +37,7 @@ else:
     TEMPLATE_DEBUG = True
 
 TIME_ZONE = 'America/Los_Angeles'
+USE_TZ = True
 
 LANGUAGE_CODE = 'en-us'
 
@@ -132,13 +133,28 @@ INSTALLED_APPS = (
     'pages',
     'smuggler',
     'honeypot',
-    'eve'
+    'eve',
+    'django.contrib.humanize',
+    'south',
+    'django_notify',
+    'mptt',
+    'sekizai',
+    'sorl.thumbnail',
+    'wiki',
+    'wiki.plugins.attachments',
+    'wiki.plugins.notifications',
+    'wiki.plugins.images',
+    'wiki.plugins.macros',
 )
 
 if DEBUG:
     INSTALLED_APPS += (
         'debug_toolbar',
     )
+
+    DEBUG_TOOLBAR_CONFIG = {
+        'INTERCEPT_REDIRECTS': False,
+    }
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -172,6 +188,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
     'www.context_processors.get_current_path',
+    'sekizai.context_processors.sekizai',
 )
 
 #CACHE_MIDDLEWARE_SECONDS = 5
@@ -184,3 +201,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 #        'TIMEOUT': 3600,
 #    }
 #}
+
+WIKI_MARKDOWN_KWARGS = {'extensions': ['footnotes', 'attr_list', 'headerid', 'extra', 'codehilite', ]}
+WIKI_ACCOUNT_SIGNUP_ALLOWED = False
