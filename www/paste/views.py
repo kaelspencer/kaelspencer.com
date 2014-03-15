@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils import simplejson
 from django.db.models import Q
 import datetime
+from django.utils import timezone
 from honeypot.decorators import check_honeypot
 
 EXPIRATION_CHOICES = (
@@ -63,7 +64,7 @@ class ExistingDetailView(DetailView):
 
     def get_queryset(self):
         qs = super(ExistingDetailView, self).get_queryset()
-        return qs.exclude(active=False).filter(Q(expiration_date__isnull=True) | Q(expiration_date__gt=datetime.datetime.now()))
+        return qs.exclude(active=False).filter(Q(expiration_date__isnull=True) | Q(expiration_date__gt=timezone.now()))
 
 @csrf_exempt
 def api_paste(request):

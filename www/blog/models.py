@@ -1,12 +1,11 @@
-import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.text import truncate_html_words
+from django.utils import timezone
 
 class EntryManager(models.Manager):
-
     def published(self):
-        return self.active().filter(pub_date__lte=datetime.datetime.now())
+        return self.active().filter(pub_date__lte=timezone.now())
 
     def active(self):
         return super(EntryManager, self).get_query_set().filter(is_active=True)
@@ -38,7 +37,7 @@ class Entry(models.Model):
         return "/blog/%s/%s/" % (self.pub_date.strftime("%Y/%m/%d").lower(), self.slug)
 
     def is_published(self):
-        return self.is_active and self.pub_date <= datetime.datetime.now()
+        return self.is_active and self.pub_date <= timezone.now()
     is_published.boolean = True
 
     def save(self, *args, **kwargs):

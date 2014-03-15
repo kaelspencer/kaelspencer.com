@@ -1,7 +1,7 @@
 from django import template
 from paste.models import Paste
 from django.db.models import Q
-from datetime import datetime
+from django.utils import timezone
 
 register = template.Library()
 
@@ -36,13 +36,13 @@ def get_pretty_time(dt):
 
 @register.inclusion_tag('recent.html', takes_context=True)
 def show_recent_list(context):
-    recent = Paste.objects.filter(exposed=True).exclude(active=False).filter(Q(expiration_date__isnull=True) | Q(expiration_date__gt=datetime.now())).order_by('-pastedate')[:13]
+    recent = Paste.objects.filter(exposed=True).exclude(active=False).filter(Q(expiration_date__isnull=True) | Q(expiration_date__gt=timezone.now())).order_by('-pastedate')[:13]
     pastes = []
 
     for p in recent:
         pasteDict = {}
 
-        pasteDict['dt'] = get_pretty_time(datetime.now() - p.pastedate)
+        pasteDict['dt'] = get_pretty_time(timezone.now() - p.pastedate)
         pasteDict['url'] = p.get_absolute_url()
         pasteDict['title'] = p.title
         pasteDict['lexer'] = p.lexer
