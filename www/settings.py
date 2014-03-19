@@ -36,7 +36,7 @@ else:
     DEBUG = True
     TEMPLATE_DEBUG = True
 
-TIME_ZONE = 'America/Los_Angeles'
+TIME_ZONE = 'UTC'
 USE_TZ = True
 
 LANGUAGE_CODE = 'en-us'
