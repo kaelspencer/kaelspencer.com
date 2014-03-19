@@ -15,7 +15,7 @@ BASE = Path(__file__).absolute().ancestor(1)
 
 # Presume that only the production server will run on hoth
 # This isn't the best longterm solution.
-PRODUCTION = ("hoth" in platform.node())
+PRODUCTION = ("endor" in platform.node())
 
 if PRODUCTION:
     print "Production: true"

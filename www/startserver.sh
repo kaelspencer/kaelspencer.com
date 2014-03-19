@@ -10,6 +10,4 @@ if [ -f $PIDFILE ]; then
     rm -f -- $PIDFILE
 fi
 
-exec /usr/bin/env - \
-  PYTHONPATH="../python:.." \
-  ./manage.py runfcgi protocol=fcgi host=127.0.0.1 port=8000 pidfile=$PIDFILE
+exec python manage.py runfcgi protocol=fcgi host=127.0.0.1 port=8000 pidfile=$PIDFILE

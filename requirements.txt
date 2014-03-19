@@ -1,11 +1,11 @@
 Django==1.4.2
 Markdown==2.4
+MySQL-python==1.2.5
 Pillow==2.3.1
 Pygments==1.5
 South==0.8.4
 Unipath==0.2.1
 argparse==1.2.1
-distribute==0.6.24
 django-chosen==0.1
 django-classy-tags==0.5
 django-debug-toolbar==0.9.4
@@ -13,6 +13,7 @@ django-honeypot==0.3.0
 django-mptt==0.6.0
 django-sekizai==0.7
 django-smuggler==0.3
+flup==1.0.2
 pytz==2014.1
 six==1.6.1
 sorl-thumbnail==11.12
