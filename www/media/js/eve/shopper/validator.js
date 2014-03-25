@@ -4,6 +4,7 @@ var Validator = (function() {
         this.m_item = 0;
         this.m_currentLocation = 'Jita IV - Moon 4 - Caldari Navy Assembly Plant';
         this.m_jumpLimit = 0;
+        this.m_avoidance = 'none';
     }
 
     Validator.prototype.item = function() {
@@ -18,11 +19,16 @@ var Validator = (function() {
         return this.m_jumpLimit;
     };
 
+    Validator.prototype.avoidance = function() {
+        return this.m_avoidance;
+    };
+
     Validator.prototype.validate = function() {
         var error = false;
         var item = $('#search_item').val();
         var location = $('#current_location').val();
         var jumps = $('#jump_limit').val();
+        var avoidance = $('#sec_avoidance').val();
 
         $('#item_error').text('\xa0');
         $('#location_error').text('\xa0');
@@ -51,13 +57,20 @@ var Validator = (function() {
             this.m_currentLocation = location;
         }
 
+        if (['none', 'high', 'highonly'].indexOf(avoidance) < 0) {
+            error = true;
+            $('#item_error').text('Invalid avoidance');
+        } else {
+            this.m_avoidance = avoidance;
+        }
+
         if (error) {
             $('#form_errors').show();
         } else {
             $('#form_errors').hide();
         }
 
-        console.log('Item: ' + item + ' Location: ' + location + ' Jump limit: ' + jumps);
+        console.log('Item: ' + item + ' Location: ' + location + ' Jump limit: ' + jumps + ' Avoidance: ' + avoidance);
         return !error;
     };
 

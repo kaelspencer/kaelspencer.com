@@ -3,7 +3,7 @@ var EveShopper = (function() {
     function EveShopper() {
         this.m_api = 'http://api.eve-central.com/api/';
         this.m_apiQuicklook = this.m_api + 'quicklook';
-        //this.m_everest = 'http://10.10.0.10/';
+        //this.m_everest = 'http://127.0.0.1:5000/';
         this.m_everest = 'http://everest.kaelspencer.com/'
         this.m_everestJumpBatch = this.m_everest + 'jump/batch/';
         this.m_currentStation = undefined;
@@ -13,6 +13,7 @@ var EveShopper = (function() {
         this.m_bestPrices = [];
         this.m_bestPrice = 0;
         this.m_bestPriceJumps = 0;
+        this.m_avoidance = 'none';
         this.m_tradeHubs =[
             'Jita IV - Moon 4 - Caldari Navy Assembly Plant',
             'Amarr VIII (Oris) - Emperor Family Academy',
@@ -29,6 +30,7 @@ var EveShopper = (function() {
 
         this.m_currentStation = validator.currentLocation();
         this.m_jumpLimit = validator.jumpLimit();
+        this.m_avoidance = validator.avoidance();
 
         $.ajax({
             url: this.m_apiQuicklook + '?typeid=' + validator.item(),
@@ -53,6 +55,7 @@ var EveShopper = (function() {
         this.m_bestPrices = [];
         this.m_bestPrice = 0;
         this.m_bestPriceJumps = 0;
+        this.m_avoidance = 'none';
     };
 
     EveShopper.prototype.errorHandler = function(fetchItem, xhr, status) {
@@ -92,6 +95,7 @@ var EveShopper = (function() {
     EveShopper.prototype.updateJumpCounts = function(orders) {
         var postdata = {
             source: this.m_currentStation,
+            avoidance: this.m_avoidance,
             destinations: []
         };
 

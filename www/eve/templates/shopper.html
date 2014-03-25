@@ -33,9 +33,20 @@
                     {% include "itemoptions.html" %}
                 </select>
             </div>
-            <div class="grid_4"><input id="current_location" type="text" name="item" placeholder="Current system" /></div>
+            <div class="grid_3"><input id="current_location" type="text" name="item" placeholder="Current system" /></div>
             <div class="grid_2"><input id="jump_limit" type="text" name="item" placeholder="Jump limit" /></div>
-            <div class="grid_3 prefix_1 omega"><input type="submit" id="search_submit" value="Search" /></div>
+            <div class="grid_2"><input type="button" id="options_submit" value="Options" /></div>
+            <div class="grid_3 omega"><input type="submit" id="search_submit" value="Search" /></div>
+        </div>
+        <div id="options_div" class="grid_15 alpha omega" style="display:none;">
+            <div class="grid_3 alpha">Security Avoidance</div>
+            <div class="grid_3 omega suffix_6">
+                <select id="sec_avoidance" name="sec_avoidance" class="chosen">
+                    <option value="none">None</option>
+                    <option value="high">High</option>
+                    <option value="highonly">Low/Null</option>
+                </select>
+            </div>
         </div>
     </form>
 
