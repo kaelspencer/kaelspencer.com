@@ -88,6 +88,10 @@ var EveIndustry = (function() {
 
         this.log(message, 0);
         $('#status').text(message).show();
+
+        if (typeof this.m_onDrawComplete === 'function') {
+            this.m_onDrawComplete();
+        }
     };
 
     // Called upon return from everest. Contains a list of inventable items and their information.
@@ -202,9 +206,7 @@ var EveIndustry = (function() {
     EveIndustry.prototype.processItem = function(itemid, item, decryptor) {
         // An item will be marked as invalid if one of the materials doesn't have a valid price associated with it.
         var result = {
-            'bpcPerDay': 0,
             'copyTime': 0,
-            'copiesPerDay': 0,
             'decryptor': decryptor,
             'inventionChance': 0,
             'ipd': 0,
@@ -212,11 +214,21 @@ var EveIndustry = (function() {
             'iph24': 0,
             'itemid': itemid,
             'materialCost': 0,
+            'mtipd': {
+                'bpcPerDay': 0,
+                'bpo': 0,
+                'copiesPerDay': 0,
+                'mtipd': 0,
+            },
             'net': 0,
             'productionTime': 0,
             'productionTime24': 0,
             'runs': item.maxProductionLimit / 10 + decryptor.run,
-            'tipd': 0,
+            'stipd': {
+                'bpcPerDay': 0,
+                'copiesPerDay': 0,
+                'stipd': 0,
+            },
             'typeName': item.typeName,
             'valid': true,
             'volume': this.m_inventableVolume[itemid],
@@ -273,10 +285,26 @@ var EveIndustry = (function() {
         // Now figure out the total IPD. This is done by determining how many copies can be produced from one
         // BPO per day then how many successful inventions. Multiply the result by IPD to get a max per day (mpd).
         // 10 inventions per day is a reasonable limit. To implement this, cap copiesPerDay to 10.
-        result.copiesPerDay = 24 * 60 * 60 / item.copyTime;
-        result.copiesPerDay = result.copiesPerDay > 10 ? 10 : result.copiesPerDay;
-        result.bpcPerDay = result.copiesPerDay * result.inventionChance;
-        result.tipd = result.bpcPerDay * result.ipd;
+        result.stipd.copiesPerDay = 24 * 60 * 60 / item.copyTime;
+        result.stipd.copiesPerDay = result.stipd.copiesPerDay > 10 ? 10 : result.stipd.copiesPerDay;
+        result.stipd.bpcPerDay = result.stipd.copiesPerDay * result.inventionChance;
+        result.stipd.stipd = result.stipd.bpcPerDay * result.ipd;
+
+        // TIPD has a max of 10 inventions per day, as that is all that can be invented. If the BPO can't generate
+        // 10 copies per day, the number of inventions is the limiting factor. In Max TIPD (MTIPD), calculate TIPD
+        // as if there are multiple BPOs.
+        if (result.stipd.copiesPerDay == 10) {
+            result.mtipd.copiesPerDay = result.stipd.copiesPerDay;
+            result.mtipd.bpcPerDay = result.stipd.bpcPerDay;
+            result.mtipd.bpo = 1;
+            result.mtipd.mtipd = result.stipd.stipd;
+        } else {
+            result.mtipd.copiesPerDay = 10;
+            var cpd = 24 * 60 * 60 / item.copyTime;
+            result.mtipd.bpo = Math.ceil(result.mtipd.copiesPerDay / cpd);
+            result.mtipd.bpcPerDay = result.mtipd.copiesPerDay * result.inventionChance;
+            result.mtipd.mtipd = result.mtipd.bpcPerDay * result.ipd;
+        }
 
         return result;
     };

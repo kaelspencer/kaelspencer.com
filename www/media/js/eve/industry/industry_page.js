@@ -8,17 +8,17 @@
 
     function handleResults(results) {
         var table = $('#industry tbody');
-        var best = { 'tipd': 0, 'valid': false };
+        var best = { 'stipd': { 'stipd': 0}, 'valid': false };
 
         $.each(results, function(i, result) {
             if (result.valid) {
-                if (result.tipd > best.tipd || !best.valid) {
+                if (result.stipd.stipd > best.stipd.stipd || !best.valid) {
                     best = result;
                 }
             }
         });
 
-        if (best.valid && best.tipd > 0) {
+        if (best.valid && best.stipd.stipd > 0) {
            table.append($('<tr />')
                 .append($('<td />', { html: '<a href="/eve/industry/' + best.itemid + '/">' + best.typeName + '</a>' }))
                 .append($('<td />', { text: best.decryptor.name }))
@@ -26,7 +26,7 @@
                 .append($('<td />', { text: K.prettyTime(best.productionTime * 60 * 60) }))
                 .append($('<td />', { text: K.comma(best.iph.toFixed(0)) }))
                 .append($('<td />', { text: K.comma(best.iph24.toFixed(0)) }))
-                .append($('<td />', { html: K.comma(best.tipd.toFixed(0)) })));
+                .append($('<td />', { html: K.comma(best.stipd.stipd.toFixed(0)) })));
         }
     }
 

@@ -35,7 +35,7 @@ table.industry_all_decryptors tr > td:first-child + td + td + td + td + td + td 
 
 table.industry_detail_decryptors {
     display: none;
-    width: 70%;
+    width: 80%;
 }
 
 table.industry_detail_decryptors th {
