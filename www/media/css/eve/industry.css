@@ -50,3 +50,18 @@ table.industry_detail_decryptors tr > td:first-child + td + td + td + td + td,
 table.industry_detail_decryptors tr > td:first-child + td + td + td + td + td + td {
     text-align: right;
 }
+
+.segment {
+    margin-bottom: 30px;
+}
+
+.segment-header {
+    padding: 15px;
+    background: rgb(245, 245, 245);
+    border: 2px solid rgba(230, 230, 230, 0.9);
+    border-radius: 5px;
+}
+
+.segment-header h1 {
+    margin: 0px;
+}

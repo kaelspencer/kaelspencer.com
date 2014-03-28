@@ -4,6 +4,11 @@
     $(function() {
         $('#loading_indicator').show().children().removeClass('loading_stop');
 
+        $('.segment .segment-header a').click(function() {
+            $(this).parent().parent().parent().children('section').toggle();
+            return false;
+        });
+
         var industry = new EveIndustry();
         industry.industrate_detail(itemid, handleResults, onDrawComplete, handleOverview);
     });
