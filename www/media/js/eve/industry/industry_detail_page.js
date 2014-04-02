@@ -1,5 +1,6 @@
 (function() {
     var name = false;
+    var resultsHandled = false;
 
     $(function() {
         $('#loading_indicator').show().children().removeClass('loading_stop');
@@ -9,13 +10,14 @@
             return false;
         });
 
-        var industry = new EveIndustry();
+        var industry = new EveIndustry.Overview();
         industry.industrate_detail(itemid, handleResults, onDrawComplete, handleOverview);
     });
 
     function handleResults(results) {
         var decryptors = $('#industry_decryptors tbody');
         var mpd = $('#industry_mpd tbody');
+        resultsHandled = true;
 
         $.each(results, function(i, result) {
             if (result.valid) {
@@ -53,9 +55,12 @@
     }
 
     function onDrawComplete() {
-        $('.table-container').show();
-        $('#industry_decryptors').tablesorter({ sortList: [[5, 1]]}).show();
-        $('#industry_mpd').tablesorter({ sortList: [[3, 1]]}).show();
+        if (resultsHandled) {
+            $('.show-on-load').show();
+            $('#industry_decryptors').tablesorter({ sortList: [[5, 1]]}).show();
+            $('#industry_mpd').tablesorter({ sortList: [[3, 1]]}).show();
+        }
+
         $('#loading_indicator').hide().children().addClass('loading_stop');
     }
 

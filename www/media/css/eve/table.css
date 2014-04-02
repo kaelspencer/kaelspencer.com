@@ -53,7 +53,6 @@ table.evehorizontal tr > td:first-child {
 table.table-container {
     margin-left: auto;
     margin-right: auto;
-    display: none;
 }
 
 table.table-container td {

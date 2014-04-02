@@ -55,6 +55,10 @@ table.industry_detail_decryptors tr > td:first-child + td + td + td + td + td + 
     margin-bottom: 30px;
 }
 
+.show-on-load {
+    display: none;
+}
+
 .segment-header {
     padding: 15px;
     background: rgb(245, 245, 245);
@@ -64,4 +68,9 @@ table.industry_detail_decryptors tr > td:first-child + td + td + td + td + td + 
 
 .segment-header h1 {
     margin: 0px;
+}
+
+.eve-status {
+    display: none;
+    font: 1em/1.7em LuxiMonoRegular, 'DejaVu Sans Mono', Monaco, Consolas, monospace;
 }

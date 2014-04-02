@@ -1,14 +1,17 @@
 (function() {
+    var resultsHandled = false;
+
     $(function() {
         $('#loading_indicator').show().children().removeClass('loading_stop');
 
-        var industry = new EveIndustry();
+        var industry = new EveIndustry.Overview();
         industry.industrate(handleResults, onDrawComplete);
     });
 
     function handleResults(results) {
         var table = $('#industry tbody');
         var best = { 'stipd': { 'stipd': 0}, 'valid': false };
+        resultsHandled = true;
 
         $.each(results, function(i, result) {
             if (result.valid) {
@@ -31,7 +34,10 @@
     }
 
     function onDrawComplete() {
-        $('#industry').tablesorter({ sortList: [[6, 1]]}).show();
+        if (resultsHandled) {
+            $('#industry').tablesorter({ sortList: [[6, 1]]}).show();
+        }
+
         $('#loading_indicator').hide().children().addClass('loading_stop');
     }
 })();
