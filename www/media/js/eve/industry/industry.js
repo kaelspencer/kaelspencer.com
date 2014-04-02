@@ -1,25 +1,24 @@
 (function(EveIndustry, $, undefined) {
-    var m_apiPrices = 'http://api.eve-marketdata.com/api/item_prices2.json?char_name=Dogen%20Okanata&region_ids=10000002&buysell=s&type_ids='
-    var m_apiVolume = 'http://api.eve-marketdata.com/api/item_history2.json?char_name=Dogen%20Okanata&region_ids=10000002&days=20&type_ids='
-    m_everest = 'http://everest.kaelspencer.com/'
-    //var m_everest = 'http://localhost:5000/'
+    var m_apiPrices = 'http://api.eve-marketdata.com/api/item_prices2.json?char_name=Dogen%20Okanata&region_ids=10000002&buysell=s&type_ids=';
+    var m_apiVolume = 'http://api.eve-marketdata.com/api/item_history2.json?char_name=Dogen%20Okanata&region_ids=10000002&days=20&type_ids=';
+    var m_everest = 'http://everest.kaelspencer.com/';
+    //var m_everest = 'http://localhost:5000/';
     var m_everestIndustry = m_everest + "industry/norigs/names/";
     var m_everestIndustryDetail = m_everest + "industry/detail/names/";
     var m_pe = 5; // Production Effeciency Skill
     var m_ind = 5; // Industry Skill
     var m_indImp = 0.98; // Implant: 1 - % benefit, for manufacturing.
     var m_copyImp = 0.97; // Implant: 1 - % benefit, for copying.
-    var m_indSlt = 0.75 // Slot modifier (POS) for manufacturing.
-    var m_copySlt = 0.65 // Slot modifier (POS) for copying.
+    var m_indSlt = 0.75; // Slot modifier (POS) for manufacturing.
+    var m_copySlt = 0.65; // Slot modifier (POS) for copying.
     var m_science = 5; // Science skill.
     var m_logLevel = 0; // 0 is important only, 1 is verbose, 2 is very verbose.
     // The method provided by the caller to handle the results of computation. It is called per
     // item. It is a list of results for each decryptor.
-    var m_handleResults = undefined;
-    var m_onDrawComplete = undefined; // Called when drawing is completed.
-    var m_handleOverview = undefined; // Called with detail information for each item.
+    var m_handleResults;
+    var m_onDrawComplete; // Called when drawing is completed.
+    var m_handleOverview; // Called with detail information for each item.
     var m_ajaxTimeout = 20 * 1000; // Timeout after 20 seconds.
-    //m_ajaxTimeout = 10;
 
     var m_decryptors = [
         { 'name': 'None', 'probability': 1, 'run': 0, 'me': 0, 'pe': 0,
@@ -43,13 +42,13 @@
     ];
 
     EveIndustry.errorHandler = function(fetchItem, xhr, status) {
+        var message = 'Failed to fetch ' + fetchItem + '. HTTP ' + xhr.status + ' (' + status + ')';
+
         if (typeof xhr === 'undefined') {
-            var message = fetchItem;
-        } else {
-            var message = 'Failed to fetch ' + fetchItem + '. HTTP ' + xhr.status + ' (' + status + ')';
+            message = fetchItem;
         }
 
-        EveIndustry.s.log(message, 0);
+        EveIndustry.log(message, 0);
         $('#status').text(message).show();
 
         if (typeof m_onDrawComplete === 'function') {
@@ -134,10 +133,11 @@
     // Give the base production time in seconds, industry skill, implant modifier, production slot modifier
     // (POS), productivity modifier (blueprint), and PE of the blueprint, calculate total production time (in seconds).
     EveIndustry.calculateProductionTime = function(base, industry, implant, slot, modifier, pe) {
+        var pt = 0;
         if (pe >= 0) {
-            var pt = 1 - (modifier / base) * (pe / (1 + pe));
+            pt = 1 - (modifier / base) * (pe / (1 + pe));
         } else {
-            var pt = 1 - (modifier / base) * (pe - 1);
+            pt = 1 - (modifier / base) * (pe - 1);
         }
 
         return base * pt * (1 - 0.04 * industry) * implant * slot;
@@ -157,7 +157,7 @@
         function Overview() {
             this.m_uniquePriceItems = {};
             this.m_inventableVolume = {};
-        };
+        }
 
         Overview.prototype.industrate = function(handleResults, onDrawComplete) {
             if (typeof handleResults !== 'function') {
@@ -196,7 +196,7 @@
         // Called upon return from everest. Contains a list of inventable items and their information.
         Overview.prototype.onLoadIndustryItems = function(industry_data) {
             if (!industry_data.hasOwnProperty('items')) {
-                EveIndustry.errorHandler('industry items from everest', '', '')
+                EveIndustry.errorHandler('industry items from everest', '', '');
                 return false;
             }
             var that = this;
@@ -238,13 +238,14 @@
 
                             if (!results[i-1].valid) {
                                 EveIndustry.log('Unable to fetch all details for ' + item.typeName + ' (' + itemid + ').', 0);
-                                return valid = false;
+                                valid = false;
+                                return valid;
                             }
                         });
 
                         if (valid) {
                             var overview = item;
-                            overview['vol'] = that.m_inventableVolume[itemid];
+                            overview.vol = that.m_inventableVolume[itemid];
                             EveIndustry.handleOverview(overview);
                             m_handleResults(results);
                         }
@@ -252,13 +253,13 @@
 
                     m_onDrawComplete();
                 })
-                .fail(function(xhr, status) { EveIndustry.errorHandler('price data', xhr, status); })
+                .fail(function(xhr, status) { EveIndustry.errorHandler('price data', xhr, status); });
         };
 
         // Called upon return from EVE-Central with price data.
         Overview.prototype.onLoadPrices = function(price_data) {
             var d = new Date();
-            EveIndustry.log('onLoadPrices: ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds(), 0);
+            EveIndustry.log('onLoadPrices: ' + K.pad(d.getHours(), 2, '0') + ':' + K.pad(d.getMinutes(), 2, '0') + ':' + K.pad(d.getSeconds(), 2, '0'), 0);
             $.each(price_data.emd.result, function(key, obj) {
                 if (this.m_uniquePriceItems.hasOwnProperty(obj.row.typeID)) {
                     var cost = parseFloat(obj.row.price);
@@ -274,7 +275,7 @@
         // a full day.
         Overview.prototype.onLoadVolumes = function(volume_data) {
             var d = new Date();
-            EveIndustry.log('onLoadVolumes: ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds(), 0);
+            EveIndustry.log('onLoadVolumes: ' + K.pad(d.getHours(), 2, '0') + ':' + K.pad(d.getMinutes(), 2, '0') + ':' + K.pad(d.getSeconds(), 2, '0'), 0);
             // Get just the date portion.
             var current_date = new Date(volume_data.emd.currentTime.replace(/(.*)T.*/, '$1'));
             var volumes = {};
@@ -352,7 +353,7 @@
             result.productionTime = result.productionTime * result.runs / (60 * 60);
             result.productionTime24 = Math.ceil(result.productionTime / 24) * 24;
 
-            if (result.productionTime % 24 == 0) {
+            if (result.productionTime % 24 === 0) {
                 result.productionTime24 += 24;
             }
 
@@ -369,7 +370,7 @@
                 // TODO: Should actual be saved?
                 EveIndustry.log('\t' + material.name + ' ' + actual + ' (' + material.quantity + ') -> ' + K.comma(Math.round(actual * material.dmg * that.m_uniquePriceItems[materialid]).toFixed(2)), 2);
 
-                if (that.m_uniquePriceItems[materialid] == 0) {
+                if (that.m_uniquePriceItems[materialid] === 0) {
                     result.valid = false;
                     EveIndustry.log('Failed to fetch price for ' + material.name + ' (' + materialid + ').', 0);
                     return false;

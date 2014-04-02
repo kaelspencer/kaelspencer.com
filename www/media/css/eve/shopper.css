@@ -13,7 +13,7 @@ table.orders td {
     white-space: nowrap;
 }
 
-table.orders tr.tradehub {
+.tradehub {
     font-weight: bold;
 }
 
@@ -41,7 +41,7 @@ table.orders tr > td:first-child + td + td + td + td {
     padding: 5px;
     border-width: 1px;
     border-style: solid;
-    border-color: rgba(240, 240, 240, 1);
+    border-color: rgb(240, 240, 240);
     font-size: 1.07em;
     width: 100%;
 }
