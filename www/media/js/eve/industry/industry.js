@@ -152,6 +152,17 @@
         return runs * max / prodLimit;
     };
 
+    // Calculate the invention cost per resulting run.
+    EveIndustry.calculateInventionCost = function(item, decryptor, datacore1Cost, datacore2Cost, decryptorCost) {
+        // Hardcode encryption and science skills to 4 for now.
+        var e = 4, d1 = 4, d2 = 4, meta = 0;
+        var chance = item.chance * (1 + (0.01 * e)) * (1 + ((d1 + d1) * (0.1 / (5 - meta)))) * decryptor.probability;
+        var costPerAttempt = datacore1Cost * item.datacores[0].quantity + datacore2Cost * item.datacores[1].quantity + decryptorCost;
+        var costPerSuccess = costPerAttempt / chance;
+
+        return { 'chance': chance, 'cost': costPerSuccess, 'raw': costPerAttempt };
+    };
+
     // The overview class. It retrieves a list of inventable items then calculations the IPH, IPD, and TIPD for each one.
     EveIndustry.Overview = (function() {
         function Overview() {
@@ -357,7 +368,12 @@
                 result.productionTime24 += 24;
             }
 
-            var invention = this.calculateInventionCost(item, decryptor);
+            var invention = EveIndustry.calculateInventionCost(
+                item,
+                decryptor,
+                this.m_uniquePriceItems[item.datacores[0].typeID],
+                this.m_uniquePriceItems[item.datacores[1].typeID],
+                this.m_uniquePriceItems[decryptor.items[item.decryptor_category]]);
             result.inventionCost = invention.cost;
             result.inventionChance = invention.chance;
 
@@ -407,25 +423,6 @@
             }
 
             return result;
-        };
-
-        // Calculate the invention cost per resulting run.
-        Overview.prototype.calculateInventionCost = function(item, decryptor) {
-            // Hardcode encryption and science skills to 4 for now.
-            var e = 4, d1 = 4, d2 = 4, meta = 0;
-            var chance = item.chance * (1 + (0.01 * e)) * (1 + ((d1 + d1) * (0.1 / (5 - meta)))) * decryptor.probability;
-
-            var costPerAttempt = this.m_uniquePriceItems[item.datacores[0].typeID] * item.datacores[0].quantity +
-                                 this.m_uniquePriceItems[item.datacores[1].typeID] * item.datacores[1].quantity;
-            costPerAttempt += this.m_uniquePriceItems[decryptor.items[item.decryptor_category]];
-            var costPerSuccess = costPerAttempt / chance;
-
-            EveIndustry.log('Invention chance: ' + (chance * 100).toFixed(2) + '%', 2);
-            EveIndustry.log('Raw cost: ' + K.comma(costPerAttempt.toFixed(2)), 2);
-            EveIndustry.log('Decryptor cost (' + decryptor.items[item.decryptor_category] + '): ' + K.comma(this.m_uniquePriceItems[decryptor.items[item.decryptor_category]].toFixed(2), 2));
-            EveIndustry.log('Cost per successful invention: ' + K.comma((costPerSuccess.toFixed(2))), 2);
-
-            return { 'cost': costPerSuccess, 'chance': chance };
         };
 
         // Add an element to the price array and ensure uniqueness.
