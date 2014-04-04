@@ -10,8 +10,8 @@
             return false;
         });
 
-        var industry = new EveIndustry.Overview();
-        industry.industrate_detail(itemid, handleResults, onDrawComplete, handleOverview);
+        var industry = new EveIndustry.Detail();
+        industry.industrate(itemid, handleResults, onDrawComplete, handleOverview);
     });
 
     function handleResults(results) {

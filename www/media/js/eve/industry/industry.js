@@ -13,11 +13,6 @@
     var m_copySlt = 0.65; // Slot modifier (POS) for copying.
     var m_science = 5; // Science skill.
     var m_logLevel = 0; // 0 is important only, 1 is verbose, 2 is very verbose.
-    // The method provided by the caller to handle the results of computation. It is called per
-    // item. It is a list of results for each decryptor.
-    var m_handleResults;
-    var m_onDrawComplete; // Called when drawing is completed.
-    var m_handleOverview; // Called with detail information for each item.
     var m_ajaxTimeout = 20 * 1000; // Timeout after 20 seconds.
 
     var m_decryptors = [
@@ -41,7 +36,7 @@
             'items': { '728': 33316, '729': 33321, '730': 33323, '731': 33322 }}
     ];
 
-    EveIndustry.errorHandler = function(fetchItem, xhr, status) {
+    EveIndustry.errorHandler = function(fetchItem, xhr, status, method) {
         var message = 'Failed to fetch ' + fetchItem + '. HTTP ' + xhr.status + ' (' + status + ')';
 
         if (typeof xhr === 'undefined') {
@@ -51,15 +46,8 @@
         EveIndustry.log(message, 0);
         $('#status').text(message).show();
 
-        if (typeof m_onDrawComplete === 'function') {
-            m_onDrawComplete();
-        }
-    };
-
-    // If the m_handleOverview is set, call it.
-    EveIndustry.handleOverview = function(data) {
-        if (typeof m_handleOverview === 'function') {
-            m_handleOverview(data);
+        if (typeof method === 'function') {
+            method();
         }
     };
 
@@ -166,48 +154,33 @@
     // The overview class. It retrieves a list of inventable items then calculations the IPH, IPD, and TIPD for each one.
     EveIndustry.Overview = (function() {
         function Overview() {
+            // The method provided by the caller to handle the results of computation. It is called per
+            // item. It is a list of results for each decryptor.
+            this.m_handleResults;
+            this.m_onDrawComplete; // Called when drawing is completed.
             this.m_uniquePriceItems = {};
             this.m_inventableVolume = {};
         }
 
         Overview.prototype.industrate = function(handleResults, onDrawComplete) {
             if (typeof handleResults !== 'function') {
-                EveIndustry.errorHandler('Invalid handleResults function provided (' + typeof handleResults + ')');
+                EveIndustry.errorHandler('Invalid handleResults function provided (' + typeof handleResults + ')', onDrawComplete);
             } else if (typeof onDrawComplete !== 'function') {
-                EveIndustry.errorHandler('Invalid onDrawComplete function provided (' + typeof onDrawComplete + ')');
+                EveIndustry.errorHandler('Invalid onDrawComplete function provided (' + typeof onDrawComplete + ')', onDrawComplete);
             } else {
-                m_handleResults = handleResults;
-                m_onDrawComplete = onDrawComplete;
+                this.m_handleResults = handleResults;
+                this.m_onDrawComplete = onDrawComplete;
 
                 $.ajax({ url: m_everestIndustry, timeout: m_ajaxTimeout, context: this, })
                     .done(this.onLoadIndustryItems)
-                    .fail(function(xhr, status) { EveIndustry.errorHandler('industy list', xhr, status); });
-            }
-        };
-
-        // Go into detail mode. Only information for the provided itemID is retrieved and calculated.
-        Overview.prototype.industrate_detail = function(itemid, handleResults, onDrawComplete, handleOverview) {
-            if (typeof handleResults !== 'function') {
-                EveIndustry.errorHandler('Invalid handleResults function provided (' + typeof handleResults + ')');
-            } else if (typeof onDrawComplete !== 'function') {
-                EveIndustry.errorHandler('Invalid onDrawComplete function provided (' + typeof onDrawComplete + ')');
-            } else if (typeof itemid !== 'number') {
-                EveIndustry.errorHandler('Incorrect itemid provided (' + typeof itemid + ')');
-            } else {
-                m_handleResults = handleResults;
-                m_onDrawComplete = onDrawComplete;
-                m_handleOverview = handleOverview;
-
-                $.ajax({ url: m_everestIndustryDetail + itemid + '/', timeout: m_ajaxTimeout, context: this, })
-                    .done(this.onLoadIndustryItems)
-                    .fail(function(xhr, status) { EveIndustry.errorHandler('industy list', xhr, status); });
+                    .fail(function(xhr, status) { EveIndustry.errorHandler('industy list', xhr, status, this.m_onDrawComplete); });
             }
         };
 
         // Called upon return from everest. Contains a list of inventable items and their information.
         Overview.prototype.onLoadIndustryItems = function(industry_data) {
             if (!industry_data.hasOwnProperty('items')) {
-                EveIndustry.errorHandler('industry items from everest', '', '');
+                EveIndustry.errorHandler('industry items from everest', '', '', this.m_onDrawComplete);
                 return false;
             }
             var that = this;
@@ -255,16 +228,13 @@
                         });
 
                         if (valid) {
-                            var overview = item;
-                            overview.vol = that.m_inventableVolume[itemid];
-                            EveIndustry.handleOverview(overview);
-                            m_handleResults(results);
+                            that.m_handleResults(results);
                         }
                     });
 
-                    m_onDrawComplete();
+                    that.m_onDrawComplete();
                 })
-                .fail(function(xhr, status) { EveIndustry.errorHandler('price data', xhr, status); });
+                .fail(function(xhr, status) { EveIndustry.errorHandler('price data', xhr, status, this.m_onDrawComplete); });
         };
 
         // Called upon return from EVE-Central with price data.
@@ -433,5 +403,270 @@
         };
 
         return Overview;
+    })();
+
+    // This class handles the detail view for a single item. It doesn't just calculate the current price, it calculates
+    // a user defined N days previous.
+    EveIndustry.Detail = (function() {
+        function Detail() {
+            // The method provided by the caller to handle the results of computation. It is called per
+            // item. It is a list of results for each decryptor.
+            this.m_handleResults;
+            this.m_onDrawComplete; // Called when drawing is completed.
+            this.m_handleDetail; // Called with detail information for each item.
+            this.m_uniquePriceItems = {};
+            this.m_inventableVolume = {};
+        }
+
+        // Go into detail mode. Only information for the provided itemID is retrieved and calculated.
+        Detail.prototype.industrate = function(itemid, handleResults, onDrawComplete, handleDetail) {
+            if (typeof handleResults !== 'function') {
+                EveIndustry.errorHandler('Invalid handleResults function provided (' + typeof handleResults + ')', onDrawComplete);
+            } else if (typeof onDrawComplete !== 'function') {
+                EveIndustry.errorHandler('Invalid onDrawComplete function provided (' + typeof onDrawComplete + ')', onDrawComplete);
+            } else if (typeof itemid !== 'number') {
+                EveIndustry.errorHandler('Incorrect itemid provided (' + typeof itemid + ')', this.m_onDrawComplete);
+            } else {
+                this.m_handleResults = handleResults;
+                this.m_onDrawComplete = onDrawComplete;
+                this.m_handleDetail = handleDetail;
+
+                $.ajax({ url: m_everestIndustryDetail + itemid + '/', timeout: m_ajaxTimeout, context: this, })
+                    .done(this.onLoadIndustryItems)
+                    .fail(function(xhr, status) { EveIndustry.errorHandler('industy list', xhr, status, this.m_onDrawComplete); });
+            }
+        };
+
+        // Called upon return from everest. Contains a list of inventable items and their information.
+        Detail.prototype.onLoadIndustryItems = function(industry_data) {
+            if (!industry_data.hasOwnProperty('items')) {
+                EveIndustry.errorHandler('industry items from everest', '', '', this.m_onDrawComplete);
+                return false;
+            }
+            var that = this;
+
+            // First loop through the result set. Just get the item ID's and store them in a unique list.
+            $.each(industry_data.items, function(itemid, item) {
+                that.addUniquePriceItem(itemid);
+                that.m_inventableVolume[itemid] = 0;
+
+                $.each(item.perfectMaterials, function(i, material) {
+                    that.addUniquePriceItem(material.typeID);
+                });
+
+                $.each(item.datacores, function(k, datacore) {
+                    that.addUniquePriceItem(datacore.typeID);
+                });
+            });
+
+            // Now loop through all of the different decryptors and add them to the unique list.
+            $.each(m_decryptors, function(decryptor_name, decryptor) {
+                $.each(decryptor.items, function(category, itemid) {
+                    that.addUniquePriceItem(itemid);
+                });
+            });
+
+            // Fetch all of the price data, then process each item and decryptor combination.
+            var deferrals = EveIndustry.fetchData(this.m_uniquePriceItems, m_apiPrices, this.onLoadPrices, this);
+            deferrals = deferrals.concat(EveIndustry.fetchData(this.m_inventableVolume, m_apiVolume, this.onLoadVolumes, this));
+            $.when.apply($, deferrals)
+                .done(function() {
+                    $.each(industry_data.items, function(itemid, item) {
+                        var results = [];
+                        var valid = true;
+                        var runs = (item.maxProductionLimit / 10 == 1 ? 1 : item.t1bpo.maxProductionLimit);
+                        item.copyTime = EveIndustry.calculateCopyTime(item.t1bpo.researchCopyTime, runs, item.t1bpo.maxProductionLimit);
+
+                        $.each(m_decryptors, function(k, decryptor) {
+                            var i = results.push(that.processItem(itemid, item, decryptor));
+
+                            if (!results[i-1].valid) {
+                                EveIndustry.log('Unable to fetch all details for ' + item.typeName + ' (' + itemid + ').', 0);
+                                valid = false;
+                                return valid;
+                            }
+                        });
+
+                        if (valid) {
+                            if (typeof that.m_handleDetail === 'function') {
+                                var detail = item;
+                                detail.vol = that.m_inventableVolume[itemid];
+                                that.m_handleDetail(detail);
+                            }
+                            that.m_handleResults(results);
+                        }
+                    });
+
+                    that.m_onDrawComplete();
+                })
+                .fail(function(xhr, status) { EveIndustry.errorHandler('price data', xhr, status, this.m_onDrawComplete); });
+        };
+
+        // Called upon return from EVE-Central with price data.
+        Detail.prototype.onLoadPrices = function(price_data) {
+            var d = new Date();
+            EveIndustry.log('onLoadPrices: ' + K.pad(d.getHours(), 2, '0') + ':' + K.pad(d.getMinutes(), 2, '0') + ':' + K.pad(d.getSeconds(), 2, '0'), 0);
+            $.each(price_data.emd.result, function(key, obj) {
+                if (this.m_uniquePriceItems.hasOwnProperty(obj.row.typeID)) {
+                    var cost = parseFloat(obj.row.price);
+
+                    if (!isNaN(cost)) {
+                        this.m_uniquePriceItems[obj.row.typeID] = cost;
+                    }
+                }
+            }.bind(this));
+        };
+
+        // Average out the volumes. Drop the current date's volume because it will be incomplete - not
+        // a full day.
+        Detail.prototype.onLoadVolumes = function(volume_data) {
+            var d = new Date();
+            EveIndustry.log('onLoadVolumes: ' + K.pad(d.getHours(), 2, '0') + ':' + K.pad(d.getMinutes(), 2, '0') + ':' + K.pad(d.getSeconds(), 2, '0'), 0);
+            // Get just the date portion.
+            var current_date = new Date(volume_data.emd.currentTime.replace(/(.*)T.*/, '$1'));
+            var volumes = {};
+
+            $.each(volume_data.emd.result, function(key, value) {
+                var this_date = new Date(value.row.date);
+
+                if (!volumes.hasOwnProperty(value.row.typeID)) {
+                    volumes[value.row.typeID] = {'volume': 0, 'count': 0 };
+                }
+
+                // Exclude today's because it will be low (partial).
+                if (this_date.getTime() != current_date.getTime()) {
+                    volumes[value.row.typeID].volume += parseInt(value.row.volume);
+                    volumes[value.row.typeID].count++;
+                }
+            });
+
+            // Now create averages.
+            $.each(volumes, function(typeid, volume) {
+                if (volume.count > 0) {
+                    this.m_inventableVolume[typeid] = Math.round(volume.volume / volume.count);
+                }
+            }.bind(this));
+        };
+
+        // Calculate all of the good information about the blueprint.
+        Detail.prototype.processItem = function(itemid, item, decryptor) {
+            // An item will be marked as invalid if one of the materials doesn't have a valid price associated with it.
+            var result = {
+                'copyTime': 0,
+                'decryptor': decryptor,
+                'inventionChance': 0,
+                'ipd': 0,
+                'iph': 0,
+                'iph24': 0,
+                'itemid': itemid,
+                'materialCost': 0,
+                'mtipd': {
+                    'bpcPerDay': 0,
+                    'bpo': 0,
+                    'copiesPerDay': 0,
+                    'mtipd': 0,
+                },
+                'net': 0,
+                'productionTime': 0,
+                'productionTime24': 0,
+                'runs': item.maxProductionLimit / 10 + decryptor.run,
+                'stipd': {
+                    'bpcPerDay': 0,
+                    'copiesPerDay': 0,
+                    'stipd': 0,
+                },
+                'typeName': item.typeName,
+                'valid': true,
+                'volume': this.m_inventableVolume[itemid],
+            };
+            var valid = true;
+            var that = this;
+            var bp_pe = -4 + decryptor.pe;
+            var bp_me = -4 + decryptor.me;
+            var runs = item.maxProductionLimit / 10 + decryptor.run;
+
+            // If the item is a ship it will be built in a station instead of a POS. The slot modifier in this case is 1.
+            var slt = m_indSlt;
+            if (item.categoryName == "Ship") {
+                slt = 1;
+            }
+
+            result.productionTime = EveIndustry.calculateProductionTime(item.productionTime, m_ind, m_indImp, slt, item.productivityModifier, bp_pe);
+
+            // Production time is in hour units and is for the entire blueprint (not each individual run).
+            // If the production time is an exact multiple of 24 hours, add an extra day. Continuous runs aren't
+            // happening.
+            result.productionTime = result.productionTime * result.runs / (60 * 60);
+            result.productionTime24 = Math.ceil(result.productionTime / 24) * 24;
+
+            if (result.productionTime % 24 === 0) {
+                result.productionTime24 += 24;
+            }
+
+            var invention = EveIndustry.calculateInventionCost(
+                item,
+                decryptor,
+                this.m_uniquePriceItems[item.datacores[0].typeID],
+                this.m_uniquePriceItems[item.datacores[1].typeID],
+                this.m_uniquePriceItems[decryptor.items[item.decryptor_category]]);
+            result.inventionCost = invention.cost;
+            result.inventionChance = invention.chance;
+
+            $.each(item.perfectMaterials, function(i, material) {
+                var materialid = material.typeID;
+                var actual = EveIndustry.calculateActualRequired(material.quantity, item.wasteFactor, bp_me, material.wasteME, m_pe, material.wastePE);
+
+                result.materialCost += actual * material.dmg * that.m_uniquePriceItems[materialid];
+
+                // TODO: Should actual be saved?
+                EveIndustry.log('\t' + material.name + ' ' + actual + ' (' + material.quantity + ') -> ' + K.comma(Math.round(actual * material.dmg * that.m_uniquePriceItems[materialid]).toFixed(2)), 2);
+
+                if (that.m_uniquePriceItems[materialid] === 0) {
+                    result.valid = false;
+                    EveIndustry.log('Failed to fetch price for ' + material.name + ' (' + materialid + ').', 0);
+                    return false;
+                }
+            });
+
+            result.net = (this.m_uniquePriceItems[itemid] - result.materialCost) * result.runs - result.inventionCost;
+            result.iph = result.net / result.productionTime;
+            result.iph24 = result.net / result.productionTime24;
+            result.ipd = result.net / (result.productionTime24 / 24);
+
+            // Now figure out the total IPD. This is done by determining how many copies can be produced from one
+            // BPO per day then how many successful inventions. Multiply the result by IPD to get a max per day (mpd).
+            // 10 inventions per day is a reasonable limit. To implement this, cap copiesPerDay to 10.
+            result.stipd.copiesPerDay = 24 * 60 * 60 / item.copyTime;
+            result.stipd.copiesPerDay = result.stipd.copiesPerDay > 10 ? 10 : result.stipd.copiesPerDay;
+            result.stipd.bpcPerDay = result.stipd.copiesPerDay * result.inventionChance;
+            result.stipd.stipd = result.stipd.bpcPerDay * result.ipd;
+
+            // TIPD has a max of 10 inventions per day, as that is all that can be invented. If the BPO can't generate
+            // 10 copies per day, the number of inventions is the limiting factor. In Max TIPD (MTIPD), calculate TIPD
+            // as if there are multiple BPOs.
+            if (result.stipd.copiesPerDay == 10) {
+                result.mtipd.copiesPerDay = result.stipd.copiesPerDay;
+                result.mtipd.bpcPerDay = result.stipd.bpcPerDay;
+                result.mtipd.bpo = 1;
+                result.mtipd.mtipd = result.stipd.stipd;
+            } else {
+                result.mtipd.copiesPerDay = 10;
+                var cpd = 24 * 60 * 60 / item.copyTime;
+                result.mtipd.bpo = Math.ceil(result.mtipd.copiesPerDay / cpd);
+                result.mtipd.bpcPerDay = result.mtipd.copiesPerDay * result.inventionChance;
+                result.mtipd.mtipd = result.mtipd.bpcPerDay * result.ipd;
+            }
+
+            return result;
+        };
+
+        // Add an element to the price array and ensure uniqueness.
+        Detail.prototype.addUniquePriceItem = function(itemid) {
+            if (!this.m_uniquePriceItems.hasOwnProperty(itemid)) {
+                this.m_uniquePriceItems[itemid] = 0;
+            }
+        };
+
+        return Detail;
     })();
 }(window.EveIndustry = window.EveIndustry || {}, jQuery));
