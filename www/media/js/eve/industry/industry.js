@@ -151,6 +151,118 @@
         return { 'chance': chance, 'cost': costPerSuccess, 'raw': costPerAttempt };
     };
 
+    // Calculate all of the good information about the blueprint.
+    EveIndustry.processItem = function(itemid, item, decryptor, volume, prices) {
+        // An item will be marked as invalid if one of the materials doesn't have a valid price associated with it.
+        var result = {
+            'copyTime': 0,
+            'decryptor': decryptor,
+            'inventionChance': 0,
+            'ipd': 0,
+            'iph': 0,
+            'iph24': 0,
+            'itemid': itemid,
+            'materialCost': 0,
+            'mtipd': {
+                'bpcPerDay': 0,
+                'bpo': 0,
+                'copiesPerDay': 0,
+                'mtipd': 0,
+            },
+            'net': 0,
+            'productionTime': 0,
+            'productionTime24': 0,
+            'runs': item.maxProductionLimit / 10 + decryptor.run,
+            'stipd': {
+                'bpcPerDay': 0,
+                'copiesPerDay': 0,
+                'stipd': 0,
+            },
+            'typeName': item.typeName,
+            'valid': true,
+            'volume': volume,
+        };
+        var valid = true;
+        var that = this;
+        var bp_pe = -4 + decryptor.pe;
+        var bp_me = -4 + decryptor.me;
+        var runs = item.maxProductionLimit / 10 + decryptor.run;
+
+        // If the item is a ship it will be built in a station instead of a POS. The slot modifier in this case is 1.
+        var slt = m_indSlt;
+        if (item.categoryName == "Ship") {
+            slt = 1;
+        }
+
+        result.productionTime = EveIndustry.calculateProductionTime(item.productionTime, m_ind, m_indImp, slt, item.productivityModifier, bp_pe);
+
+        // Production time is in hour units and is for the entire blueprint (not each individual run).
+        // If the production time is an exact multiple of 24 hours, add an extra day. Continuous runs aren't
+        // happening.
+        result.productionTime = result.productionTime * result.runs / (60 * 60);
+        result.productionTime24 = Math.ceil(result.productionTime / 24) * 24;
+
+        if (result.productionTime % 24 === 0) {
+            result.productionTime24 += 24;
+        }
+
+        var invention = EveIndustry.calculateInventionCost(
+            item,
+            decryptor,
+            prices[item.datacores[0].typeID],
+            prices[item.datacores[1].typeID],
+            prices[decryptor.items[item.decryptor_category]]);
+        result.inventionCost = invention.cost;
+        result.inventionChance = invention.chance;
+
+        $.each(item.perfectMaterials, function(i, material) {
+            var materialid = material.typeID;
+            var actual = EveIndustry.calculateActualRequired(material.quantity, item.wasteFactor, bp_me, material.wasteME, m_pe, material.wastePE);
+
+            result.materialCost += actual * material.dmg * prices[materialid];
+
+            // TODO: Should actual be saved?
+            EveIndustry.log('\t' + material.name + ' ' + actual + ' (' + material.quantity + ') -> ' + K.comma(Math.round(actual * material.dmg * prices[materialid]).toFixed(2)), 2);
+
+            if (prices[materialid] === 0) {
+                result.valid = false;
+                EveIndustry.log('Failed to fetch price for ' + material.name + ' (' + materialid + ').', 0);
+                return false;
+            }
+        });
+
+        result.net = (prices[itemid] - result.materialCost) * result.runs - result.inventionCost;
+        result.iph = result.net / result.productionTime;
+        result.iph24 = result.net / result.productionTime24;
+        result.ipd = result.net / (result.productionTime24 / 24);
+
+        // Now figure out the total IPD. This is done by determining how many copies can be produced from one
+        // BPO per day then how many successful inventions. Multiply the result by IPD to get a max per day (mpd).
+        // 10 inventions per day is a reasonable limit. To implement this, cap copiesPerDay to 10.
+        result.stipd.copiesPerDay = 24 * 60 * 60 / item.copyTime;
+        result.stipd.copiesPerDay = result.stipd.copiesPerDay > 10 ? 10 : result.stipd.copiesPerDay;
+        result.stipd.bpcPerDay = result.stipd.copiesPerDay * result.inventionChance;
+        result.stipd.stipd = result.stipd.bpcPerDay * result.ipd;
+
+        // TIPD has a max of 10 inventions per day, as that is all that can be invented. If the BPO can't generate
+        // 10 copies per day, the number of inventions is the limiting factor. In Max TIPD (MTIPD), calculate TIPD
+        // as if there are multiple BPOs.
+        if (result.stipd.copiesPerDay == 10) {
+            result.mtipd.copiesPerDay = result.stipd.copiesPerDay;
+            result.mtipd.bpcPerDay = result.stipd.bpcPerDay;
+            result.mtipd.bpo = 1;
+            result.mtipd.mtipd = result.stipd.stipd;
+        } else {
+            result.mtipd.copiesPerDay = 10;
+            var cpd = 24 * 60 * 60 / item.copyTime;
+            result.mtipd.bpo = Math.ceil(result.mtipd.copiesPerDay / cpd);
+            result.mtipd.bpcPerDay = result.mtipd.copiesPerDay * result.inventionChance;
+            result.mtipd.mtipd = result.mtipd.bpcPerDay * result.ipd;
+        }
+
+        return result;
+    };
+
     // The overview class. It retrieves a list of inventable items then calculations the IPH, IPD, and TIPD for each one.
     EveIndustry.Overview = (function() {
         function Overview() {
@@ -218,7 +330,7 @@
                         item.copyTime = EveIndustry.calculateCopyTime(item.t1bpo.researchCopyTime, runs, item.t1bpo.maxProductionLimit);
 
                         $.each(m_decryptors, function(k, decryptor) {
-                            var i = results.push(that.processItem(itemid, item, decryptor));
+                            var i = results.push(EveIndustry.processItem(itemid, item, decryptor, that.m_inventableVolume[itemid], that.m_uniquePriceItems));
 
                             if (!results[i-1].valid) {
                                 EveIndustry.log('Unable to fetch all details for ' + item.typeName + ' (' + itemid + ').', 0);
@@ -281,118 +393,6 @@
                     this.m_inventableVolume[typeid] = Math.round(volume.volume / volume.count);
                 }
             }.bind(this));
-        };
-
-        // Calculate all of the good information about the blueprint.
-        Overview.prototype.processItem = function(itemid, item, decryptor) {
-            // An item will be marked as invalid if one of the materials doesn't have a valid price associated with it.
-            var result = {
-                'copyTime': 0,
-                'decryptor': decryptor,
-                'inventionChance': 0,
-                'ipd': 0,
-                'iph': 0,
-                'iph24': 0,
-                'itemid': itemid,
-                'materialCost': 0,
-                'mtipd': {
-                    'bpcPerDay': 0,
-                    'bpo': 0,
-                    'copiesPerDay': 0,
-                    'mtipd': 0,
-                },
-                'net': 0,
-                'productionTime': 0,
-                'productionTime24': 0,
-                'runs': item.maxProductionLimit / 10 + decryptor.run,
-                'stipd': {
-                    'bpcPerDay': 0,
-                    'copiesPerDay': 0,
-                    'stipd': 0,
-                },
-                'typeName': item.typeName,
-                'valid': true,
-                'volume': this.m_inventableVolume[itemid],
-            };
-            var valid = true;
-            var that = this;
-            var bp_pe = -4 + decryptor.pe;
-            var bp_me = -4 + decryptor.me;
-            var runs = item.maxProductionLimit / 10 + decryptor.run;
-
-            // If the item is a ship it will be built in a station instead of a POS. The slot modifier in this case is 1.
-            var slt = m_indSlt;
-            if (item.categoryName == "Ship") {
-                slt = 1;
-            }
-
-            result.productionTime = EveIndustry.calculateProductionTime(item.productionTime, m_ind, m_indImp, slt, item.productivityModifier, bp_pe);
-
-            // Production time is in hour units and is for the entire blueprint (not each individual run).
-            // If the production time is an exact multiple of 24 hours, add an extra day. Continuous runs aren't
-            // happening.
-            result.productionTime = result.productionTime * result.runs / (60 * 60);
-            result.productionTime24 = Math.ceil(result.productionTime / 24) * 24;
-
-            if (result.productionTime % 24 === 0) {
-                result.productionTime24 += 24;
-            }
-
-            var invention = EveIndustry.calculateInventionCost(
-                item,
-                decryptor,
-                this.m_uniquePriceItems[item.datacores[0].typeID],
-                this.m_uniquePriceItems[item.datacores[1].typeID],
-                this.m_uniquePriceItems[decryptor.items[item.decryptor_category]]);
-            result.inventionCost = invention.cost;
-            result.inventionChance = invention.chance;
-
-            $.each(item.perfectMaterials, function(i, material) {
-                var materialid = material.typeID;
-                var actual = EveIndustry.calculateActualRequired(material.quantity, item.wasteFactor, bp_me, material.wasteME, m_pe, material.wastePE);
-
-                result.materialCost += actual * material.dmg * that.m_uniquePriceItems[materialid];
-
-                // TODO: Should actual be saved?
-                EveIndustry.log('\t' + material.name + ' ' + actual + ' (' + material.quantity + ') -> ' + K.comma(Math.round(actual * material.dmg * that.m_uniquePriceItems[materialid]).toFixed(2)), 2);
-
-                if (that.m_uniquePriceItems[materialid] === 0) {
-                    result.valid = false;
-                    EveIndustry.log('Failed to fetch price for ' + material.name + ' (' + materialid + ').', 0);
-                    return false;
-                }
-            });
-
-            result.net = (this.m_uniquePriceItems[itemid] - result.materialCost) * result.runs - result.inventionCost;
-            result.iph = result.net / result.productionTime;
-            result.iph24 = result.net / result.productionTime24;
-            result.ipd = result.net / (result.productionTime24 / 24);
-
-            // Now figure out the total IPD. This is done by determining how many copies can be produced from one
-            // BPO per day then how many successful inventions. Multiply the result by IPD to get a max per day (mpd).
-            // 10 inventions per day is a reasonable limit. To implement this, cap copiesPerDay to 10.
-            result.stipd.copiesPerDay = 24 * 60 * 60 / item.copyTime;
-            result.stipd.copiesPerDay = result.stipd.copiesPerDay > 10 ? 10 : result.stipd.copiesPerDay;
-            result.stipd.bpcPerDay = result.stipd.copiesPerDay * result.inventionChance;
-            result.stipd.stipd = result.stipd.bpcPerDay * result.ipd;
-
-            // TIPD has a max of 10 inventions per day, as that is all that can be invented. If the BPO can't generate
-            // 10 copies per day, the number of inventions is the limiting factor. In Max TIPD (MTIPD), calculate TIPD
-            // as if there are multiple BPOs.
-            if (result.stipd.copiesPerDay == 10) {
-                result.mtipd.copiesPerDay = result.stipd.copiesPerDay;
-                result.mtipd.bpcPerDay = result.stipd.bpcPerDay;
-                result.mtipd.bpo = 1;
-                result.mtipd.mtipd = result.stipd.stipd;
-            } else {
-                result.mtipd.copiesPerDay = 10;
-                var cpd = 24 * 60 * 60 / item.copyTime;
-                result.mtipd.bpo = Math.ceil(result.mtipd.copiesPerDay / cpd);
-                result.mtipd.bpcPerDay = result.mtipd.copiesPerDay * result.inventionChance;
-                result.mtipd.mtipd = result.mtipd.bpcPerDay * result.ipd;
-            }
-
-            return result;
         };
 
         // Add an element to the price array and ensure uniqueness.
@@ -478,7 +478,7 @@
                         item.copyTime = EveIndustry.calculateCopyTime(item.t1bpo.researchCopyTime, runs, item.t1bpo.maxProductionLimit);
 
                         $.each(m_decryptors, function(k, decryptor) {
-                            var i = results.push(that.processItem(itemid, item, decryptor));
+                            var i = results.push(EveIndustry.processItem(itemid, item, decryptor, that.m_inventableVolume[itemid], that.m_uniquePriceItems));
 
                             if (!results[i-1].valid) {
                                 EveIndustry.log('Unable to fetch all details for ' + item.typeName + ' (' + itemid + ').', 0);
@@ -546,118 +546,6 @@
                     this.m_inventableVolume[typeid] = Math.round(volume.volume / volume.count);
                 }
             }.bind(this));
-        };
-
-        // Calculate all of the good information about the blueprint.
-        Detail.prototype.processItem = function(itemid, item, decryptor) {
-            // An item will be marked as invalid if one of the materials doesn't have a valid price associated with it.
-            var result = {
-                'copyTime': 0,
-                'decryptor': decryptor,
-                'inventionChance': 0,
-                'ipd': 0,
-                'iph': 0,
-                'iph24': 0,
-                'itemid': itemid,
-                'materialCost': 0,
-                'mtipd': {
-                    'bpcPerDay': 0,
-                    'bpo': 0,
-                    'copiesPerDay': 0,
-                    'mtipd': 0,
-                },
-                'net': 0,
-                'productionTime': 0,
-                'productionTime24': 0,
-                'runs': item.maxProductionLimit / 10 + decryptor.run,
-                'stipd': {
-                    'bpcPerDay': 0,
-                    'copiesPerDay': 0,
-                    'stipd': 0,
-                },
-                'typeName': item.typeName,
-                'valid': true,
-                'volume': this.m_inventableVolume[itemid],
-            };
-            var valid = true;
-            var that = this;
-            var bp_pe = -4 + decryptor.pe;
-            var bp_me = -4 + decryptor.me;
-            var runs = item.maxProductionLimit / 10 + decryptor.run;
-
-            // If the item is a ship it will be built in a station instead of a POS. The slot modifier in this case is 1.
-            var slt = m_indSlt;
-            if (item.categoryName == "Ship") {
-                slt = 1;
-            }
-
-            result.productionTime = EveIndustry.calculateProductionTime(item.productionTime, m_ind, m_indImp, slt, item.productivityModifier, bp_pe);
-
-            // Production time is in hour units and is for the entire blueprint (not each individual run).
-            // If the production time is an exact multiple of 24 hours, add an extra day. Continuous runs aren't
-            // happening.
-            result.productionTime = result.productionTime * result.runs / (60 * 60);
-            result.productionTime24 = Math.ceil(result.productionTime / 24) * 24;
-
-            if (result.productionTime % 24 === 0) {
-                result.productionTime24 += 24;
-            }
-
-            var invention = EveIndustry.calculateInventionCost(
-                item,
-                decryptor,
-                this.m_uniquePriceItems[item.datacores[0].typeID],
-                this.m_uniquePriceItems[item.datacores[1].typeID],
-                this.m_uniquePriceItems[decryptor.items[item.decryptor_category]]);
-            result.inventionCost = invention.cost;
-            result.inventionChance = invention.chance;
-
-            $.each(item.perfectMaterials, function(i, material) {
-                var materialid = material.typeID;
-                var actual = EveIndustry.calculateActualRequired(material.quantity, item.wasteFactor, bp_me, material.wasteME, m_pe, material.wastePE);
-
-                result.materialCost += actual * material.dmg * that.m_uniquePriceItems[materialid];
-
-                // TODO: Should actual be saved?
-                EveIndustry.log('\t' + material.name + ' ' + actual + ' (' + material.quantity + ') -> ' + K.comma(Math.round(actual * material.dmg * that.m_uniquePriceItems[materialid]).toFixed(2)), 2);
-
-                if (that.m_uniquePriceItems[materialid] === 0) {
-                    result.valid = false;
-                    EveIndustry.log('Failed to fetch price for ' + material.name + ' (' + materialid + ').', 0);
-                    return false;
-                }
-            });
-
-            result.net = (this.m_uniquePriceItems[itemid] - result.materialCost) * result.runs - result.inventionCost;
-            result.iph = result.net / result.productionTime;
-            result.iph24 = result.net / result.productionTime24;
-            result.ipd = result.net / (result.productionTime24 / 24);
-
-            // Now figure out the total IPD. This is done by determining how many copies can be produced from one
-            // BPO per day then how many successful inventions. Multiply the result by IPD to get a max per day (mpd).
-            // 10 inventions per day is a reasonable limit. To implement this, cap copiesPerDay to 10.
-            result.stipd.copiesPerDay = 24 * 60 * 60 / item.copyTime;
-            result.stipd.copiesPerDay = result.stipd.copiesPerDay > 10 ? 10 : result.stipd.copiesPerDay;
-            result.stipd.bpcPerDay = result.stipd.copiesPerDay * result.inventionChance;
-            result.stipd.stipd = result.stipd.bpcPerDay * result.ipd;
-
-            // TIPD has a max of 10 inventions per day, as that is all that can be invented. If the BPO can't generate
-            // 10 copies per day, the number of inventions is the limiting factor. In Max TIPD (MTIPD), calculate TIPD
-            // as if there are multiple BPOs.
-            if (result.stipd.copiesPerDay == 10) {
-                result.mtipd.copiesPerDay = result.stipd.copiesPerDay;
-                result.mtipd.bpcPerDay = result.stipd.bpcPerDay;
-                result.mtipd.bpo = 1;
-                result.mtipd.mtipd = result.stipd.stipd;
-            } else {
-                result.mtipd.copiesPerDay = 10;
-                var cpd = 24 * 60 * 60 / item.copyTime;
-                result.mtipd.bpo = Math.ceil(result.mtipd.copiesPerDay / cpd);
-                result.mtipd.bpcPerDay = result.mtipd.copiesPerDay * result.inventionChance;
-                result.mtipd.mtipd = result.mtipd.bpcPerDay * result.ipd;
-            }
-
-            return result;
         };
 
         // Add an element to the price array and ensure uniqueness.
