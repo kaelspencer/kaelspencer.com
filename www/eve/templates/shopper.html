@@ -40,11 +40,22 @@
         </div>
         <div id="options_div" class="grid_15 alpha omega" style="display:none;">
             <div class="grid_3 alpha">Security Avoidance</div>
-            <div class="grid_3 omega suffix_6">
+            <div class="grid_3">
                 <select id="sec_avoidance" name="sec_avoidance" class="chosen">
                     <option value="none">None</option>
                     <option value="high">High</option>
                     <option value="highonly">Low/Null</option>
+                </select>
+            </div>
+            <div class="grid_1">Bucket</div>
+            <div class="grid_2 omega suffix_6">
+                <select id="bucket" name="bucket" class="chosen">
+                    <option value="0">0%</option>
+                    <option value="0.05" selected="selected">5%</option>
+                    <option value="0.10">10%</option>
+                    <option value="0.25">25%</option>
+                    <option value="0.50">50%</option>
+                    <option value="1">100%</option>
                 </select>
             </div>
         </div>

@@ -14,6 +14,7 @@ var EveShopper = (function() {
         this.m_bestPrice = 0;
         this.m_bestPriceJumps = 0;
         this.m_avoidance = 'none';
+        this.m_bucket = 0;
         this.m_tradeHubs =[
             'Jita IV - Moon 4 - Caldari Navy Assembly Plant',
             'Amarr VIII (Oris) - Emperor Family Academy',
@@ -31,6 +32,7 @@ var EveShopper = (function() {
         this.m_currentStation = validator.currentLocation();
         this.m_jumpLimit = validator.jumpLimit();
         this.m_avoidance = validator.avoidance();
+        this.m_bucket = validator.bucket();
 
         $.ajax({
             url: this.m_apiQuicklook + '?typeid=' + validator.item(),
@@ -56,6 +58,7 @@ var EveShopper = (function() {
         this.m_bestPrice = 0;
         this.m_bestPriceJumps = 0;
         this.m_avoidance = 'none';
+        this.m_bucket = 0;
     };
 
     EveShopper.prototype.errorHandler = function(fetchItem, xhr, status) {
@@ -172,9 +175,14 @@ var EveShopper = (function() {
             return $('<span />', { class: cls, text: ' (' + security.toFixed(1) + ')' });
         }
 
-        $.each(this.m_sellOrders, function(key, value) {
-            if (this.m_jumpCount[value.station_name] === undefined) return;
-            if (this.m_jumpLimit > 0 && this.m_jumpCount[value.station_name] > this.m_jumpLimit) return;
+        var orders = this.bucketize(this.m_sellOrders);
+
+        $.each(orders, function(key, value) {
+            // If the bucket size is not 0, bucketize has run. That means these checks have already been done.
+            if (this.m_bucket == 0) {
+                if (this.m_jumpCount[value.station_name] === undefined) return;
+                if (this.m_jumpLimit > 0 && this.m_jumpCount[value.station_name] > this.m_jumpLimit) return;
+            }
             count++;
 
             var row = $('<tr />')
@@ -199,6 +207,34 @@ var EveShopper = (function() {
         }
 
         $('#loading_indicator').hide().children().addClass('loading_stop');
+    };
+
+    EveShopper.prototype.bucketize = function(orders) {
+        // 0 means no buckets. Return what was passed in.
+        if (this.m_bucket == 0) {
+            return orders;
+        }
+
+        var buckets = undefined;
+
+        $.each(orders, function(key, value) {
+            if (this.m_jumpCount[value.station_name] === undefined) return;
+            if (this.m_jumpLimit > 0 && this.m_jumpCount[value.station_name] > this.m_jumpLimit) return;
+            if (buckets === undefined) {
+                buckets = [value];
+                return;
+            }
+
+            var current = buckets[buckets.length - 1];
+
+            if (current.station_id != value.station_id || current.price * (1 + this.m_bucket) < value.price) {
+                buckets.push(value);
+            } else {
+                current.quantity += value.quantity;
+            }
+        }.bind(this));
+
+        return buckets;
     };
 
     return EveShopper;
