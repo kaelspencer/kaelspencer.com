@@ -6,7 +6,7 @@
         $('#loading_indicator').show().children().removeClass('loading_stop');
 
         $('.segment .segment-header a').click(function() {
-            $(this).parent().parent().parent().children('section').toggle();
+            $(this).parents('.segment').children('section').toggle();
             return false;
         });
 
