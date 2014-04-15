@@ -246,7 +246,8 @@
 
         // TIPD has a max of 10 inventions per day, as that is all that can be invented. If the BPO can't generate
         // 10 copies per day, the number of inventions is the limiting factor. In Max TIPD (MTIPD), calculate TIPD
-        // as if there are multiple BPOs.
+        // as if there are multiple BPOs. However, it is unreasonable to have more than 10 copy slots occupied at
+        // once for the same blueprint. Limit the number of BPOs at 10.
         if (result.stipd.copiesPerDay == 10) {
             result.mtipd.copiesPerDay = result.stipd.copiesPerDay;
             result.mtipd.bpcPerDay = result.stipd.bpcPerDay;
@@ -256,6 +257,13 @@
             result.mtipd.copiesPerDay = 10;
             var cpd = 24 * 60 * 60 / item.copyTime;
             result.mtipd.bpo = Math.ceil(result.mtipd.copiesPerDay / cpd);
+
+            // Cap the number of BPOs at 10.
+            if (result.mtipd.bpo > 10) {
+                result.mtipd.bpo = 10;
+                result.mtipd.copiesPerDay = result.stipd.copiesPerDay * 10;
+            }
+
             result.mtipd.bpcPerDay = result.mtipd.copiesPerDay * result.inventionChance;
             result.mtipd.mtipd = result.mtipd.bpcPerDay * result.ipd;
         }
@@ -268,8 +276,8 @@
         function Overview() {
             // The method provided by the caller to handle the results of computation. It is called per
             // item. It is a list of results for each decryptor.
-            this.m_handleResults;
-            this.m_onDrawComplete; // Called when drawing is completed.
+            this.m_handleResults = undefined;
+            this.m_onDrawComplete = undefined; // Called when drawing is completed.
             this.m_uniquePriceItems = {};
             this.m_inventableVolume = {};
         }
@@ -411,9 +419,9 @@
         function Detail() {
             // The method provided by the caller to handle the results of computation. It is called per
             // item. It is a list of results for each decryptor.
-            this.m_handleResults;
-            this.m_onDrawComplete; // Called when drawing is completed.
-            this.m_handleDetail; // Called with detail information for each item.
+            this.m_handleResults = undefined;
+            this.m_onDrawComplete = undefined; // Called when drawing is completed.
+            this.m_handleDetail = undefined; // Called with detail information for each item.
             this.m_uniquePriceItems = {};
             this.m_inventableVolume = {};
         }
