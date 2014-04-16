@@ -27,7 +27,7 @@
                 .append($('<td />', { text: best.decryptor.name }))
                 .append($('<td />', { text: best.volume }))
                 .append($('<td />', { text: K.prettyTime(best.productionTime * 60 * 60) }))
-                .append($('<td />', { text: K.comma(best.iph24.toFixed(0)) }))
+                .append($('<td />', { text: best.vbr.toFixed(1) + ' (' + (best.vbr * best.mtipd.bpo).toFixed(1) + ')' }))
                 .append($('<td />', { html: K.comma(best.stipd.stipd.toFixed(0)) }))
                 .append($('<td />', { html: K.comma(best.mtipd.mtipd.toFixed(0)) })));
         }
@@ -35,7 +35,7 @@
 
     function onDrawComplete() {
         if (resultsHandled) {
-            $('#industry').tablesorter({ sortList: [[5, 1]]}).show();
+            $('#industry').tablesorter({ sortList: [[6, 1]]}).show();
         }
 
         $('#loading_indicator').hide().children().addClass('loading_stop');

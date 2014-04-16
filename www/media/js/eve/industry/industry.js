@@ -180,6 +180,7 @@
             },
             'typeName': item.typeName,
             'valid': true,
+            'vbr': 0.0,
             'volume': volume,
         };
         var valid = true;
@@ -230,6 +231,11 @@
                 return false;
             }
         });
+
+        // Calculate the volume-BPO-ratio. This is the number BPOs required to fulfill the volume
+        // moved through Jita on a daily average. This is a good indicator of how easily it will
+        // be to sell the goods.
+        result.vbr = result.volume / (result.runs / (result.productionTime24 / 24));
 
         result.net = (prices[itemid] - result.materialCost) * result.runs - result.inventionCost;
         result.iph = result.net / result.productionTime;

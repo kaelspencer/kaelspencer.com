@@ -31,6 +31,7 @@
                     .append($('<td />', { text: result.runs }))
                     .append($('<td />', { text: K.comma(result.iph.toFixed(0)) }))
                     .append($('<td />', { text: K.comma(result.iph24.toFixed(0)) }))
+                    .append($('<td />', { text: result.vbr.toFixed(1) + ' (' + (result.vbr * result.mtipd.bpo).toFixed(1) + ')' }))
                     .append($('<td />', { html: K.comma(result.stipd.stipd.toFixed(0)) }))
                     .append($('<td />', { html: K.comma(result.mtipd.mtipd.toFixed(0)) + ' (' + result.mtipd.bpo + ')' })));
 
@@ -38,6 +39,7 @@
                     .append($('<td />', { text: result.decryptor.name }))
                     .append($('<td />', { text: K.comma(result.stipd.copiesPerDay.toFixed(2)) }))
                     .append($('<td />', { text: K.comma(result.stipd.bpcPerDay.toFixed(2)) }))
+                    .append($('<td />', { text: result.vbr.toFixed(1) }))
                     .append($('<td />', { html: K.comma(result.stipd.stipd.toFixed(2)) })));
             }
         });
@@ -57,8 +59,8 @@
     function onDrawComplete() {
         if (resultsHandled) {
             $('.show-on-load').show();
-            $('#industry_decryptors').tablesorter({ sortList: [[5, 1]]}).show();
-            $('#industry_mpd').tablesorter({ sortList: [[3, 1]]}).show();
+            $('#industry_decryptors').tablesorter({ sortList: [[6, 1]]}).show();
+            $('#industry_mpd').tablesorter({ sortList: [[4, 1]]}).show();
         }
 
         $('#loading_indicator').hide().children().addClass('loading_stop');
