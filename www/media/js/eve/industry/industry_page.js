@@ -6,6 +6,17 @@
 
         var industry = new EveIndustry.Overview();
         industry.industrate(handleResults, onDrawComplete);
+
+        $('#search').submit(function() {
+            var validator = new Validator();
+
+            if (validator.validate()) {
+                //var industry = new EveIndustry.Overview();
+                //industry.industrate(handleResults, onDrawComplete);
+            }
+
+            return false;
+        });
     });
 
     function handleResults(results) {

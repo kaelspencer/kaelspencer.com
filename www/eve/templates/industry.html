@@ -6,6 +6,7 @@
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.tablesorter.min.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/eve/industry/industry.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/eve/industry/industry_page.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/eve/industry/validator.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/chosen.jquery.v0-12-1.min.js"></script>
 
 <link rel="stylesheet" type="text/css" media="screen" href="{{ MEDIA_URL }}css/eve/industry.css" />
@@ -14,6 +15,26 @@
 {% block content %}
 <article>
     <header>Industry</header>
+
+    <form id="search" class="search" style="display: none;">
+        <div class="grid_15 alpha omega" id="form_errors" style="display: none;">&nbsp;</div>
+        <div class="grid_15 alpha omega">
+            <div class="grid_2 alpha">
+                <label><input type="checkbox" id="all" value="-1" checked />&nbsp;All</label><br>
+                <label><input type="checkbox" id="norigs" value="0" checked />&nbsp;No Rigs</label>
+            </div>
+            <div class="grid_2">
+                <label><input type="checkbox" id="charges" value="8" />&nbsp;Charges</label><br>
+                <label><input type="checkbox" id="deployable" value="22" />&nbsp;Deployable</label><br>
+                <label><input type="checkbox" id="drones" value="18" />&nbsp;Drones</label>
+            </div>
+            <div class="grid_2">
+                <label><input type="checkbox" id="modules" value="7" />&nbsp;Modules</label><br>
+                <label><input type="checkbox" id="ships" value="6" />&nbsp;Ships</label>
+            </div>
+            <div class="grid_3 prefix_6 omega"><input type="submit" id="search_submit" value="Search" /></div>
+        </div>
+    </form>
 
     <div class="clear"></div>
     <div id="status" class="eve-status"></div>

@@ -81,3 +81,23 @@ table.wide {
     display: none;
     font: 1em/1.7em LuxiMonoRegular, 'DejaVu Sans Mono', Monaco, Consolas, monospace;
 }
+
+/* Input area */
+.fortext {
+    margin-top: 10px;
+}
+
+.search input[type=submit] {
+    margin: 5px 0;
+    padding: 5px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(240, 240, 240);
+    font-size: 1.07em;
+    width: 117%;
+}
+
+.form_error {
+    font-size: 0.8em;
+    color: red;
+}
