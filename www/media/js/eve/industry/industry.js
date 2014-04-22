@@ -4,7 +4,8 @@
     var m_everest = 'http://everest.kaelspencer.com/';
     //var m_everest = 'http://localhost:5000/';
     var m_everestIndustry = m_everest + "industry/norigs/names/";
-    var m_everestIndustryDetail = m_everest + "industry/detail/names/";
+    var m_everestIndustryDetail = m_everest + "industry/detail/";
+    var m_everestIndustryDetailNames = 'names/'; // Set this to '' to exclude names.
     var m_pe = 5; // Production Effeciency Skill
     var m_ind = 5; // Industry Skill
     var m_indImp = 0.98; // Implant: 1 - % benefit, for manufacturing.
@@ -445,7 +446,11 @@
                 this.m_onDrawComplete = onDrawComplete;
                 this.m_handleDetail = handleDetail;
 
-                $.ajax({ url: m_everestIndustryDetail + itemid + '/', timeout: m_ajaxTimeout, context: this, })
+                $.ajax({
+                    url: m_everestIndustryDetail + itemid + '/' + m_everestIndustryDetailNames,
+                    timeout: m_ajaxTimeout,
+                    context: this,
+                })
                     .done(this.onLoadIndustryItems)
                     .fail(function(xhr, status) { EveIndustry.errorHandler('industy list', xhr, status, this.m_onDrawComplete); });
             }
