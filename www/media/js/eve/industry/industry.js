@@ -3,7 +3,7 @@
     var m_apiVolume = 'http://api.eve-marketdata.com/api/item_history2.json?char_name=Dogen%20Okanata&region_ids=10000002&days=20&type_ids=';
     var m_everest = 'http://everest.kaelspencer.com/';
     //var m_everest = 'http://localhost:5000/';
-    var m_everestIndustry = m_everest + "industry/norigs/names/";
+    var m_everestIndustry = m_everest + "industry/0/names/norigs/";
     var m_everestIndustryDetail = m_everest + "industry/detail/";
     var m_everestIndustryDetailNames = 'names/'; // Set this to '' to exclude names.
     var m_pe = 5; // Production Effeciency Skill
