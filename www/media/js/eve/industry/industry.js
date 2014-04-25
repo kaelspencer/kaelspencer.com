@@ -429,7 +429,7 @@
             this.m_handleResults = undefined;
             this.m_onDrawComplete = undefined; // Called when drawing is completed.
             this.m_handleDetail = undefined; // Called with detail information for each item.
-            this.m_uniquePriceItems = {};
+            this.m_uniqueItems = {};
             this.m_inventableVolume = {};
             this.m_historicalPrices = {};
         }
@@ -487,10 +487,26 @@
             });
 
             // Fetch all of the price data, then process each item and decryptor combination.
-            var deferrals = EveIndustry.fetchData(this.m_uniquePriceItems, m_apiPrices, this.onLoadPrices, this);
-            deferrals = deferrals.concat(EveIndustry.fetchData(this.m_uniquePriceItems, m_apiHistory, this.onLoadVolumes, this));
+            var deferrals = EveIndustry.fetchData(this.m_uniqueItems, m_apiPrices, this.onLoadPrices, this);
+            deferrals = deferrals.concat(EveIndustry.fetchData(this.m_uniqueItems, m_apiHistory, this.onLoadVolumes, this));
             $.when.apply($, deferrals)
                 .done(function() {
+                    // Get the current date as a key. Because of timezones, it's possible it is "yesterday".
+                    var d = new Date();
+                    var ds = d.getFullYear() + '-' + K.pad(d.getMonth() + 1, 2, '0') + '-' + K.pad(d.getDate(), 2, '0');
+
+                    if (!that.m_historicalPrices.hasOwnProperty(ds)) {
+                        d.setDay(d.getDate() - 1);
+                        ds = d.getFullYear() + '-' + K.pad(d.getMonth() + 1, 2, '0') + '-' + K.pad(d.getDate(), 2, '0');
+
+                        if (!that.m_historicalPrices.hasOwnProperty(ds)) {
+                            EveIndustry.log('Error! What day is it?! Current date: ' + ds + ', not found in this.m_historicalPrices', 0);
+                            EveIndustry.log(that.m_historicalPrices, 0);
+                        }
+
+                        EveIndustry.log('Using yesterday as current date: ' + ds, 0);
+                    }
+
                     $.each(industry_data.items, function(itemid, item) {
                         var results = [];
                         var valid = true;
@@ -498,7 +514,7 @@
                         item.copyTime = EveIndustry.calculateCopyTime(item.t1bpo.researchCopyTime, runs, item.t1bpo.maxProductionLimit);
 
                         $.each(m_decryptors, function(k, decryptor) {
-                            var i = results.push(EveIndustry.processItem(itemid, item, decryptor, that.m_inventableVolume[itemid], that.m_uniquePriceItems));
+                            var i = results.push(EveIndustry.processItem(itemid, item, decryptor, that.m_inventableVolume[itemid], that.m_historicalPrices[ds]));
 
                             if (!results[i-1].valid) {
                                 EveIndustry.log('Unable to fetch all details for ' + item.typeName + ' (' + itemid + ').', 0);
@@ -526,15 +542,26 @@
         Detail.prototype.onLoadPrices = function(price_data) {
             var d = new Date();
             EveIndustry.log('onLoadPrices: ' + K.pad(d.getHours(), 2, '0') + ':' + K.pad(d.getMinutes(), 2, '0') + ':' + K.pad(d.getSeconds(), 2, '0'), 0);
-            $.each(price_data.emd.result, function(key, obj) {
-                if (this.m_uniquePriceItems.hasOwnProperty(obj.row.typeID)) {
+
+            // Date according to the API result.
+            var current_date = new Date(price_data.emd.currentTime.replace(/(.*)T.*/, '$1'));
+            var ds = current_date.getFullYear() + '-' + K.pad(current_date.getMonth() + 1, 2, '0') + '-' + K.pad(current_date.getDate(), 2, '0');
+            if (!this.m_historicalPrices.hasOwnProperty(ds)) {
+                var prices = {};
+
+                $.each(price_data.emd.result, function(key, obj) {
                     var cost = parseFloat(obj.row.price);
 
                     if (!isNaN(cost)) {
-                        this.m_uniquePriceItems[obj.row.typeID] = cost;
+                        prices[obj.row.typeID] = cost;
                     }
-                }
-            }.bind(this));
+                });
+
+                this.m_historicalPrices[ds] = prices;
+            } else {
+                EveIndustry.log('Error! Unexpected! The current date is already set in this.m_historicalPrices', 0);
+                EveIndustry.log(this.m_historicalPrices, 0);
+            }
         };
 
         // Average out the volumes. Drop the current date's volume because it will be incomplete - not
@@ -586,8 +613,8 @@
 
         // Add an element to the price array and ensure uniqueness.
         Detail.prototype.addUniquePriceItem = function(itemid) {
-            if (!this.m_uniquePriceItems.hasOwnProperty(itemid)) {
-                this.m_uniquePriceItems[itemid] = 0;
+            if (!this.m_uniqueItems.hasOwnProperty(itemid)) {
+                this.m_uniqueItems[itemid] = 0;
             }
         };
 
