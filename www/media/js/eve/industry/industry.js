@@ -465,18 +465,24 @@
             }
             var that = this;
 
-            // First loop through the result set. Just get the item ID's and store them in a unique list.
-            $.each(industry_data.items, function(itemid, item) {
-                that.addUniquePriceItem(itemid);
-                that.m_inventableVolume[itemid] = 0;
+            // This is detail view. There should only be one item returned from everest.
+            if (Object.keys(industry_data.items).length != 1) {
+                EveIndustry.errorHandler('proper data from everest. Wrong number of keys.', '', '', this.m_onDrawComplete);
+                EveIndustry.log(industry_data.items, 0);
+                return false;
+            }
 
-                $.each(item.perfectMaterials, function(i, material) {
-                    that.addUniquePriceItem(material.typeID);
-                });
+            var item = industry_data.items[Object.keys(industry_data.items)[0]];
 
-                $.each(item.datacores, function(k, datacore) {
-                    that.addUniquePriceItem(datacore.typeID);
-                });
+            this.addUniquePriceItem(item.typeID);
+            this.m_inventableVolume[item.typeID] = 0;
+
+            $.each(item.perfectMaterials, function(i, material) {
+                that.addUniquePriceItem(material.typeID);
+            });
+
+            $.each(item.datacores, function(k, datacore) {
+                that.addUniquePriceItem(datacore.typeID);
             });
 
             // Now loop through all of the different decryptors and add them to the unique list.
@@ -507,31 +513,29 @@
                         EveIndustry.log('Using yesterday as current date: ' + ds, 0);
                     }
 
-                    $.each(industry_data.items, function(itemid, item) {
-                        var results = [];
-                        var valid = true;
-                        var runs = (item.maxProductionLimit / 10 == 1 ? 1 : item.t1bpo.maxProductionLimit);
-                        item.copyTime = EveIndustry.calculateCopyTime(item.t1bpo.researchCopyTime, runs, item.t1bpo.maxProductionLimit);
+                    var results = [];
+                    var valid = true;
+                    var runs = (item.maxProductionLimit / 10 == 1 ? 1 : item.t1bpo.maxProductionLimit);
+                    item.copyTime = EveIndustry.calculateCopyTime(item.t1bpo.researchCopyTime, runs, item.t1bpo.maxProductionLimit);
 
-                        $.each(m_decryptors, function(k, decryptor) {
-                            var i = results.push(EveIndustry.processItem(itemid, item, decryptor, that.m_inventableVolume[itemid], that.m_historicalPrices[ds]));
+                    $.each(m_decryptors, function(k, decryptor) {
+                        var i = results.push(EveIndustry.processItem(item.typeID, item, decryptor, that.m_inventableVolume[item.typeID], that.m_historicalPrices[ds]));
 
-                            if (!results[i-1].valid) {
-                                EveIndustry.log('Unable to fetch all details for ' + item.typeName + ' (' + itemid + ').', 0);
-                                valid = false;
-                                return valid;
-                            }
-                        });
-
-                        if (valid) {
-                            if (typeof that.m_handleDetail === 'function') {
-                                var detail = item;
-                                detail.vol = that.m_inventableVolume[itemid];
-                                that.m_handleDetail(detail);
-                            }
-                            that.m_handleResults(results);
+                        if (!results[i-1].valid) {
+                            EveIndustry.log('Unable to fetch all details for ' + item.typeName + ' (' + item.typeID + ').', 0);
+                            valid = false;
+                            return valid;
                         }
                     });
+
+                    if (valid) {
+                        if (typeof that.m_handleDetail === 'function') {
+                            var detail = item;
+                            detail.vol = that.m_inventableVolume[item.typeID];
+                            that.m_handleDetail(detail);
+                        }
+                        that.m_handleResults(results);
+                    }
 
                     that.m_onDrawComplete();
                 })
