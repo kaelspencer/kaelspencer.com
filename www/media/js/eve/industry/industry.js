@@ -497,35 +497,26 @@
             deferrals = deferrals.concat(EveIndustry.fetchData(this.m_uniqueItems, m_apiHistory, this.onLoadVolumes, this));
             $.when.apply($, deferrals)
                 .done(function() {
-                    // Get the current date as a key. Because of timezones, it's possible it is "yesterday".
-                    var d = new Date();
-                    var ds = d.getFullYear() + '-' + K.pad(d.getMonth() + 1, 2, '0') + '-' + K.pad(d.getDate(), 2, '0');
-
-                    if (!that.m_historicalPrices.hasOwnProperty(ds)) {
-                        d.setDay(d.getDate() - 1);
-                        ds = d.getFullYear() + '-' + K.pad(d.getMonth() + 1, 2, '0') + '-' + K.pad(d.getDate(), 2, '0');
-
-                        if (!that.m_historicalPrices.hasOwnProperty(ds)) {
-                            EveIndustry.log('Error! What day is it?! Current date: ' + ds + ', not found in this.m_historicalPrices', 0);
-                            EveIndustry.log(that.m_historicalPrices, 0);
-                        }
-
-                        EveIndustry.log('Using yesterday as current date: ' + ds, 0);
-                    }
-
-                    var results = [];
+                    var results = {};
                     var valid = true;
                     var runs = (item.maxProductionLimit / 10 == 1 ? 1 : item.t1bpo.maxProductionLimit);
                     item.copyTime = EveIndustry.calculateCopyTime(item.t1bpo.researchCopyTime, runs, item.t1bpo.maxProductionLimit);
 
-                    $.each(m_decryptors, function(k, decryptor) {
-                        var i = results.push(EveIndustry.processItem(item.typeID, item, decryptor, that.m_inventableVolume[item.typeID], that.m_historicalPrices[ds]));
+                    $.each(Object.keys(that.m_historicalPrices), function(i, date) {
+                        var daily_results = [];
 
-                        if (!results[i-1].valid) {
-                            EveIndustry.log('Unable to fetch all details for ' + item.typeName + ' (' + item.typeID + ').', 0);
-                            valid = false;
-                            return valid;
-                        }
+                        $.each(m_decryptors, function(k, decryptor) {
+                            var i = daily_results.push(EveIndustry.processItem(item.typeID, item, decryptor, that.m_inventableVolume[item.typeID], that.m_historicalPrices[date]));
+
+                            if (!daily_results[i-1].valid) {
+                                EveIndustry.log('Unable to fetch all details for ' + item.typeName + ' (' + item.typeID + ').', 0);
+                                valid = false;
+                                return valid;
+                            }
+                        });
+
+                        results[date] = daily_results;
+                        return valid;
                     });
 
                     if (valid) {

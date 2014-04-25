@@ -19,7 +19,23 @@
         var mpd = $('#industry_mpd tbody');
         resultsHandled = true;
 
-        $.each(results, function(i, result) {
+        // Get the current date as a key. Because of timezones, it's possible it is "yesterday".
+        var d = new Date();
+        var ds = d.getFullYear() + '-' + K.pad(d.getMonth() + 1, 2, '0') + '-' + K.pad(d.getDate(), 2, '0');
+
+        if (!results.hasOwnProperty(ds)) {
+            d.setDay(d.getDate() - 1);
+            ds = d.getFullYear() + '-' + K.pad(d.getMonth() + 1, 2, '0') + '-' + K.pad(d.getDate(), 2, '0');
+
+            if (!results.hasOwnProperty(ds)) {
+                console.log(results);
+                throw new Error('What day is it?! Current date: ' + ds + ', not found in result set.');
+            }
+
+            console.log('Using yesterday as current date: ' + ds);
+        }
+
+        $.each(results[ds], function(i, result) {
             if (result.valid) {
                 if (!name) {
                     name = true;
