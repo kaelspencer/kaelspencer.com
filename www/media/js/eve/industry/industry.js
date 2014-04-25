@@ -1,6 +1,6 @@
 (function(EveIndustry, $, undefined) {
     var m_apiPrices = 'http://api.eve-marketdata.com/api/item_prices2.json?char_name=Dogen%20Okanata&region_ids=10000002&buysell=s&type_ids=';
-    var m_apiVolume = 'http://api.eve-marketdata.com/api/item_history2.json?char_name=Dogen%20Okanata&region_ids=10000002&days=20&type_ids=';
+    var m_apiHistory = 'http://api.eve-marketdata.com/api/item_history2.json?char_name=Dogen%20Okanata&region_ids=10000002&days=30&type_ids=';
     var m_everest = 'http://everest.kaelspencer.com/';
     //var m_everest = 'http://localhost:5000/';
     var m_everestIndustry = m_everest + "industry/0/names/norigs/";
@@ -159,6 +159,7 @@
             'copyTime': 0,
             'decryptor': decryptor,
             'inventionChance': 0,
+            'inventionCost': 0,
             'ipd': 0,
             'iph': 0,
             'iph24': 0,
@@ -185,7 +186,6 @@
             'volume': volume,
         };
         var valid = true;
-        var that = this;
         var bp_pe = -4 + decryptor.pe;
         var bp_me = -4 + decryptor.me;
         var runs = item.maxProductionLimit / 10 + decryptor.run;
@@ -335,7 +335,7 @@
 
             // Fetch all of the price data, then process each item and decryptor combination.
             var deferrals = EveIndustry.fetchData(this.m_uniquePriceItems, m_apiPrices, this.onLoadPrices, this);
-            deferrals = deferrals.concat(EveIndustry.fetchData(this.m_inventableVolume, m_apiVolume, this.onLoadVolumes, this));
+            deferrals = deferrals.concat(EveIndustry.fetchData(this.m_inventableVolume, m_apiHistory, this.onLoadVolumes, this));
             $.when.apply($, deferrals)
                 .done(function() {
                     $.each(industry_data.items, function(itemid, item) {
@@ -431,6 +431,7 @@
             this.m_handleDetail = undefined; // Called with detail information for each item.
             this.m_uniquePriceItems = {};
             this.m_inventableVolume = {};
+            this.m_historicalPrices = {};
         }
 
         // Go into detail mode. Only information for the provided itemID is retrieved and calculated.
@@ -487,7 +488,7 @@
 
             // Fetch all of the price data, then process each item and decryptor combination.
             var deferrals = EveIndustry.fetchData(this.m_uniquePriceItems, m_apiPrices, this.onLoadPrices, this);
-            deferrals = deferrals.concat(EveIndustry.fetchData(this.m_inventableVolume, m_apiVolume, this.onLoadVolumes, this));
+            deferrals = deferrals.concat(EveIndustry.fetchData(this.m_uniquePriceItems, m_apiHistory, this.onLoadVolumes, this));
             $.when.apply($, deferrals)
                 .done(function() {
                     $.each(industry_data.items, function(itemid, item) {
@@ -547,17 +548,33 @@
 
             $.each(volume_data.emd.result, function(key, value) {
                 var this_date = new Date(value.row.date);
+                var ds = this_date.getFullYear() + '-' + K.pad(this_date.getMonth() + 1, 2, '0') + '-' + K.pad(this_date.getDate(), 2, '0');
+
+                if (this_date.getTime() == current_date.getTime()) {
+                    // Skip today.
+                    return true;
+                }
 
                 if (!volumes.hasOwnProperty(value.row.typeID)) {
                     volumes[value.row.typeID] = {'volume': 0, 'count': 0 };
                 }
 
-                // Exclude today's because it will be low (partial).
-                if (this_date.getTime() != current_date.getTime()) {
-                    volumes[value.row.typeID].volume += parseInt(value.row.volume);
-                    volumes[value.row.typeID].count++;
+                volumes[value.row.typeID].volume += parseInt(value.row.volume);
+                volumes[value.row.typeID].count++;
+
+                // Store the historical price average.
+                if (!this.m_historicalPrices.hasOwnProperty(ds)) {
+                    this.m_historicalPrices[ds] = {};
                 }
-            });
+
+                var price = parseFloat(value.row.avgPrice);
+
+                if (!isNaN(price)) {
+                    this.m_historicalPrices[ds][value.row.typeID] = price;
+                } else {
+                    EveIndustry.log('Bad historical price for ' + value.row.typeid + ' on ' + ds + ': ' + value.row.avgPrice, 0);
+                }
+            }.bind(this));
 
             // Now create averages.
             $.each(volumes, function(typeid, volume) {
