@@ -24,7 +24,7 @@
         var ds = d.getFullYear() + '-' + K.pad(d.getMonth() + 1, 2, '0') + '-' + K.pad(d.getDate(), 2, '0');
 
         if (!results.hasOwnProperty(ds)) {
-            d.setDay(d.getDate() - 1);
+            d.setDate(d.getDate() - 1);
             ds = d.getFullYear() + '-' + K.pad(d.getMonth() + 1, 2, '0') + '-' + K.pad(d.getDate(), 2, '0');
 
             if (!results.hasOwnProperty(ds)) {
