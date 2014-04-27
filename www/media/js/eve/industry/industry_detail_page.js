@@ -85,71 +85,67 @@
     }
 
     function plotCostAndSellPrices(data) {
-        var plot_data = {
-            'axis': ['x'],
-            'Sell Price': ['Sell Price'],
-            'None': ['None'],
-            'Accelerant': ['Accelerant'],
-            'Attainment': ['Attainment'],
-            'Augmentation': ['Augmentation'],
-            'Parity': ['Parity'],
-            'Process': ['Process'],
-            'Symmetry': ['Symmetry'],
-            'Opt Attainment': ['Opt Attainment'],
-            'Opt Augmentation': ['Opt Augmentation'],
-        };
+        var costbasis = {'axis': ['x'], 'Sell Price': ['Sell Price'], 'None': ['None'], 'Accelerant': ['Accelerant'], 'Attainment': ['Attainment'], 'Augmentation': ['Augmentation'], 'Parity': ['Parity'], 'Process': ['Process'], 'Symmetry': ['Symmetry'], 'Opt Attainment': ['Opt Attainment'], 'Opt Augmentation': ['Opt Augmentation'], };
+        var mtipd = {'axis': ['x'], 'Sell Price': ['Sell Price'], 'None': ['None'], 'Accelerant': ['Accelerant'], 'Attainment': ['Attainment'], 'Augmentation': ['Augmentation'], 'Parity': ['Parity'], 'Process': ['Process'], 'Symmetry': ['Symmetry'], 'Opt Attainment': ['Opt Attainment'], 'Opt Augmentation': ['Opt Augmentation'], };
 
         $.each(data, function(i, day_data) {
             var sell = 0;
-            plot_data.axis.push(i);
+            costbasis.axis.push(i);
+            mtipd.axis.push(i);
             $.each(day_data, function(j, decryptor_data) {
-                plot_data[decryptor_data.decryptor.name].push(Math.round(+decryptor_data.costPerItem*100)/100);
+                costbasis[decryptor_data.decryptor.name].push(Math.round(+decryptor_data.costPerItem*100)/100);
+                mtipd[decryptor_data.decryptor.name].push(Math.round(+decryptor_data.mtipd.mtipd*100)/100);
                 sell = +decryptor_data.sell;
             });
-            plot_data['Sell Price'].push(Math.round(sell*100)/100);
+            costbasis['Sell Price'].push(Math.round(sell*100)/100);
         });
 
-        var chart = c3.generate({
-            bindto: '#overview-chart',
-            data: {
-                type: 'spline',
-                x: 'x',
-                columns: [
-                    plot_data.axis,
-                    plot_data['Sell Price'],
-                    plot_data.None,
-                    plot_data.Accelerant,
-                    plot_data.Attainment,
-                    plot_data.Augmentation,
-                    plot_data.Parity,
-                    plot_data.Process,
-                    plot_data.Symmetry,
-                    plot_data['Opt Attainment'],
-                    plot_data['Opt Augmentation'],
-                ]
-            },
-            axis: {
-                x: {
-                    type: 'timeseries',
-                    tick: {
-                        fit: true,
-                        format: '%Y-%m-%d'
+        var fnGenerateChart = function(chart_id, data) {
+            var chart = c3.generate({
+                bindto: chart_id,
+                data: {
+                    type: 'spline',
+                    x: 'x',
+                    columns: [
+                        data.axis,
+                        data['Sell Price'],
+                        data.None,
+                        data.Accelerant,
+                        data.Attainment,
+                        data.Augmentation,
+                        data.Parity,
+                        data.Process,
+                        data.Symmetry,
+                        data['Opt Attainment'],
+                        data['Opt Augmentation'],
+                    ]
+                },
+                axis: {
+                    x: {
+                        type: 'timeseries',
+                        tick: {
+                            fit: true,
+                            format: '%Y-%m-%d'
+                        }
+                    },
+                    y: {
+                        tick: {
+                            format: d3.format(",")
+                        },
+                        label: {
+                            text: 'Price',
+                            position: 'outer-middle'
+                        }
                     }
                 },
-                y: {
-                    tick: {
-                        format: d3.format(",")
-                    },
-                    label: {
-                        text: 'Price',
-                        position: 'outer-middle'
-                    }
-                }
-            },
-            padding: {
-                left: 100,
-            },
-        });
+                padding: {
+                    left: 100,
+                },
+            });
+        };
+
+        fnGenerateChart('#overview-chart', costbasis);
+        fnGenerateChart('#mtipd-chart', mtipd);
     }
 
     // Decryptor Group IDs: 728, 729, 730, 731

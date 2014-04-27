@@ -53,15 +53,6 @@ var itemid = {{ itemid|safe }};
         </section>
     </div>
 
-    <div class="segment segment-chart">
-        <div class="segment-header">
-            <a href="#"><img src="{{ MEDIA_URL }}images/minimize.png" /></a>&nbsp;Overview Plot
-        </div>
-        <section>
-            <div id="overview-chart"></div>
-        </section>
-    </div>
-
     <div class="segment show-on-load">
         <div class="segment-header">
             <a href="#"><img src="{{ MEDIA_URL }}images/minimize.png" /></a>&nbsp;Total ISK per Day
@@ -104,6 +95,24 @@ var itemid = {{ itemid|safe }};
                 <tbody>
                 </tbody>
             </table>
+        </section>
+    </div>
+
+    <div class="segment segment-chart">
+        <div class="segment-header">
+            <a href="#"><img src="{{ MEDIA_URL }}images/minimize.png" /></a>&nbsp;Sell Price &amp; Cost Basis
+        </div>
+        <section>
+            <div id="overview-chart"></div>
+        </section>
+    </div>
+
+    <div class="segment segment-chart">
+        <div class="segment-header">
+            <a href="#"><img src="{{ MEDIA_URL }}images/minimize.png" /></a>&nbsp;Max Total ISK per Day (MTIPD)
+        </div>
+        <section>
+            <div id="mtipd-chart"></div>
         </section>
     </div>
 
