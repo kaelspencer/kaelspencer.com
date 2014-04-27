@@ -87,6 +87,7 @@
     function plotCostAndSellPrices(data) {
         var plot_data = {
             'axis': ['x'],
+            'Sell Price': ['Sell Price'],
             'None': ['None'],
             'Accelerant': ['Accelerant'],
             'Attainment': ['Attainment'],
@@ -99,18 +100,23 @@
         };
 
         $.each(data, function(i, day_data) {
+            var sell = undefined;
             plot_data.axis.push(i);
             $.each(day_data, function(j, decryptor_data) {
-                plot_data[decryptor_data.decryptor.name].push(Math.round(+decryptor_data.materialCost*100)/100);
+                plot_data[decryptor_data.decryptor.name].push(Math.round(+decryptor_data.costPerItem*100)/100);
+                sell = +decryptor_data.sell;
             });
+            plot_data['Sell Price'].push(Math.round(sell*100)/100);
         });
 
         var chart = c3.generate({
             bindto: '#overview-chart',
             data: {
+                type: 'spline',
                 x: 'x',
                 columns: [
                     plot_data['axis'],
+                    plot_data['Sell Price'],
                     plot_data['None'],
                     plot_data['Accelerant'],
                     plot_data['Attainment'],
@@ -139,7 +145,10 @@
                         position: 'outer-middle'
                     }
                 }
-            }
+            },
+            padding: {
+                left: 100,
+            },
         });
     }
 

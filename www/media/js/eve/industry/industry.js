@@ -145,6 +145,7 @@
     EveIndustry.calculateInventionCost = function(item, decryptor, datacore1Cost, datacore2Cost, decryptorCost) {
         // Hardcode encryption and science skills to 4 for now.
         var e = 4, d1 = 4, d2 = 4, meta = 0;
+        decryptorCost = decryptorCost ? decryptorCost : 0;
         var chance = item.chance * (1 + (0.01 * e)) * (1 + ((d1 + d1) * (0.1 / (5 - meta)))) * decryptor.probability;
         var costPerAttempt = datacore1Cost * item.datacores[0].quantity + datacore2Cost * item.datacores[1].quantity + decryptorCost;
         var costPerSuccess = costPerAttempt / chance;
@@ -157,6 +158,8 @@
         // An item will be marked as invalid if one of the materials doesn't have a valid price associated with it.
         var result = {
             'copyTime': 0,
+            'cost': 0,
+            'costPerItem': 0,
             'decryptor': decryptor,
             'inventionChance': 0,
             'inventionCost': 0,
@@ -175,6 +178,7 @@
             'productionTime': 0,
             'productionTime24': 0,
             'runs': item.maxProductionLimit / 10 + decryptor.run,
+            'sell': prices[itemid],
             'stipd': {
                 'bpcPerDay': 0,
                 'copiesPerDay': 0,
@@ -237,7 +241,8 @@
         // moved through Jita on a daily average. This is a good indicator of how easily it will
         // be to sell the goods.
         result.vbr = result.volume / (result.runs / (result.productionTime24 / 24));
-
+        result.cost = result.materialCost * result.runs + result.inventionCost;
+        result.costPerItem = result.cost / result.runs;
         result.net = (prices[itemid] - result.materialCost) * result.runs - result.inventionCost;
         result.iph = result.net / result.productionTime;
         result.iph24 = result.net / result.productionTime24;
