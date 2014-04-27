@@ -100,7 +100,7 @@
         };
 
         $.each(data, function(i, day_data) {
-            var sell = undefined;
+            var sell = 0;
             plot_data.axis.push(i);
             $.each(day_data, function(j, decryptor_data) {
                 plot_data[decryptor_data.decryptor.name].push(Math.round(+decryptor_data.costPerItem*100)/100);
@@ -115,15 +115,15 @@
                 type: 'spline',
                 x: 'x',
                 columns: [
-                    plot_data['axis'],
+                    plot_data.axis,
                     plot_data['Sell Price'],
-                    plot_data['None'],
-                    plot_data['Accelerant'],
-                    plot_data['Attainment'],
-                    plot_data['Augmentation'],
-                    plot_data['Parity'],
-                    plot_data['Process'],
-                    plot_data['Symmetry'],
+                    plot_data.None,
+                    plot_data.Accelerant,
+                    plot_data.Attainment,
+                    plot_data.Augmentation,
+                    plot_data.Parity,
+                    plot_data.Process,
+                    plot_data.Symmetry,
                     plot_data['Opt Attainment'],
                     plot_data['Opt Augmentation'],
                 ]
@@ -160,15 +160,15 @@
     function getDecryptorCategory(id) {
         switch(id) {
             case 728:
-                return 'Occult'
+                return 'Occult';
             case 729:
-                return 'Cryptic'
+                return 'Cryptic';
             case 730:
-                return 'Incognito'
+                return 'Incognito';
             case 731:
-                return 'Esoteric'
+                return 'Esoteric';
             default:
-                return 'Error! ID ' + id
+                return 'Error! ID ' + id;
         }
     }
 })();
