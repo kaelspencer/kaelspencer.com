@@ -11,9 +11,11 @@ var itemid = {{ itemid|safe }};
 <script type="text/javascript" src="{{ MEDIA_URL }}js/eve/industry/industry.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/eve/industry/industry_detail_page.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/chosen.jquery.v0-12-1.min.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/d3.v3.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/c3.min.js"></script>
 
 <link rel="stylesheet" type="text/css" media="screen" href="{{ MEDIA_URL }}css/eve/industry.css" />
-
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/c3.css">
 {% endblock %}
 
 {% block content %}
@@ -48,6 +50,15 @@ var itemid = {{ itemid|safe }};
                     </table>
                 </td></tr>
             </table>
+        </section>
+    </div>
+
+    <div class="segment segment-chart">
+        <div class="segment-header">
+            <a href="#"><img src="{{ MEDIA_URL }}images/minimize.png" /></a>&nbsp;Overview Plot
+        </div>
+        <section>
+            <div id="overview-chart"></div>
         </section>
     </div>
 

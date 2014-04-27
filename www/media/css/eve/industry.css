@@ -63,6 +63,10 @@ table.wide {
     margin-bottom: 30px;
 }
 
+.segment section {
+    margin-top: 30px;
+}
+
 .show-on-load {
     display: none;
 }

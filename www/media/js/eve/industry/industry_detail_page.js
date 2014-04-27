@@ -59,6 +59,8 @@
                     .append($('<td />', { html: K.comma(result.stipd.stipd.toFixed(2)) })));
             }
         });
+
+        plotCostAndSellPrices(results);
     }
 
     function handleOverview(item) {
@@ -80,6 +82,65 @@
         }
 
         $('#loading_indicator').hide().children().addClass('loading_stop');
+    }
+
+    function plotCostAndSellPrices(data) {
+        var plot_data = {
+            'axis': ['x'],
+            'None': ['None'],
+            'Accelerant': ['Accelerant'],
+            'Attainment': ['Attainment'],
+            'Augmentation': ['Augmentation'],
+            'Parity': ['Parity'],
+            'Process': ['Process'],
+            'Symmetry': ['Symmetry'],
+            'Opt Attainment': ['Opt Attainment'],
+            'Opt Augmentation': ['Opt Augmentation'],
+        };
+
+        $.each(data, function(i, day_data) {
+            plot_data.axis.push(i);
+            $.each(day_data, function(j, decryptor_data) {
+                plot_data[decryptor_data.decryptor.name].push(Math.round(+decryptor_data.materialCost*100)/100);
+            });
+        });
+
+        var chart = c3.generate({
+            bindto: '#overview-chart',
+            data: {
+                x: 'x',
+                columns: [
+                    plot_data['axis'],
+                    plot_data['None'],
+                    plot_data['Accelerant'],
+                    plot_data['Attainment'],
+                    plot_data['Augmentation'],
+                    plot_data['Parity'],
+                    plot_data['Process'],
+                    plot_data['Symmetry'],
+                    plot_data['Opt Attainment'],
+                    plot_data['Opt Augmentation'],
+                ]
+            },
+            axis: {
+                x: {
+                    type: 'timeseries',
+                    tick: {
+                        fit: true,
+                        format: '%Y-%m-%d'
+                    }
+                },
+                y: {
+                    tick: {
+                        format: d3.format(",")
+                    },
+                    label: {
+                        text: 'Price',
+                        position: 'outer-middle'
+                    }
+                }
+            }
+        });
     }
 
     // Decryptor Group IDs: 728, 729, 730, 731
