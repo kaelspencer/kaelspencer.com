@@ -38,7 +38,7 @@
                 .append($('<td />', { text: best.decryptor.name }))
                 .append($('<td />', { text: best.volume }))
                 .append($('<td />', { text: K.prettyTime(best.productionTime * 60 * 60) }))
-                .append($('<td />', { text: best.vbr.toFixed(1) + ' (' + (best.vbr * best.mtipd.bpo).toFixed(1) + ')' }))
+                .append($('<td />', { text: best.stipd.mftp.toFixed(2) + ' (' + best.mtipd.mftp.toFixed(2) + ')' }))
                 .append($('<td />', { html: K.comma(best.stipd.stipd.toFixed(0)) }))
                 .append($('<td />', { html: K.comma(best.mtipd.mtipd.toFixed(0)) })));
         }

@@ -172,6 +172,7 @@
                 'bpcPerDay': 0,
                 'bpo': 0,
                 'copiesPerDay': 0,
+                'mftp': 0.0,
                 'mtipd': 0,
             },
             'net': 0,
@@ -182,11 +183,11 @@
             'stipd': {
                 'bpcPerDay': 0,
                 'copiesPerDay': 0,
+                'mftp': 0.0,
                 'stipd': 0,
             },
             'typeName': item.typeName,
             'valid': true,
-            'vbr': 0.0,
             'volume': volume,
         };
         var valid = true;
@@ -237,10 +238,6 @@
             }
         });
 
-        // Calculate the volume-BPO-ratio. This is the number BPOs required to fulfill the volume
-        // moved through Jita on a daily average. This is a good indicator of how easily it will
-        // be to sell the goods.
-        result.vbr = result.volume / (result.runs / (result.productionTime24 / 24));
         result.cost = result.materialCost * result.runs + result.inventionCost;
         result.costPerItem = result.cost / result.runs;
         result.net = (prices[itemid] - result.materialCost) * result.runs - result.inventionCost;
@@ -256,6 +253,10 @@
         result.stipd.bpcPerDay = result.stipd.copiesPerDay * result.inventionChance;
         result.stipd.stipd = result.stipd.bpcPerDay * result.ipd;
 
+        // Manufacturing percent (MFTP) is the number of items you will produce per day (on average) as a percentage
+        // of the volumee through Jita.
+        result.stipd.mftp = result.stipd.bpcPerDay * result.runs / result.volume;
+
         // TIPD has a max of 10 inventions per day, as that is all that can be invented. If the BPO can't generate
         // 10 copies per day, the number of inventions is the limiting factor. In Max TIPD (MTIPD), calculate TIPD
         // as if there are multiple BPOs. However, it is unreasonable to have more than 10 copy slots occupied at
@@ -264,6 +265,7 @@
             result.mtipd.copiesPerDay = result.stipd.copiesPerDay;
             result.mtipd.bpcPerDay = result.stipd.bpcPerDay;
             result.mtipd.bpo = 1;
+            result.mtipd.mftp = result.stipd.mftp;
             result.mtipd.mtipd = result.stipd.stipd;
         } else {
             result.mtipd.copiesPerDay = 10;
@@ -278,6 +280,7 @@
 
             result.mtipd.bpcPerDay = result.mtipd.copiesPerDay * result.inventionChance;
             result.mtipd.mtipd = result.mtipd.bpcPerDay * result.ipd;
+            result.mtipd.mftp = result.mtipd.bpcPerDay * result.runs / result.volume;
         }
 
         return result;

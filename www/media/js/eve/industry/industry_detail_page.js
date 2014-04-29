@@ -47,7 +47,7 @@
                     .append($('<td />', { text: result.runs }))
                     .append($('<td />', { text: K.comma(result.iph.toFixed(0)) }))
                     .append($('<td />', { text: K.comma(result.iph24.toFixed(0)) }))
-                    .append($('<td />', { text: result.vbr.toFixed(1) + ' (' + (result.vbr * result.mtipd.bpo).toFixed(1) + ')' }))
+                    .append($('<td />', { text: result.stipd.mftp.toFixed(2) + ' (' + result.mtipd.mftp.toFixed(2) + ')' }))
                     .append($('<td />', { html: K.comma(result.stipd.stipd.toFixed(0)) }))
                     .append($('<td />', { html: K.comma(result.mtipd.mtipd.toFixed(0)) + ' (' + result.mtipd.bpo + ')' })));
 
@@ -55,7 +55,7 @@
                     .append($('<td />', { text: result.decryptor.name }))
                     .append($('<td />', { text: K.comma(result.stipd.copiesPerDay.toFixed(2)) }))
                     .append($('<td />', { text: K.comma(result.stipd.bpcPerDay.toFixed(2)) }))
-                    .append($('<td />', { text: result.vbr.toFixed(1) }))
+                    .append($('<td />', { text: result.stipd.mftp.toFixed(2) }))
                     .append($('<td />', { html: K.comma(result.stipd.stipd.toFixed(2)) })));
             }
         });
