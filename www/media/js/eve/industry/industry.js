@@ -3,7 +3,7 @@
     var m_apiHistory = 'http://api.eve-marketdata.com/api/item_history2.json?char_name=Dogen%20Okanata&region_ids=10000002&days=30&type_ids=';
     var m_everest = 'http://everest.kaelspencer.com/';
     //var m_everest = 'http://localhost:5000/';
-    var m_everestIndustry = m_everest + "industry/0/names/norigs/";
+    var m_everestIndustry = m_everest + "industry/";
     var m_everestIndustryDetail = m_everest + "industry/detail/";
     var m_everestIndustryDetailNames = 'names/'; // Set this to '' to exclude names.
     var m_pe = 5; // Production Effeciency Skill
@@ -297,19 +297,40 @@
             this.m_inventableVolume = {};
         }
 
-        Overview.prototype.industrate = function(handleResults, onDrawComplete) {
-            if (typeof handleResults !== 'function') {
+        Overview.prototype.industrate = function(validator, handleResults, onDrawComplete) {
+            if (typeof validator !== 'object') {
+                EveIndustry.errorHandler('Invalid validator object provided (' + typeof handleResults + ')', onDrawComplete);
+            } else if (typeof handleResults !== 'function') {
                 EveIndustry.errorHandler('Invalid handleResults function provided (' + typeof handleResults + ')', onDrawComplete);
             } else if (typeof onDrawComplete !== 'function') {
                 EveIndustry.errorHandler('Invalid onDrawComplete function provided (' + typeof onDrawComplete + ')', onDrawComplete);
             } else {
                 this.m_handleResults = handleResults;
                 this.m_onDrawComplete = onDrawComplete;
+                this.clean();
 
-                $.ajax({ url: m_everestIndustry, timeout: m_ajaxTimeout, context: this, })
-                    .done(this.onLoadIndustryItems)
-                    .fail(function(xhr, status) { EveIndustry.errorHandler('industy list', xhr, status, this.m_onDrawComplete); });
+                var data = {
+                    "categories": validator.categories(),
+                    "rigs": !validator.norigs(),
+                    "names": validator.names()
+                };
+
+                $.ajax({
+                    url: m_everestIndustry,
+                    data: JSON.stringify(data),
+                    contentType: 'application/json; charset=utf-8',
+                    type: 'POST',
+                    dataType: 'json',
+                    timeout: m_ajaxTimeout,
+                    context: this, })
+                .done(this.onLoadIndustryItems)
+                .fail(function(xhr, status) { EveIndustry.errorHandler('industy list', xhr, status, this.m_onDrawComplete); });
             }
+        };
+
+        Overview.prototype.clean = function() {
+            this.m_uniquePriceItems = {};
+            this.m_inventableVolume = {};
         };
 
         // Called upon return from everest. Contains a list of inventable items and their information.

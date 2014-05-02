@@ -2,17 +2,16 @@
     var resultsHandled = false;
 
     $(function() {
-        $('#loading_indicator').show().children().removeClass('loading_stop');
-
-        var industry = new EveIndustry.Overview();
-        industry.industrate(handleResults, onDrawComplete);
 
         $('#search').submit(function() {
             var validator = new Validator();
 
             if (validator.validate()) {
-                //var industry = new EveIndustry.Overview();
-                //industry.industrate(handleResults, onDrawComplete);
+                $('#loading_indicator').show().children().removeClass('loading_stop');
+                $('#industry').trigger('destroy').hide().find('tbody').children().remove();
+
+                var industry = new EveIndustry.Overview();
+                industry.industrate(validator, handleResults, onDrawComplete);
             }
 
             return false;

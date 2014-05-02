@@ -1,10 +1,11 @@
 var Validator = (function() {
 
     function Validator() {
-        // -1 is all categories, all positive numbers are the rig category ID.
-        // Valid category IDs: -1, 6, 7, 8, 18, 22
+        // 0 is all categories, all positive numbers are the rig category ID.
+        // Valid category IDs: 0, 6, 7, 8, 18, 22
         this.m_categories = [];
         this.m_norigs = false;
+        this.m_names = true;
     }
 
     Validator.prototype.categories = function() {
@@ -13,6 +14,10 @@ var Validator = (function() {
 
     Validator.prototype.norigs = function() {
         return this.m_norigs;
+    };
+
+    Validator.prototype.names = function() {
+        return this.m_names;
     };
 
     Validator.prototype.validate = function() {
@@ -30,7 +35,7 @@ var Validator = (function() {
         var deployable = $('#deployable').is(':checked');
 
         if (all) {
-            this.m_categories = [-1];
+            this.m_categories = [0];
         } else {
             if (ships) {
                 this.m_categories.push($('#ships').val());
