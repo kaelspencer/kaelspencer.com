@@ -2,7 +2,6 @@
     var resultsHandled = false;
 
     $(function() {
-
         $('#search').submit(function() {
             var validator = new Validator();
 
@@ -15,6 +14,18 @@
             }
 
             return false;
+        });
+
+        $('input.toggle').change(function() {
+            if (this.checked) {
+                $('#all').prop('checked', false);
+            }
+        });
+
+        $('#all').change(function() {
+            if (this.checked) {
+                $('input.toggle').prop('checked', false);
+            }
         });
     });
 
