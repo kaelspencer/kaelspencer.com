@@ -1,0 +1,62 @@
+<!---
+    Date: 2014-05-21
+-->
+For quite a while now my girlfriend and I have been using Evernote to store and view the recipes we have acquired over the years. My biggest issue with the system was how we were viewing them: on our phones. I wanted something a little bigger than my phone. There was also the issue of backlights and locking. Either I dealt with the screen turning off and having to unlock my device (a pain when your hands are dirty) or leave the screen on the whole time which drains battery life. What I really wanted is an e-paper device to display recipes.
+
+# V-Tablet
+
+I then found [Visionect's V-Tablet](http://www.visionect.com/) from a [blog post](http://www.visionect.com/blog/room-booking-epaper-digitalsignage-with-google-calendar-and-qrcodes/) that was posted on Hacker News. The device was exactly what I was looking for. A very simple - no buttons - 6" e-paper device with touch. The technology behind it is even better. Server software provided by Visionect renders a webpage to greyscale and pushes it to the device. A major bonus is that it is waterproof so I feel very comfortable having it around food in the kitchen.
+
+# VMenu
+At this point, I needed a site to display an Evernote notebook. My plan was to create a simple Flask site that would interact with Evernote's [API](https://dev.evernote.com/doc/) and format the information. The notebook has three levels: a list of tags representing different food groups (eg, breakfast, soup, drinks, etc); a list of recipes in a given tag; and the actual recipe. You can find VMenu on [GitHub](https://github.com/kaelspencer/vmenu).
+
+<img src="/media/images/blog/vmenu/vtablet.jpg" height="800" width="600" style="margin-left: 63px" alt="VMenu on the V-Table">
+
+## Evernote API
+The Evernote API wasn't the greatest to work with. It felt like there were too many objects to deal with. The first major problem I had with it was lack of batch operations. I needed to fetch thumbnails for a large number of notes. There was no way to do this with their API. See my workaround in the performance section. The other frustrating thing is the body hash is not included on the note metadata. Once you find the note's metadata and determine you want the note, you must make a separate query to retrieve the hash of the body to then determine if you need to refetch the body.
+
+## Performance
+The server software that renders the webpage into a format the tablet can display seemed to have a low tolerance for response time. If the response took longer than ~1 second, the tablet wouldn't update the display. Further touches would act one what is _supposed_ to be there not what is actually being displayed. This means caching. Every result set - that is, the array of objects including tags, recipes, and the recipe itself - is cached, not the page that is rendered. This is so paging could occur without going back to Evernote. A result of this design meant I needed a way to explicitly expire the cached values. There is a refresh button on the top of each page that will refresh that dataset.
+
+The thing that takes the longest is fetching the thumbnails and note resources. These are stored locally so they don't need to be fetched more than once. I also decided that it was okay for the thumbnails to not be present when viewing a tag. When a thumbnail is needed I kick of a Celery task to download it. The page will probably not have an image there on that view, but the next ones will be fine.
+
+These performance improvements are necessary to make the tablet feel usable. That means Flask, Celery, a message broker (RabbitMQ), and memcached are required.
+
+# Installation
+You should really consider installing vmenu in virtualenv. Clone the [repository](https://github.com/kaelspencer/vmenu), create an environment, and install the requirements.
+
+    git clone https://github.com/kaelspencer/vmenu.git
+    cd vmenu
+    virtualenv env
+    source env/bin/activate
+    pip install -r requirements.txt
+
+You'll also need to install a few things system wide.
+ * memcached
+ * RabbitMQ
+ * Celery
+
+## Configuration
+Copy `config.cfg` to `debug.cfg` (or edit in place, just don't check it in!). The values should be fairly self explanatory. Get your token from from Evernote. If you want to use the sandbox server be sure to set `SANDBOX=True`. After you have configured it, run `export VMENU_SETTINGS=debug.cfg`. This tells vmenu to load that file to update settings.
+
+## Static Files
+Thumbnails and images in the recipes are downloaded and saved locally. These locations are referenced in the config file. vmenu needs to be able to write to them. When in production, the web server should be the one to server up these static files. The path in the config file will be used as a base in HTML to reference the images.
+
+## Caching
+If you have a big Evernote recipe book, using memcached is an absolute necessity. vmenu fetches notes through the regular API and does not use the full synchronization option. This can be very slow! Especially the fetching of the thumbnails. I'm trying to do some tricky things with memcached, so install it. Seriously.
+
+## Task Queue
+Celery is used so you'll need to install some kind of message broker. I'm using RabbitMQ and the default config settings point to this. Update `CELERY_BROKER_URL` and `CELERY_RESULT_BACKEND` appropriately.
+
+# Images
+Here are a few images. The first one is the tag view.
+
+<img src="/media/images/blog/vmenu/tags.png" height="800" width="600" style="margin-left: 63px" alt="List of tags">
+
+This is what you see after you select a tag. It shows a list of recipes in the tag.
+
+<img src="/media/images/blog/vmenu/recipes.png" height="800" width="600" style="margin-left: 63px" alt="List of recipes in a tag">
+
+Finally, the recipe itself.
+
+<img src="/media/images/blog/vmenu/recipe.png" height="800" width="600" style="margin-left: 63px" alt="the recipe itself">
