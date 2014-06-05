@@ -1,7 +1,7 @@
 {% load pages_extras %}
                 <ul>
-                    <li{% nav_current request 'www_url_about' %}><a href="{% url www_url_about %}">About</a></li>
-                    <li{% nav_current request 'www_url_photos' %}><a href="{% url www_url_photos %}">Photos</a></li>
-                    <li{% nav_current request 'paste_url_index' %}><a href="{% url paste_url_index %}">Paste</a></li>
-                    <li{% nav_current request 'www_url_index' %}><a href="{% url www_url_index %}">Home</a></li>
+                    <li{% nav_current request 'www_url_about' %}><a href="{% url 'www_url_about' %}">About</a></li>
+                    <li{% nav_current request 'www_url_photos' %}><a href="{% url 'www_url_photos' %}">Photos</a></li>
+                    <li{% nav_current request 'paste_url_index' %}><a href="{% url 'paste_url_index' %}">Paste</a></li>
+                    <li{% nav_current request 'www_url_index' %}><a href="{% url 'www_url_index' %}">Home</a></li>
                 </ul>
