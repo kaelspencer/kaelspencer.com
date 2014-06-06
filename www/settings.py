@@ -106,9 +106,12 @@ MIDDLEWARE_CLASSES = (
 )
 
 if DEBUG:
-    MIDDLEWARE_CLASSES += (
-        'debug_toolbar.middleware.DebugToolbarMiddleware',
-    )
+    # TODO: Enable Debug Toolbar.
+    # Issue with the debug toolbar. Failing to import. The new version tries
+    # to update Django to 1.6.5
+    # MIDDLEWARE_CLASSES += (
+    #     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # )
 
     INTERNAL_IPS = (
         '127.0.0.1'
@@ -147,14 +150,17 @@ INSTALLED_APPS = (
     'wiki.plugins.macros',
 )
 
-if DEBUG:
-    INSTALLED_APPS += (
-        'debug_toolbar',
-    )
+# TODO: Enable Debug Toolbar.
+# Issue with the debug toolbar. Failing to import. The new version tries to
+# update Django to 1.6.5
+# if DEBUG:
+#     INSTALLED_APPS += (
+#         'debug_toolbar',
+#     )
 
-    DEBUG_TOOLBAR_CONFIG = {
-        'INTERCEPT_REDIRECTS': False,
-    }
+#     DEBUG_TOOLBAR_CONFIG = {
+#         'DISABLE_PANELS': False,
+#     }
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
