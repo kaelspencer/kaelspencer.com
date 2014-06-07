@@ -1,5 +1,5 @@
 from django import template
-from paste.models import Paste
+from www.paste.models import Paste
 from django.db.models import Q
 from django.utils import timezone
 
