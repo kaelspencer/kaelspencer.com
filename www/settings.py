@@ -130,7 +130,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    'django.contrib.markup',
     'www.blog',
     'www.paste',
     'www.pages',
@@ -148,6 +147,7 @@ INSTALLED_APPS = (
     'wiki.plugins.notifications',
     'wiki.plugins.images',
     'wiki.plugins.macros',
+    'django_markup',
 )
 
 # TODO: Enable Debug Toolbar.

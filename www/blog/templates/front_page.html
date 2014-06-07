@@ -1,12 +1,12 @@
 {% extends "blog_base.html" %}
-{% load markup %}
+{% load markup_tags %}
 
 {% block content %}
 
 {% for object in object_list %}
             <article>
                 <header><a href="{{ object.get_absolute_url }}">{{ object.headline|safe }}</a></header>
-                {{ object.get_summary|markdown }}
+                {{ object.get_summary|apply_markup:"markdown" }}
             <footer>Posted by <strong>{{ object.author }}</strong> on {{ object.pub_date|date:"j F Y" }}</footer>
             </article>
 {% endfor %}
