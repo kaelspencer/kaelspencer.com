@@ -1,6 +1,5 @@
 # Django settings for www project.
 
-import os
 import json
 import platform
 from unipath import FSPath as Path
@@ -16,6 +15,12 @@ BASE = Path(__file__).absolute().ancestor(1)
 # Presume that only the production server will run on hoth
 # This isn't the best longterm solution.
 PRODUCTION = ("endor" in platform.node())
+
+ALLOWED_HOSTS = [
+    'kaelspencer.com',
+    '127.0.0.1',
+    'localhost'
+]
 
 if PRODUCTION:
     print "Production: true"
@@ -96,13 +101,11 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-#    'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-#    'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
 if DEBUG:
@@ -209,5 +212,13 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 #    }
 #}
 
-WIKI_MARKDOWN_KWARGS = {'extensions': ['footnotes', 'attr_list', 'headerid', 'extra', 'codehilite', ]}
+WIKI_MARKDOWN_KWARGS = {
+    'extensions': [
+        'footnotes',
+        'attr_list',
+        'headerid',
+        'extra',
+        'codehilite',
+    ]
+}
 WIKI_ACCOUNT_SIGNUP_ALLOWED = False
