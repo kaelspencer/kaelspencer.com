@@ -5,6 +5,7 @@
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.autosize-min.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/chosen.jquery.v0-12-1.min.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.tabby.js"></script>
+<script src='https://www.google.com/recaptcha/api.js'></script>
 
 <link rel="stylesheet" type="text/css" media="screen" href="{{ MEDIA_URL }}css/chosen.min.css" />
 
@@ -57,8 +58,12 @@
 
                     <div class="grid_12 alpha omega">
                         <div class="grid_2 alpha fortext">Title:</div>
-                        <div class="grid_5">{{ form.title }}</div>
-                        <div class="grid_3 prefix_2 omega"><input type="submit" id="newpaste_submit" value="Paste" /></div>
+                        <div class="grid_10 omega">{{ form.title }}</div>
+                    </div>
+
+                    <div class="grid_12 alpha omega">
+                        <div class="grid_5 alpha g-recaptcha" data-sitekey="{{ RECAPTCHA_SITE }}"></div>
+                        <div class="grid_3 prefix_4 omega"><input type="submit" id="newpaste_submit" value="Paste" /></div>
                     </div>
 
                     {% render_honeypot_field "pastetype" %}

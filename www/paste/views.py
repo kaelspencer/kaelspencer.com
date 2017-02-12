@@ -13,6 +13,8 @@ from django.db.models import Q
 import datetime
 from django.utils import timezone
 from honeypot.decorators import check_honeypot
+import requests
+from django.core.exceptions import ValidationError
 
 EXPIRATION_CHOICES = (
     (0, u'Never'),
@@ -31,11 +33,28 @@ class NewPasteForm(ModelForm):
             'lexer': chosenwidgets.ChosenSelect(),
         }
     expiration = ChoiceField(choices=EXPIRATION_CHOICES, widget=chosenwidgets.ChosenSelect())
+    request = ''
+
+    def set_request(self, request):
+        self.request = request
+
+    def clean(self):
+        # If this is the POST request (a new paste being made), check on the recaptcha response.
+        if (self.request.method == 'POST'):
+            r = requests.post('https://www.google.com/recaptcha/api/siteverify',
+                data = {'secret': settings.RECAPTCHA_SECRET, 'response': self.request.POST['g-recaptcha-response']})
+            print(r.json())
+
+            if r.json()['success'] == False:
+                raise ValidationError(("You're not human!"), code='invalidRecaptcha')
+
+        return super(NewPasteForm, self).clean()
 
 @check_honeypot(field_name='pastetype')
 def new(request):
     if request.method == 'POST':
         form = NewPasteForm(request.POST)
+        form.set_request(request);
 
         if form.is_valid():
             p = form.save()
@@ -51,6 +70,7 @@ def new(request):
         form = NewPasteForm()
 
     context = {'MEDIA_URL': settings.MEDIA_URL,
+               'RECAPTCHA_SITE': settings.RECAPTCHA_SITE,
                'form': form}
     context.update(csrf(request))
 

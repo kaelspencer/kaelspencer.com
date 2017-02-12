@@ -30,6 +30,9 @@ else:
 SECRETS = json.load(open('secrets.json'))
 SECRET_KEY = str(SECRETS['secret_key'])
 
+RECAPTCHA_SECRET = str(SECRETS['recaptcha_secret'])
+RECAPTCHA_SITE = str(SECRETS['recaptcha_site'])
+
 if PRODUCTION:
     DATABASES = SECRETS['databases_production']
 

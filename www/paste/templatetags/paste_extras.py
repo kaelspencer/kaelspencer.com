@@ -26,7 +26,7 @@ def get_pretty_time(dt):
         ret = str(val) + ' week'
     else:
         val = seconds / (60 * 60 * 24 * 365)
-        ret = str(val) + ' day'
+        ret = str(val) + ' year'
 
     if val != 1:
         ret = ret + 's'
